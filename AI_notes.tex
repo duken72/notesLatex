@@ -1,0 +1,46 @@
+% !TeX spellcheck = en_US
+\documentclass[
+	english,
+	openany,
+	draft = false,
+	twoside = true,
+	fleqn
+]{scrbook}
+\usepackage{learning-notes}
+
+\author{Huu Duc Nguyen}
+\authordegreefront{}
+\authordegreeback{ M.Sc.}
+\subject{AI}
+\title{AI Notes}
+\date{29 February 2022}
+
+\begin{document}
+\frontmatter
+\TitlePage
+\tableofcontents
+
+\mainmatter
+\include{Contents/abbrievations.tex}
+\include{Contents/ai-intro.tex}
+\include{Contents/ml-intro.tex}
+\include{Contents/probabilities.tex}
+\include{Contents/linear-regression.tex}
+\include{Contents/logistic-regression.tex}
+\include{Contents/svm.tex}
+\include{Contents/ensembles.tex}
+\include{Contents/error-functions.tex}
+\include{Contents/gradient-descent.tex}
+\include{Contents/nn-tips.tex}
+\include{Contents/word-embeddings.tex}
+\include{Contents/search-algorithms.tex}
+\include{Contents/variational-autoencoders.tex}
+\include{Contents/MDP.tex}
+\include{Contents/RL.tex}
+\include{Contents/probabilistic-robotics.tex}
+
+\backmatter
+\pagenumbering{Roman}
+\printbibliography[heading=bibintoc]
+\appendix
+\end{document}

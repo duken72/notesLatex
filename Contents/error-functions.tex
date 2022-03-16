@@ -1,0 +1,48 @@
+% !TeX spellcheck = en_US
+\chapter{Error Functions}
+\todo{Add graph and explanation}
+
+\section{Ideal Miss-classification Error}
+Gradient = 0 $\Rightarrow$ can't use gradient descent.\\
+It simply counts incorrectly classified points.
+
+\section{Squared Error - $L_2$ Loss}
+\begin{itemize}
+	\item Leads to closed form solutions
+	\item Sensitive to outliers
+	\item Penalize "too correct" data points
+\end{itemize}
+
+\section{Cross Entropy Error}
+\begin{itemize}
+	\item Concave function $\Rightarrow$ unique minimum exists
+	\item Robust to outliers, error increases only roughly linear
+	\item No closed-form solution, requires iterative method
+\end{itemize}
+
+\section{Squared Error on Sigmoid / Tanh}
+\begin{itemize}
+	\item No penalty for "too correct" points
+	\item Zero gradient for confidently incorrect classifications
+\end{itemize}
+$\Rightarrow$ \hlr{Do NOT} use $L_2$ loss with sigmoid outputs, instead, use cross-entropy.
+
+\section{Hinge Error}
+\begin{itemize}
+	\item Robust to outliers
+	\item Zero error for points outside margin $\Rightarrow$ sparsity
+	\item Not differentiable around $z_n = 1$
+\end{itemize}
+\note Want the correct class to have a score that is higher than incorrect class by a fixed margin $\Delta$.
+\begin{equation}
+	L_i = \sum_{j \neq y_i} \text{max}(0, s_j - s_{y_i} + \Delta)
+\end{equation}
+in which, $s_j$ is other classes score, $s_{y_i}$ is real class score.
+
+\section{$L_1, L_0$ Loss}
+Median, no wrong points
+
+\begin{align}
+	&L_1 = \sum |t-y| \\
+	&L_2 = \sum (t-y)^2
+\end{align}

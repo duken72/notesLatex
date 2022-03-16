@@ -1,0 +1,55 @@
+% !TeX spellcheck = en_US
+\chapter{Logistics Regression}
+
+Though named as "regression", logistics regression is used for classification problem. For the classification problem with 2 classes, instead of a hard threshold (from linear classification), we could have a soft one, and find the \ac{prob} of the input belongs to either class.
+\begin{equation}
+	f(x) = \theta(\omega^Tx)
+\end{equation}
+
+The sigmoid function:
+\begin{align}
+	f(s) 		&= \frac{1}{1 + e^{-s}} \overset{\triangle}{=} \sigma(s) \\
+	s 			&= \text{ln} \left( \frac{\sigma}{1-\sigma} \right) \\
+	\sigma'(s)	&= \sigma(s) \left( 1- \sigma(s) \right)
+\end{align}
+The cross entropy error function:
+\begin{equation}
+	J(w, x, y) = -\left( y_i log\,z_i + (1-y_i) \,log(1-z_i)  \right)
+\end{equation}
+with $z_i = f(w^T x_i)$
+
+\begin{align}
+	\Rightarrow &\frac{\partial J}{\partial w} = (z_i - y_i) x_i \\
+	\Rightarrow &w \;\;\;= w + \eta (y_i - z_i) x_i
+\end{align}
+
+\note Require less \ac{param}, only $D$ dimensions, compared to Gaussians with
+
+$\displaystyle \frac{M(M+5)}{2}+1$ \ac{param}
+
+\chapter{Softmax Regression}
+
+\hlr{Multinomial Logistics Regression, Maximum Entropy Classifier}
+
+\begin{equation}
+	a_i = \frac{\text{exp}(z_i)}{\sum_{j=1}^{C}\text{exp}(z_j)}
+\end{equation}
+so that $\begin{cases}
+	a_i > 0 \\
+	\sum a_i = 1 \\
+	z_m > z_n \iff a_m > a_n \;\;\text{(order)}
+\end{cases}$
+
+When $z_i$ is too big
+\begin{equation}
+	\frac{\text{exp}(z_i)}{\sum_{j=1}^{C}\text{exp}(z_j)} = \frac{\text{exp}(z_i - c)}{\sum_{j=1}^{C}\text{exp}(z_j - c)}
+\end{equation}
+with $c = \underset{i}{max}\;z_i$
+
+\begin{align}
+	&J(w,x,y) = - \sum_{i=1}^{N} \sum_{j=1}^{C} y_{ij}\,\text{log}(a_{ij}) \\
+	&J(w,x,y) = - \sum_{n=1}^{N} \sum_{k=0}^{1} \left[ \mathbb{I}(t_n=k)\; \text{ln}\,p(y_n=k | x_n; w) \right] \\
+	\Rightarrow &E(w) = - \sum_{n=1}^{N} \sum_{k=1}^{K} \left[ \mathbb{I}(t_n=k)\; \text{ln}\frac{\text{exp}\,(w_k^T x)}{\sum_{j=1}^{K} \text{exp}(w_j^T x)} \right] \\
+	&\frac{\partial J_i(w)}{\partial W} = x_i e_i^T = x_i (a_{ij} - y_{ij})^T \\
+	&W = W + \eta x_i (y_i - a_i)^T
+\end{align}

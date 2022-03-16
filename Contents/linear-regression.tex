@@ -1,0 +1,61 @@
+% !TeX spellcheck = en_US
+\chapter{Linear Regression}
+
+\hlb{Problem statement:} Given data points $\textbf{x}_i \in \mathbb{R}^D$ and their labels $y_i \in \mathbb{R}$, find the "line" that fit these data points. The line is represented via parameters $\textbf{w}$. For each data point $\textbf{x}$ and its label $y$
+\begin{align*}
+	\textbf{w} &= [w_0, w_1, \dots, w_n]^T \\
+	\bar{\textbf{x}} &= [1, x_0, \dots, x_n] \;\;\;\;\; \text{(x bar)}\\
+	y &\approx \hat{y} = \bar{\textbf{x}} . \textbf{w} \;\;\;\;\;\;\;\;\;\;\;\;\; \text{(y hat)}\\
+	\Rightarrow \frac{1}{2}e^2 &= \frac{1}{2} \left(y - \bar{\textbf{x}}.\textbf{w}\right)^2
+\end{align*}
+The loss function for all points
+\begin{equation}
+	\mathcal{L}(\textbf{w}) = \frac{1}{2} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2
+\end{equation}
+We need to find the weights that minimize the loss function
+\begin{equation}
+	\textbf{w}^* = \underset{\textbf{w}}{\text{argmin}}\,\mathcal{L}(\textbf{w})
+\end{equation}
+We now can write the loss function using matrix form:
+\begin{equation}
+	\mathcal{L}(\textbf{w}) = \frac{1}{2} ||\textbf{y}-\overline{\textbf{X}}.\textbf{w}||^2_2
+\end{equation}
+with $\overline{\textbf{X}} = \begin{bmatrix}
+	\bar{\textbf{x}}_1 \\
+	\bar{\textbf{x}}_2 \\
+	\vdots \\
+	\bar{\textbf{x}}_n
+\end{bmatrix}$
+and $\textbf{y} = \begin{bmatrix}
+	y_1 \\
+	y_2 \\
+	\vdots \\
+	y_n	
+\end{bmatrix}$
+
+\hlb{Solution:}
+\begin{align}
+	&\frac{\partial\mathcal{L}(\textbf{w})}{\partial\textbf{w}} = \overline{\textbf{X}}^T\left(\overline{\textbf{X}}\textbf{w}-\textbf{y}\right) = 0 \\
+	\iff &\overline{\textbf{X}}^T\overline{\textbf{X}}\textbf{w} = \overline{\textbf{X}}^T\textbf{y} \\
+	\iff &\textbf{w} = \left(\overline{\textbf{X}}^T\overline{\textbf{X}}\right)^\dagger\overline{\textbf{X}}^T\textbf{y}
+\end{align}
+in which, $A^\dagger$ (A dagger) is the pseudo inverse of a matrix, because it's might not inverse-able. \hlre{A^\dagger = \left(A^TA\right)^{-1}A^T}
+
+\note Sensitive to outliers $\Rightarrow$ pre-processing
+
+Multi-variable:
+\begin{align*}
+	&\mathcal{L}(\textbf{w}) = \frac{1}{2N} ||\textbf{y}-\overline{\textbf{X}}.\textbf{w}||^2_2 \\
+	\Rightarrow &\nabla_\textbf{w}\mathcal{L}(\textbf{w}) = \frac{1}{N} \overline{\textbf{X}}^T(\overline{\textbf{X}}\textbf{w}-\textbf{y})
+\end{align*}
+Linear Discriminant Functions:
+\begin{align*}
+	y(\textbf{x}) &= \widetilde{\textbf{W}}^T\widetilde{\textbf{x}} \\
+	E(\textbf{w}) &= \frac{1}{2} \sum_{n=1}^{N} \sum_{k=1}^{K} \left(\textbf{w}_k^T\textbf{x}_n-t_{kn}\right)^2 \\
+	\widetilde{\textbf{W}} &= \left(\widetilde{\textbf{X}}^T\widetilde{\textbf{X}}\right)^{-1}\widetilde{\textbf{X}}^TT \\
+	&= \widetilde{\textbf{X}}^\dagger T
+\end{align*}
+Generalized Discriminant:
+\begin{equation}
+	y_k(x) = \sum_{j=1}^{M}w_{kj}\phi_j(x) + w_{k0} = \sum_{j=0}^M w_{kj}\phi_j(x), \;\;\phi_0(x) = 1
+\end{equation}
