@@ -1,0 +1,20 @@
+% !TeX spellcheck = en_US
+\chapter{Mathematics Backgrounds}
+\label{cha:math-cv}
+This chapter presents some mathematics backgrounds for later problems.
+
+\section{The Matrix Equation}
+\hlb{Problem:} Solve $Ax=0$
+\begin{itemize}
+	\item Applying \ac{SVD} for matrix $A$
+	\[ A = U.D.V^T = U. \begin{bmatrix}
+		d_{11} & \cdots & d_{1N}\\
+		\vdots & \ddots & \vdots\\
+		d_{N1} & \cdots & d_{NN}
+	\end{bmatrix} . \begin{bmatrix}
+		v_{11} & \cdots & v_{1N}\\
+		\vdots & \ddots & \vdots\\
+		v_{N1} & \cdots & v_{NN}
+	\end{bmatrix}^T	\]
+	\item Solution of $Ax=0$ is the null space vector of $A$, which corresponds to the smallest (last) singular vector of $A$: $ \left[ v_{1N}, \cdots, v_{NN} \right]^T$.
+\end{itemize}

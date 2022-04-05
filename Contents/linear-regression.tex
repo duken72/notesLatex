@@ -1,6 +1,8 @@
 % !TeX spellcheck = en_US
 \chapter{Linear Regression}
 
+This is the simplest regression problem in \ac{ML}.
+
 \hlb{Problem statement:} Given data points $\textbf{x}_i \in \mathbb{R}^D$ and their labels $y_i \in \mathbb{R}$, find the "line" that fit these data points. The line is represented via parameters $\textbf{w}$. For each data point $\textbf{x}$ and its label $y$
 \begin{align*}
 	\textbf{w} &= [w_0, w_1, \dots, w_n]^T \\
@@ -11,6 +13,10 @@
 The loss function for all points
 \begin{equation}
 	\mathcal{L}(\textbf{w}) = \frac{1}{2} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2
+\end{equation}
+The average loss:
+\begin{equation}
+	\mathcal{L}(\textbf{w}) = \frac{1}{2N} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2
 \end{equation}
 We need to find the weights that minimize the loss function
 \begin{equation}
