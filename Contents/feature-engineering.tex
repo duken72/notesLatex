@@ -1,0 +1,52 @@
+% !TeX spellcheck = en_US
+\chapter{Feature Engineering}
+\label{cha:feature-engineering}
+\todo{Add explanation}\\
+Dimensionality Reduction is an important technique in \ac{ML}. Actual feature vectors can be in great  dimension, in great number. Thus, filtering is crucial for storage, calculation. Dimension reduction is necessary and also useful in data compression.
+
+\todo{}
+\section{Principle Component Analysis}
+\ac{PCA} is a method for Feature Extraction
+
+\hlb{Learning Resources:}
+\begin{itemize}
+	\item \href{https://setosa.io/ev/principal-component-analysis/}{setosa.io}: for Visualization
+\end{itemize}
+
+\section{Linear Discriminant Analysis}
+
+\ac{LDA}
+
+\href{https://sebastianraschka.com/Articles/2014_python_lda.html}{blog}
+
+\section{Word Representation}
+The idea of represent a word as a vector, but not as one-hot coding. With this representation
+\begin{itemize}
+	\item similar words have similar vector values
+	\item similar word's relationships have similar vector values
+\end{itemize}
+
+\subsection{The trigram (n-gram method)}
+\begin{itemize}
+	\item Hugh amount of n-tuples of words $\Rightarrow$ predict relative \ac{prob}
+	\item Problems: scalability, observability
+\end{itemize}
+
+\subsection{Word Embedding}
+\begin{equation}
+	\textbf{x}_{V \times 1} \longrightarrow \textbf{W}_{V \times d} \longleftrightarrow \textbf{h}_{D \times 1}
+\end{equation}
+1 of K encoding
+
+\subsection{word2vec}
+\begin{itemize}
+	\item CBOW: \hlr{syntactic (grammar)}\\
+	Only care which word occurs\\
+	Don't care about order of occurrence
+	\item SKIP Gram \hlr{semantic (meaning)}\\
+	less weight to more distance word
+\end{itemize}
+\todo{Add image}
+
+\subsection{Hierarchical Softmax}
+Organizing words in binary search tree

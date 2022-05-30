@@ -1,0 +1,265 @@
+% !TeX spellcheck = en_US
+\chapter{Optimal Control}
+\label{sec:optimal-control}
+Prior approaches are all model-free algorithms. They either assume the dynamics model is unknown or don't even attempt to learn it. On the other hands, there are times that we either do know the dynamics transition or can learn it. \hlr{Knowing the dynamics model actually does make thing easier.} These section is about what we do, how to plan through the action sequence to maximize the reward, \hlr{IF we \underline{already know} the model.}
+
+\begin{itemize}
+	\item Deterministic case vs Stochastic:
+	\begin{align}
+		&\textbf{a}_1, \dots, \textbf{a}_T 	= \underset{\textbf{a}_1, \dots, \textbf{a}_T}{\arg\max} \sum_{t=1}^T r(\textbf{s}_t, \textbf{a}_t) \quad \text{\ac{st} } \textbf{s}_{t+1} = f(\textbf{s}_t, \textbf{a}_t) \quad \text{(Deterministic case)}\\
+		&\textbf{a}_1, \dots, \textbf{a}_T = \underset{\textbf{a}_1, \dots, \textbf{a}_T}{\arg\max}\; \mathbb{E} \left[ \sum_t r(\textbf{s}_t, \textbf{a}_t) | \textbf{a}_1, \dots, \textbf{a}_T \right] \quad \text{(Stochastic case)}\\
+		&p_\theta(\textbf{s}_1, \dots, \textbf{s}_T | \textbf{a}_1, \dots, \textbf{a}_T) = p(\textbf{s}_1) \prod_{t=1}^T p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t) \quad \text{(stochastic dynamics)}
+	\end{align}
+	\item Open-loop case vs Closed-loop:\\
+	Open-loop case: we are only given $\textbf{s}_1$ and have to plan through the whole sequence of actions $\textbf{a}_1, \dots, \textbf{a}_T$. In deterministic case, it's still possible to come up with a good action plan. But for stochastic case, the randomness would probably drive us to a bad result. Closed-loop case: we plan once action $\textbf{a}_t$ at a time and observe the state transition $\textbf{s}_{t+1}$
+\end{itemize}
+
+\section{Open-Loop Planning}
+Maximize objective through sequence of actions:
+\begin{equation}
+	\textbf{a}_1, \dots, \textbf{a}_T = \underset{\textbf{a}_1, \dots, \textbf{a}_T}{\arg\max} J(\textbf{a}_1, \dots, \textbf{a}_T) \quad\Rightarrow\quad \textbf{A} = \underset{\textbf{A}}{\arg\max} J(\textbf{A})
+\end{equation}
+
+Some stochastic optimization:
+\begin{itemize}
+	\item Guess and Check (\hlb{Random Shooting Method})
+	\begin{enumerate}
+		\item Pick $\textbf{A}_1, \dots, \textbf{A}_N$ from some distribution (\eg, uniform)
+		\item Choose $\textbf{A}_i$ based on $\underset{i}{\arg\max}J(\textbf{\textbf{A}}_i)$
+	\end{enumerate}
+	\item \ac{CEM}
+	\begin{enumerate}
+		\item \tikzmark{cem1}Sample $\textbf{A}_1, \dots, \textbf{A}_N$ from $p(\textbf{A})$
+		\item Evaluate $J(\textbf{A}_1), \dots, J(\textbf{A}_N)$
+		\item Pick $M$ \textit{elites} $\textbf{A}_{i_1}, \dots, \textbf{A}_{i_M}$ with highest values $M<N$ (usually $10\%$)
+		\item \tikzmark{cem4}Refit $p(\textbf{A})$ to the elites $\textbf{A}_{i_1}, \dots, \textbf{A}_{i_M}$
+		\begin{tikzpicture}[overlay,remember picture]
+			\draw[very thick, -latex]
+			([xshift=-7mm,yshift=1mm]pic cs:cem4) --++ (-.5,0) |-
+			([xshift=-7mm,yshift=1mm]pic cs:cem1);
+		\end{tikzpicture}
+	\end{enumerate}
+	\note Check out CMA-ES (\ac{CEM} with momentum)
+\end{itemize}
+The two above approaches are:
+\[\begin{matrix*}[l]
+	\color{Green}+ \text{very fast if parallelized}\\
+	\color{Green}+ \text{extremely simple}\\
+	\color{red}- \text{very harsh dimensionality limit}\\
+	\color{red}- \text{only open-loop planning}
+\end{matrix*}\]
+
+\begin{itemize}
+	\item Discrete case: \ac{MCTS} \cite{browne2012survey}
+	\begin{enumerate}
+		\item \tikzmark{mcts1}Find a leaf $s_l$ using $TreePolicy(s_1)$
+		\item Evaluate the leaf using $DefaultPolicy(s_l)$
+		\item \tikzmark{mcts3}Update all values in tree between $s_1$ and $s_l$, take the best action from $s_1$.
+		\begin{tikzpicture}[overlay,remember picture]
+			\draw[very thick, -latex]
+			([xshift=-7mm,yshift=1mm]pic cs:mcts3) --++ (-.5,0) |-
+			([xshift=-7mm,yshift=1mm]pic cs:mcts1);
+		\end{tikzpicture}
+		
+		UCT Tree Policy($s_t$): if $s_t$ is not fully expanded, choose new $a_t$, else choose child with the highest Score($s_{t+1}$)
+		\[\displaystyle Score(s_t) = \frac{Q(s_t)}{N(s_t)} + 2C\sqrt{\frac{2\ln N (s_{t-1})}{N(s_t)}}\]
+		With $Q(s_t)$ as the reward, $N(s_t)$ as the \ac{no} times the leaf is visited.
+	\end{enumerate}
+\end{itemize}
+
+\section{Trajectory Optimization with Derivatives}
+\label{sec:lqr}
+Derivatives are hard to come by, but SOMETIMES you \textbf{CAN}, through Physics equation.
+\begin{align}
+	&\underset{\textbf{u}_1, \dots, \textbf{u}_T}{\min}\; \sum_{t=1}^T c(\textbf{x}_t, \textbf{u}_t) \qquad \text{\ac{st} } \textbf{\textbf{x}}_t = f(\textbf{\textbf{x}}_{t-1}, \textbf{\textbf{u}}_{t-1})\\
+	= &\underset{\textbf{u}_1, \dots, \textbf{u}_T}{\min}\; c(\textbf{x}_1, \textbf{u}_1) + c(f(\textbf{x}_1, ,\textbf{u}_1), \textbf{u}_2) + \dots + c(f(f(\dots)\dots), \textbf{u}_T)
+\end{align}
+
+\note Shooting methods \ac{vs} collocation:
+\begin{itemize}
+	\item Shooting methods: optimize over actions only
+	\[\underset{\textbf{u}_1, \dots, \textbf{u}_T}{\min}\; c(\textbf{x}_1, \textbf{u}_1) + c(f(\textbf{x}_1, ,\textbf{u}_1), \textbf{u}_2) + \dots + c(f(f(\dots)\dots), \textbf{u}_T)\]
+	tends to be very sensitive with early actions and leads to numerical instability.
+	\item Collocation: optimize over actions and states, with constraints
+	\[\underset{\textbf{u}_1, \dots, \textbf{u}_T, \textbf{x}_1, \dots, \textbf{x}_T}{\min}\; \sum_{t=1}^T c(\textbf{x}_t, \textbf{u}_t) \qquad \text{\ac{st} } \textbf{\textbf{x}}_t = f(\textbf{\textbf{x}}_{t-1}, \textbf{\textbf{u}}_{t-1})\]
+\end{itemize}
+
+\hlb{Linear case: \ac{LQR}}: $f(\cdot)$ has special structure.
+\begin{align}
+	f(\textbf{x}_t, \textbf{u}_t) &= \textbf{F}_t \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix} + \textbf{f}_t && \text{\hlr{\dunderline{linear} dynamics}}\\
+	c(\textbf{x}_t, \textbf{u}_t) &= \frac{1}{2} \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix}^T \textbf{C}_t \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix} + \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix}^T \textbf{c}_t && \text{\hlr{\dunderline{quadratic} cost}}\\
+	\textbf{C}_T &= \begin{bmatrix}
+		\textbf{C}_{\textbf{x}_T, \textbf{x}_T} & \textbf{C}_{\textbf{x}_T, \textbf{u}_T}\\
+		\textbf{C}_{\textbf{u}_T, \textbf{x}_T} & \textbf{C}_{\textbf{u}_T, \textbf{u}_T}
+	\end{bmatrix}; \quad \textbf{c}_T = \begin{bmatrix}
+		c_{\textbf{x}_T}\\
+		c_{\textbf{u}_T}
+	\end{bmatrix}
+\end{align}
+\note \ac{LQR} and its extensions are also an open-loop plannings.
+
+Solve for $\textbf{u}_T$ only:
+\begin{align}
+	&Q(\textbf{x}_T, \textbf{u}_T) = const + \frac{1}{2} \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix}^T \textbf{C}_T \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix} + \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix}^T \textbf{c}_T \label{eq:lqr-1}\\
+	&\text{Set } \nabla_{\textbf{u}_T} Q(\textbf{x}_T, \textbf{u}_T) = \textbf{C}_{\textbf{u}_T, \textbf{x}_T} \textbf{x}_T + \textbf{C}_{\textbf{u}_T, \textbf{u}_T} \textbf{u}_T + \textbf{c}_{\textbf{u}_T}^T = 0\\
+	\Rightarrow\quad &\textbf{u}_T = - \textbf{C}^{-1}_{\textbf{u}_T, \textbf{u}_T} (\textbf{C}_{\textbf{u}_T, \textbf{x}_T}.\textbf{x}_T + \textbf{c}_{\textbf{u}_T}) = \textbf{K}_T \textbf{x}_T + \textbf{k}_T \label{eq:lqr-2}\\
+	&\textbf{K}_T = - \textbf{C}^{-1}_{\textbf{u}_T, \textbf{u}_T} \textbf{C}_{\textbf{u}_T, \textbf{x}_T}\\
+	&\textbf{k}_T = - \textbf{C}^{-1}_{\textbf{u}_T, \textbf{u}_T} \textbf{c}_{\textbf{u}_T}\\
+\end{align}
+
+Replace \eqref{eq:lqr-2} into \eqref{eq:lqr-1}:
+\begin{align}
+	\Rightarrow\quad V(\textbf{x}_T) &= const + \frac{1}{2} \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{K}_T \textbf{x}_T + \textbf{k}_T
+	\end{bmatrix}^T \textbf{C}_T \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{K}_T \textbf{x}_T + \textbf{k}_T
+	\end{bmatrix} + \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{K}_T \textbf{x}_T + \textbf{k}_T
+	\end{bmatrix}^T \textbf{c}_T\\
+	&= const + \frac{1}{2} \textbf{x}_T^T \textbf{V}_T \textbf{x}_T + \textbf{x}_T^T \textbf{v}_T
+\end{align}
+
+\hlr{Minimize objective on last action $u_T$, based on $x_T$}\\	
+\hlr{$u_{T-1}$ affects objectives through linear dynamics \ac{func} to $x_T$}\\
+
+Backward recursion:
+\begin{align}
+	\tikzmark{lqr-br1}\text{for } & t = T \rightarrow 1:\\
+	& \textbf{Q}_t = \textbf{C}_t + \textbf{F}_t^T \textbf{V}_{t+1} \textbf{F}_t\\
+	& \textbf{q}_t = \textbf{c}_t + \textbf{F}_t^T \textbf{V}_{t+1} \textbf{f}_t + \textbf{F}_t^T \textbf{v}_{t+1}\\
+	& Q(\textbf{x}_t, \textbf{u}_t) = const + \frac{1}{2} \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix}^T \textbf{Q}_t \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix} + \begin{bmatrix}
+		\textbf{x}_t\\
+		\textbf{u}_t
+	\end{bmatrix}^T \textbf{q}_t\\
+	& \textbf{u}_t \leftarrow \underset{u_t}{\arg\min} Q(\textbf{x}_t, \textbf{u}_t) = \textbf{K}_t \textbf{x}_t + \textbf{k}_t\\
+	& \textbf{K}_t = -\textbf{Q}_{\textbf{u}_t, \textbf{u}_t}^{-1} \textbf{Q}_{\textbf{u}_t, \textbf{x}_t}\\
+	& \textbf{k}_t = -\textbf{Q}_{\textbf{u}_t, \textbf{u}_t}^{-1} \textbf{q}_{\textbf{u}_t}\\
+	& \textbf{V}_t = \textbf{Q}_{\textbf{x}_t, \textbf{x}_t} + \textbf{Q}_{\textbf{x}_t, \textbf{u}_t} \textbf{K}_t + \textbf{K}_t^T \textbf{Q}_{\textbf{u}_t, \textbf{x}_t} + \textbf{K}_t^T \textbf{Q}_{\textbf{u}_t, \textbf{u}_t} \textbf{K}_t\\
+	& \textbf{v}_t = \textbf{q}_{\textbf{x}_t} + \textbf{Q}_{\textbf{x}_t, \textbf{u}_t} \textbf{k}_t + \textbf{K}_t^T \textbf{q}_{u_t} + \textbf{K}_t^T \textbf{Q}_{\textbf{u}_t, \textbf{u}_t} \textbf{k}_t\\
+	& \tikzmark{lqr-br2}V(\textbf{x}_t) = const + \frac{1}{2} \textbf{x}_t^T \textbf{V}_t \textbf{x}_t + \textbf{x}_t^T \textbf{v}_t
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-2mm,yshift=1mm]pic cs:lqr-br2) --++ (-1,0) |-
+		([xshift=-2mm,yshift=1mm]pic cs:lqr-br1);
+	\end{tikzpicture}
+\end{align}
+
+Forward recursion:
+\begin{align}
+	\tikzmark{lqr-fr1}\text{for } & t = 1 \rightarrow T:\\
+	& \textbf{u}_t = \textbf{K}_t \textbf{x}_t + \textbf{k}_t\\
+	&\tikzmark{lqr-fr2} \textbf{x}_{t+1} = f(\textbf{x}_t, \textbf{u}_t)
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-2mm,yshift=1mm]pic cs:lqr-fr2) --++ (-1,0) |-
+		([xshift=-2mm,yshift=1mm]pic cs:lqr-fr1);
+	\end{tikzpicture}
+\end{align}
+
+\hlb{\ac{LQR} for Stochastic and Non-Linear Systems}
+\begin{itemize}
+	\item Stochastic dynamics:
+	\begin{align}
+		& \textbf{x}_{t+1} \sim p(\textbf{x}_{t+1} | \textbf{x}_t, \textbf{u}_t)\\
+		& p(\textbf{x}_{t+1} | \textbf{x}_t, \textbf{u}_t) = \mathcal{N} \left( \textbf{F}_t \begin{bmatrix}
+			\textbf{x}_t\\
+			\textbf{u}_t
+		\end{bmatrix} + \textbf{f}_t, \Sigma_t \right)
+	\end{align}
+	Solution: choose actions according to $\textbf{u}_t = \textbf{K}_t \textbf{x}_t + \textbf{k}_t$
+	\item Non-linear case: \ac{DDP} or \ac{iLQR}
+\end{itemize}
+
+At every iteration: we \hlb{linearize local nonlinear dynamic} (with Taylor expansion) as a linear-quadratic system
+\begin{align}
+	&f(\textbf{x}_t, \textbf{u}_t) \approx f(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t) + \nabla_{\textbf{x}_t, \textbf{u}_t} f(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t) \begin{bmatrix}
+		\textbf{x}_t - \widehat{\textbf{x}}_t\\
+		\textbf{u}_t - \widehat{\textbf{u}}_t
+	\end{bmatrix}\\
+	&c(\textbf{x}_t, \textbf{u}_t) \approx c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t) + \nabla_{\textbf{x}_t, \textbf{u}_t} c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t) \begin{bmatrix}
+		\textbf{x}_t - \widehat{\textbf{x}}_t\\
+		\textbf{u}_t - \widehat{\textbf{u}}_t
+	\end{bmatrix} + \frac{1}{2} \begin{bmatrix}
+		\textbf{x}_t - \widehat{\textbf{x}}_t\\
+		\textbf{u}_t - \widehat{\textbf{u}}_t
+	\end{bmatrix}^T \nabla_{\textbf{x}_t, \textbf{u}_t}^2 c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t) \begin{bmatrix}
+		\textbf{x}_t - \widehat{\textbf{x}}_t\\
+		\textbf{u}_t - \widehat{\textbf{u}}_t
+	\end{bmatrix}
+\end{align}
+We can run \ac{LQR} with dynamics $\bar{f}$, cost $\bar{c}$, state $\delta\textbf{x}_t$ and action $\delta\textbf{u}_t$:
+\begin{align}
+	& \delta \textbf{x}_t = \textbf{x}_t - \widehat{\textbf{x}}_t\\
+	& \delta \textbf{u}_t = \textbf{u}_t - \widehat{\textbf{u}}_t\\
+	& \bar{f} (\delta\textbf{x}_t, \delta\textbf{u}_t) = \textbf{F}_t \begin{bmatrix}
+		\delta\textbf{x}_t\\
+		\delta\textbf{u}_t
+	\end{bmatrix} &&\text{with}\quad \textbf{F}_t = \nabla_{\textbf{x}_t, \textbf{u}_t} f(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t)\\
+	& \bar{c} (\delta\textbf{x}_t, \delta\textbf{u}_t) = \frac{1}{2} \begin{bmatrix}
+		\delta\textbf{x}_t\\
+		\delta\textbf{u}_t
+	\end{bmatrix}^T \textbf{C}_t \begin{bmatrix}
+		\delta\textbf{x}_t\\
+		\delta\textbf{u}_t
+	\end{bmatrix} + \begin{bmatrix}
+		\delta\textbf{x}_t\\
+		\delta\textbf{u}_t
+	\end{bmatrix}^T \textbf{c}_t && \text{with}\quad \begin{matrix*}[l]
+		\textbf{C}_t = \nabla_{\textbf{x}_t, \textbf{u}_t}^2 c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t)\\
+		\textbf{c}_t = \nabla_{\textbf{x}_t, \textbf{u}_t} c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t)
+	\end{matrix*}
+\end{align}
+
+$\Rightarrow$ \ac{iLQR} (simplified pseudo code):
+\begin{align}
+	\tikzmark{ilqr1}\text{until}& \text{ convergence:}\\
+	& \textbf{F}_t = \nabla_{\textbf{x}_t, \textbf{u}_t} f(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t)\\
+	& \textbf{C}_t = \nabla_{\textbf{x}_t, \textbf{u}_t}^2 c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t)\\
+	& \textbf{c}_t = \nabla_{\textbf{x}_t, \textbf{u}_t} c(\widehat{\textbf{x}}_t, \widehat{\textbf{u}}_t)\\
+	& \text{Run \ac{LQR} backward pass on state } \delta\textbf{x}_t \text{ and action } \delta\textbf{u}_t\\
+	& \text{Run forward pass with } \textbf{u}_t = \textbf{K}_t (\textbf{x}_t - \widehat{\textbf{x}}_t) + {\color{red} \alpha} \textbf{k}_t + \widehat{\textbf{u}}_t\\
+	& \tikzmark{ilqr2}\text{Update $\widehat{\textbf{x}}_t$ and $\widehat{\textbf{u}}_t$ based on states and actions in forward pass}
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-2mm,yshift=1mm]pic cs:ilqr2) --++ (-1.4,0) |-
+		([xshift=-2mm,yshift=1mm]pic cs:ilqr1);
+	\end{tikzpicture}
+\end{align}
+\note For practical improvement, use $\alpha \in[0,1]$. When running the forward pass, we should run over different $\alpha$ until we find something good.
+
+\section{References}
+\begin{itemize}
+	\item \citeaus{jacobson1970differential}. Differential dynamic programming.
+	\item \citeaus{tassa2012iros}. Synthesis and stabilization of complex behaviors through online trajectory optimization.
+	\item \citeaus{levine2014learning}. Learning neural network policies with guided policy search under unknown dynamics.
+\end{itemize}

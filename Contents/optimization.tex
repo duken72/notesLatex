@@ -1,0 +1,92 @@
+% !TeX spellcheck = en_US
+\chapter{Optimization}
+
+\hlb{Problem:}
+\begin{align}
+	&\textbf{x}^* = \underset{\textbf{x}}{\arg\min} f_0(\textbf{x}) \qquad \text{subject to } \begin{cases}
+		f_i(\textbf{x}) \leq 0, i=1, 2, \dots, m \quad \text{(inequality constraints)}\\
+		h_j(\textbf{x}) = 0, j=1, 2, \dots, p \quad \text{(equality constraints)}
+	\end{cases}\\
+	&\text{feasible set } \mathcal{D} = \bigcap^m_{i=0}\text{dom}f_i \cap \bigcap^p_{j=0}\text{dom}h_j \Rightarrow {\color{red} \text{set of all \textbf{x} satisfying all constraints}}
+\end{align}
+
+\section{Convex Optimization Problem}
+\hlb{Problem:}
+\begin{align}
+	\textbf{x}^* &= \underset{\textbf{x}}{\arg\min} f_0(\textbf{x}) \\
+	\text{subject to } &\begin{cases}
+		f_i(\textbf{x}) \leq 0, i=1, 2, \dots, m \quad \text{(inequality constraints)}\\
+		\textbf{a}^T_j \textbf{x} -b_j = 0, j=1, 2, \dots, p \quad \text{(equality constraints)}\\
+		f_0 \text{ is convex \ac{func}}\\
+		f_i \text{ is convex \ac{func}}\\
+		h_j \text{ is affine \ac{func}}
+	\end{cases}\\
+	\Rightarrow &\begin{cases}
+		f_i(x) \leq 0 \Rightarrow 0\text{-sublevel set of }f_i\\
+		h_j(x) = 0, \quad \forall x \Rightarrow \text{hyperplane}
+	\end{cases}
+\end{align}
+\hlr{$\Rightarrow$ we optimize a convex function in a convex set domain.}
+
+\section{Linear Programming}
+(Vietnamese: Quy hoach tuyen tinh)\\
+\hlb{Problem:}
+\begin{equation}
+	\textbf{x}^* = \underset{\textbf{x}}{\arg\min} \textbf{c}^T \textbf{x} +d \qquad \text{subject to } \begin{cases}
+		\textbf{Gx} \leq \textbf{h}\\
+		\textbf{Ax} = \textbf{b}
+	\end{cases}
+\end{equation}
+
+A standard form of \ac{LP}:
+\begin{equation}
+	\textbf{x}^* = \underset{\textbf{x}}{\arg\min} \textbf{c}^T \textbf{x} \qquad \text{subject to } \begin{cases}
+		\textbf{Ax} = \textbf{b}\\
+		\textbf{x} \leq \textbf{0}		
+	\end{cases}
+\end{equation}
+
+Python: {\color{red} \boxed{\texttt{cvxopt.solvers.lp}}}
+
+\section{Quadratic Programming}
+\hlb{Problem:}
+\begin{equation}
+	\textbf{x}^* = \underset{\textbf{x}}{\arg\min} \frac{1}{2} \textbf{x}^T\textbf{Px} + \textbf{q}^T\textbf{x} + r \qquad \text{subject to } \begin{cases}
+		\textbf{Gx} \leq \textbf{h}\\
+		\textbf{Ax} = \textbf{b}\\
+		P \succeq 0 \quad (P\text{ is semi-definite})
+	\end{cases}
+\end{equation}
+
+\note When $P=0$, \ac{QP} is \ac{LP}
+
+Python: {\color{red} \boxed{\texttt{cvxopt.solvers.qp}}}
+
+\section{Geometric Programming}
+\begin{itemize}
+	\item Function $f: \mathbb{R}^n\rightarrow\mathbb{R}$ with dom$f =\mathbb{R}^n_{++}$ (all element $>0$) is a \hlb{monomial function} if:
+	\begin{equation}
+		f(x) = c\ x_1^{a_1}\ x_2^{a_2}\dots x_n^{a_n}, \qquad c>0, \quad a_i \in \mathbb{R}
+	\end{equation}
+	\item Function $f$ is a \hlb{posynomial function} if:
+	\begin{equation}
+		f(x) = \sum_{k=1}^{K} c_k\ x_1^{a_{1_k}}\ x_2^{a_{2_k}}\dots x_n^{a_{n_k}}, \qquad c_k>0
+	\end{equation}
+\end{itemize}
+
+\hlb{Problem:}
+\begin{equation}
+	\textbf{x}^* = \underset{\textbf{x}}{\arg\min} f_0(\textbf{x}) \qquad \text{subject to } \begin{cases}
+		f_i(\textbf{x}) \leq 1, \quad i=1,2\dots m\\
+		h_j(\textbf{x}) = 1, \quad j=1,2\dots p\\
+		f_0, f_i \text{ are posynomial \ac{func}}\\
+		h_j \text{ are monomial \ac{func}}\\
+	\end{cases}
+\end{equation}
+$\Rightarrow$ geometric programming ($x>0$ is hidden)\\
+Set: \qquad $\begin{cases}
+	x_i = e^{y_i}\\
+	y_i = \log(x_i)
+\end{cases} \Rightarrow f_0(\textbf{x}) = \exp(\textbf{a}^T \textbf{y} + b)$
+
+Python: {\color{red} \boxed{\texttt{cvxopt.solvers.gp}}}

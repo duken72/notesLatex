@@ -4,19 +4,32 @@
 
 A machine learning algorithm is an algorithm that has the ability to \textit{learn} from the data. A computer program is said to \textbf{learn}, if its performance at tasks in $T$, measured by $P$, improves with experience $E$ (in which the experience is equivalent to the data). \cite{goodfellow2016deep}
 
-\section{Task $T$}
+\section{Tasks}
 A \textit{task} is usually described by how the \ac{ML} model process a single \textit{data point}. This section presents some common \ac{ML} tasks. \cite{vu2018mlcb}
 
 \subsection{Classification}
-The task is to specify a label for the given data point. The labels are usually members of a list.
-
-\Eg, in the problem of digit classification, the data point is images of hand-written numbers. The data set comes with their labels as well. The task is then, given a unseen image, the model would be able to tell which number is in that image. In this problem, there are 10 possible labels, \ie, $0, 1, \dots, 9$.
+The task is to specify a label for the given data point. The labels are usually members of a list. \Eg:
+\begin{itemize}
+	\item Hand-written digit classification
+	\begin{itemize}
+		\item The data point: images of hand-written numbers with their labels
+		\item The task: tell which number is in a unseen image
+		\item Labels: there are 10 possible labels, \ie, $\{0, 1, \dots, 9\}$.
+	\end{itemize}
+	\item Hand-written letter classification
+	\begin{itemize}
+		\item The data point: images of hand-written letters with their labels
+		\item The task: tell which letter is in a unseen image
+		\item Labels: there are 26 (or more) possible labels, \ie, $\{a, b, \dots, z\}$.
+	\end{itemize}
+\end{itemize}
 
 \subsection{Regression}
 If the desired output is a real value, instead of a label in a list, then it's a regression problem. \Eg:
 \begin{itemize}
-	\item with an image as the input data, the model predicts the age of the person
-	\item given a feature vector, the model generates an image
+	\item Input data: a person image $\longrightarrow$ Output: predicts the age of the person
+	\item Input data: a feature vector $\longrightarrow$ Output: generates an image
+	\item Input data: dimension of a block of gold $\longrightarrow$ Output: the price of it
 \end{itemize}
 
 \subsection{Clustering}
@@ -25,7 +38,7 @@ This is the task of grouping relevant data points based on some relationship bet
 \Eg, find the pattern in customer shopping behaviors.
 
 \subsection{Others}
-Some worth-mentioning tasks:
+Other worth-mentioning tasks:
 \begin{itemize}
 	\item Recommendation System
 	\item Machine Translation
@@ -35,17 +48,19 @@ Some worth-mentioning tasks:
 	\item Denoising
 \end{itemize}
 
-\section{Performance $P$}
-Usually, the dataset is divided into \textit{training set} and \textit{test set}. The model uses the training set to tune \ update the model \ac{param} and the test set to examine the performance.
+\section{Performance}
+Usually, the dataset is divided into \textit{training set} and \textit{test set}. The model uses the training set to tune/update the model \ac{param}, and the test set to examine the performance.
 
-\textit{Online training} is the approach when new data will continuously arise and introduce for the model to learn. \Eg in \ac{RL}. \textit{Offline training} is the opposite, the model learns from the a fixed training set.
+\textit{Online training} is the approach when new data will continuously arise and introduce for the model to learn. \Eg in \ac{RL}. \textit{Offline training} is the opposite case where the model learns from the a fixed training set.
 
-\section{Experience $E$}
+\section{Experience Types}
 \subsection{Supervised Learning}
-Supervised Learning is the approach that predict the outputs of new data points based on pairs of known inputs and outputs. This is the most common type of \ac{ML} \ac{algor}.
+\hlb{Data with labels}: Supervised Learning is the approach that predict the outputs of new data points based on pairs of known inputs and outputs. This is the most common type of \ac{ML} \ac{algor}.
 \subsection{Unsupervised Learning}
-On the opposite, with unsupervised Learning, there is no known output, just inputs. Unsupervised Learning \ac{algor} will carry on some tasks based on the characteristics of the dataset, \eg clustering, dimension reduction.
+\hlb{Data without labels}: On the opposite, with unsupervised Learning, there isn't known output, just inputs. Unsupervised Learning \ac{algor} will carry on some tasks which base on the characteristics of the dataset, \eg clustering, dimension reduction.
+\subsection{Semi-supervised Learning}
+\hlb{Some data with, some without labels}
 
 \section{Model Parameters and Loss Function}
 \label{sec:model-param-loss}
-Each \ac{ML} model is described by a set of model \ac{param}. \Eg, in the problem of finding a line passing through points in the 2D plane, the model \ac{param} are $a, b$ in the line equation $y=ax+b$. The of training aim is to find the model \ac{param} that leads to the best performance. For classification problems, it means having the least number of incorrect classified data points. For regression problems, it means having the smallest difference with the actual output. It is then equivalent to having a optimization problem, in which we try to minimize a loss/cost function.
+Each \ac{ML} model is described by a set of model \ac{param}. \Eg, in the problem of finding a line passing through points in the 2D plane, the model \ac{param} are $a, b$ in the line equation $y=ax+b$. The of training aim is to find the model \ac{param} which leads to the best performance or the minimum loss. For classification problems, it can be having the least number of incorrect classified data points. For regression problems, it can be having the smallest difference with the actual output. It is then equivalent to having an optimization problem, in which we try to minimize that loss/cost function.

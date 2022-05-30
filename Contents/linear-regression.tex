@@ -1,31 +1,24 @@
 % !TeX spellcheck = en_US
-\chapter{Linear Regression}
+\chapter{Basic ML Problems}
 
+\section{Linear Regression}
 This is the simplest regression problem in \ac{ML}.
 
-\hlb{Problem statement:} Given data points $\textbf{x}_i \in \mathbb{R}^D$ and their labels $y_i \in \mathbb{R}$, find the "line" that fit these data points. The line is represented via parameters $\textbf{w}$. For each data point $\textbf{x}$ and its label $y$
+\hlb{Problem statement:} Given data points $\textbf{x}_i \in \mathbb{R}^D$ and their labels $y_i \in \mathbb{R}$, find the \textit{line} that fits these data points. The line is represented via parameters $\textbf{w} = [w_0, w_1, \dots, w_n]^T$. For each data point $\textbf{x}$ and its label $y$.
+
+\hlb{Approach:}
 \begin{align*}
-	\textbf{w} &= [w_0, w_1, \dots, w_n]^T \\
-	\bar{\textbf{x}} &= [1, x_0, \dots, x_n] \;\;\;\;\; \text{(x bar)}\\
-	y &\approx \hat{y} = \bar{\textbf{x}} . \textbf{w} \;\;\;\;\;\;\;\;\;\;\;\;\; \text{(y hat)}\\
-	\Rightarrow \frac{1}{2}e^2 &= \frac{1}{2} \left(y - \bar{\textbf{x}}.\textbf{w}\right)^2
+	\bar{\textbf{x}} &= [1, x_0, \dots, x_n] && \text{(x bar - extended variable)}\\
+	y \approx \hat{y} &= \bar{\textbf{x}} . \textbf{w} && \text{(y hat - predicted label)}\\
+	\Rightarrow \frac{1}{2}e^2 &= \frac{1}{2} \left(y - \bar{\textbf{x}}.\textbf{w}\right)^2 && \text{(the squared error between true and predicted labels)}
 \end{align*}
-The loss function for all points
-\begin{equation}
-	\mathcal{L}(\textbf{w}) = \frac{1}{2} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2
-\end{equation}
-The average loss:
-\begin{equation}
-	\mathcal{L}(\textbf{w}) = \frac{1}{2N} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2
-\end{equation}
-We need to find the weights that minimize the loss function
-\begin{equation}
-	\textbf{w}^* = \underset{\textbf{w}}{\text{argmin}}\,\mathcal{L}(\textbf{w})
-\end{equation}
-We now can write the loss function using matrix form:
-\begin{equation}
-	\mathcal{L}(\textbf{w}) = \frac{1}{2} ||\textbf{y}-\overline{\textbf{X}}.\textbf{w}||^2_2
-\end{equation}
+\begin{align}
+	\mathcal{L}(\textbf{w}) &= \frac{1}{2} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2 && \text{(the loss function for all points)} \\
+	\mathcal{L}(\textbf{w}) &= \frac{1}{2N} \sum_{i=1}^{N} \left(y_i - \bar{\textbf{x}}_i.\textbf{w}\right) ^2 && \text{(the average loss)} \\
+	\textbf{w}^* &= \underset{\textbf{w}}{\text{argmin}}\,\mathcal{L}(\textbf{w}) && \text{(the weights that minimize the loss function)} \\
+	\mathcal{L}(\textbf{w}) &= \frac{1}{2} ||\textbf{y}-\overline{\textbf{X}}.\textbf{w}||^2_2 && \text{(using matrix form)}
+\end{align}
+
 with $\overline{\textbf{X}} = \begin{bmatrix}
 	\bar{\textbf{x}}_1 \\
 	\bar{\textbf{x}}_2 \\
@@ -41,27 +34,67 @@ and $\textbf{y} = \begin{bmatrix}
 
 \hlb{Solution:}
 \begin{align}
-	&\frac{\partial\mathcal{L}(\textbf{w})}{\partial\textbf{w}} = \overline{\textbf{X}}^T\left(\overline{\textbf{X}}\textbf{w}-\textbf{y}\right) = 0 \\
-	\iff &\overline{\textbf{X}}^T\overline{\textbf{X}}\textbf{w} = \overline{\textbf{X}}^T\textbf{y} \\
-	\iff &\textbf{w} = \left(\overline{\textbf{X}}^T\overline{\textbf{X}}\right)^\dagger\overline{\textbf{X}}^T\textbf{y}
+	&\frac{\partial\mathcal{L}(\textbf{w}^*)}{\partial\textbf{w}} = \overline{\textbf{X}}^T \left( \overline{\textbf{X}} \textbf{w}^* - \textbf{y} \right) = 0 \\
+	\Leftrightarrow \; &\overline{\textbf{X}}^T\overline{\textbf{X}}\textbf{w}^* = \overline{\textbf{X}}^T \textbf{y} \\
+	\Leftrightarrow \; &\textbf{w}^* = \left( \overline{\textbf{X}}^T \overline{\textbf{X}} \right)^\dagger \overline{\textbf{X}}^T \textbf{y}
 \end{align}
-in which, $A^\dagger$ (A dagger) is the pseudo inverse of a matrix, because it's might not inverse-able. \hlre{A^\dagger = \left(A^TA\right)^{-1}A^T}
+in which, $A^\dagger$ (A dagger) is the pseudo inverse of a matrix, because $A$ might not be inverse-able. {\color{red} \boxed{A^\dagger = \left(A^TA\right)^{-1}A^T}}
 
-\note Sensitive to outliers $\Rightarrow$ pre-processing
+\note
+\begin{itemize}
+	\item Sensitive to outliers $\Rightarrow$ pre-processing
+	\item Multi-variable:
+	\begin{align*}
+		\mathcal{L}(\textbf{w}) &= \frac{1}{2N} ||\textbf{y}-\overline{\textbf{X}}.\textbf{w}||^2_2 \\
+		\Rightarrow\; \nabla_\textbf{w}\mathcal{L}(\textbf{w}) &= \frac{1}{N} \overline{\textbf{X}}^T (\overline{\textbf{X}}\textbf{w}-\textbf{y})
+	\end{align*}
+\end{itemize}
 
-Multi-variable:
+\section{Linear Discriminant Functions}
+\label{sec:linear-classification}
+\hlb{Problem statement:} of general classification problem
+\begin{itemize}
+	\item Given: training set $\textbf{X} = \{\textbf{x}_1, \textbf{x}_2, \dots, \textbf{x}_N\}$ with target values (labels) $\textbf{T} = \{\textbf{t}_1, \textbf{t}_2, \dots, \textbf{t}_N\}$.
+	\item Goal: take a new input $\textbf{x}$ and assign it to one of $K$ classes $C_k$\\
+	$\Rightarrow$ Learn a discriminant function $y(x)$ to perform the classification
+\end{itemize}
+\hlb{Approach:}
+\begin{itemize}
+	\item 2-class problem: Binary target values: $t_n \in \{0, 1\}$\\
+	\Eg of discriminant function: $y(x) > 0 \Rightarrow$ class $C_1$, else $C_2$
+	\item K-class problem: 1-of-K coding scheme, \eg: $\textbf{t}_n = [0, 1, 0, 0, 0]^T$
+	\item Extension to multiple classes: one-vs-all, one-vs-one classifiers
+\end{itemize}
+
+\subsection{Least-squares classification}
+With above problem statement, consider $K$ classes described by linear models:
 \begin{align*}
-	&\mathcal{L}(\textbf{w}) = \frac{1}{2N} ||\textbf{y}-\overline{\textbf{X}}.\textbf{w}||^2_2 \\
-	\Rightarrow &\nabla_\textbf{w}\mathcal{L}(\textbf{w}) = \frac{1}{N} \overline{\textbf{X}}^T(\overline{\textbf{X}}\textbf{w}-\textbf{y})
+	y_k(\textbf{x}) &= \textbf{w}^T_k\textbf{x} + w_{k0} && k=1, \dots, K \\
+	\Rightarrow \textbf{y}(\textbf{x}) &= \widetilde{\textbf{W}}^T\widetilde{\textbf{x}} && \text{(using vector notation)} \\
+	\textbf{Y}(\widetilde{\textbf{X}}) &= \widetilde{\textbf{X}}\widetilde{\textbf{W}} && \text{(for the entire dataset)}
 \end{align*}
-Linear Discriminant Functions:
+In which output $\textbf{y}$ in 1-of-K notation, and can be compared to the target value
+\[\textbf{t}=[t_1, \dots, t_k]^T\]
+\hlb{Solution:} minimize the sum-of-squares error $E(\textbf{w})$
 \begin{align*}
-	y(\textbf{x}) &= \widetilde{\textbf{W}}^T\widetilde{\textbf{x}} \\
-	E(\textbf{w}) &= \frac{1}{2} \sum_{n=1}^{N} \sum_{k=1}^{K} \left(\textbf{w}_k^T\textbf{x}_n-t_{kn}\right)^2 \\
-	\widetilde{\textbf{W}} &= \left(\widetilde{\textbf{X}}^T\widetilde{\textbf{X}}\right)^{-1}\widetilde{\textbf{X}}^TT \\
-	&= \widetilde{\textbf{X}}^\dagger T
+	E(\textbf{w}) &= \frac{1}{2} \sum_{n=1}^{N} \left(\textbf{y} - \textbf{t}\right)^2 = 
+	\frac{1}{2} \sum_{n=1}^{N} \sum_{k=1}^{K} \left(\textbf{w}_k^T\textbf{x}_n-t_{kn}\right)^2 \\
+	\Rightarrow \widetilde{\textbf{W}}^* &=  \left( \widetilde{\textbf{X}}^T \widetilde{\textbf{X}} \right)^{-1} \widetilde{\textbf{X}}^T T = \widetilde{\textbf{X}}^\dagger T
 \end{align*}
-Generalized Discriminant:
+\note Problem with Least Squares
+\begin{itemize}
+	\item Least-squares is very sensitive to outliers!\\
+	The error function penalizes predictions that are “too correct”.
+\end{itemize}
+
+\subsection{Generalized Linear Discriminant}
 \begin{equation}
-	y_k(x) = \sum_{j=1}^{M}w_{kj}\phi_j(x) + w_{k0} = \sum_{j=0}^M w_{kj}\phi_j(x), \;\;\phi_0(x) = 1
+y_k(x) = \sum_{j=1}^{M}w_{kj}\phi_j(x) + w_{k0} = \sum_{j=0}^M w_{kj}\phi_j(x), \tab \phi_0(x) = 1
 \end{equation}
+
+\subsection{Generalized Linear Models}
+\begin{itemize}
+	\item Linear Model: \tab\tab\tab $y(\textbf{x}) = \textbf{w}^T\textbf{x} + w_0$
+	\item Generalized Linear Model:\tab $y(\textbf{x}) = g(\textbf{w}^T\textbf{x} + w_0)$\\
+	In which $g(\cdot)$ is called an \hlb{activation function} and may be nonlinear
+\end{itemize}

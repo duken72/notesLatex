@@ -1,0 +1,32 @@
+% !TeX spellcheck = en_US
+\chapter{Feature Engineering}
+\todo{Add explanation}\\
+Dimensionality Reduction is an important technique in \ac{ML}. Actual feature vectors can be in great  dimension, in great number. Thus, filtering is crucial for storage, calculation. Dimension reduction is necessary and also useful in data compression.
+
+\todo{}
+\section{Principle Component Analysis}
+\ac{PCA} is a method for Feature Extraction
+
+\hlb{Learning Resources:}
+\begin{itemize}
+	\item \href{https://setosa.io/ev/principal-component-analysis/}{setosa.io}: for Visualization
+\end{itemize}
+
+\section{Linear Discriminant Analysis}
+
+\ac{LDA}
+
+\href{https://sebastianraschka.com/Articles/2014_python_lda.html}{blog}
+
+\section{Word Embedding}
+The idea of represent a word as a vector, but not as one-hot coding. With this representation
+\begin{itemize}
+	\item similar words have similar vector values
+	\item similar word's relationships have similar vector values
+\end{itemize}
+
+\subsection{The trigram (n-gram method)}
+\begin{itemize}
+	\item Hugh amount of n-tuples of words $\Rightarrow$ predict relative \ac{prob}
+	\item Problems: scalability, partial observability
+\end{itemize}

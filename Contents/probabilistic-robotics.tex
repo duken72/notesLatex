@@ -1,0 +1,348 @@
+% !TeX spellcheck = en_US
+\chapter{Probabilistic Robotics}
+
+Reference from the great book: \cite{thrun2006probalistic}.
+
+\section{State Estimation}
+\subsection{Bayes Filters}
+\begin{align*}
+	&bel(x_t) = p(x_t | z_{1:t}, u_{1:t}) && \text{belief over a state}\\
+	&\overline{bel}(x_t) = p(x_t | z_{1:t-1}, u_{1:t}) && \text{a posterior (before adapt to }z_t)\\
+	\Rightarrow\; & \text{Calculating } bel(x_t) \text{ from  } \overline{bel}(x_t) && \text{correction/measurement update}
+\end{align*}
+
+\hlr{\underline{Bayes Filter Algorithm:}}
+\begin{align*}
+	&2 \qquad \text{for all } x_t \text{ do:}\\
+	&3 \qquad \overline{bel}(x_t) = \int p(x_t | u_t, x_{t-1}) bel(x_{t-1}) dx && \text{prediction step}\\
+	&4 \qquad bel(x_t) = \eta\, p(z_t | x_t)\, \overline{bel}(x_t) && \text{update step}
+\end{align*}\\
+$\Rightarrow\;$ Can only be implemented for very simple estimation problems, finite state space
+
+\hlr{\underline{Important assumption:} Markov property} (each state s a complete summary of the past)
+
+\hlr{Problem:} can not be implemented on digital computers
+
+The next subsections describe two Gaussian filters (\ac{KF} and \ac{IF}) and two extensions of them (\ac{EKF} and \ac{EIF}). The Gaussian filters have major advantage in computational cost, with the disadvantage of having assumption on uni-model distribution.
+
+\subsection{The Kalman Filter (KF)}
+
+\begin{itemize}
+	\item \hlb{Learning Resources:} \href{http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/}{www.bzarg.com}
+	\item For continuous space, not discrete or hybrid\\
+	\item \hlr{Assumption:} posterior are Gaussians and Markov property\\
+	\begin{align*}
+		&p(x_t | u_t, x_{t-1}) && \text{must be linear \ac{func} (linear system dynamics)}\\
+		&p(z_t, x_t) && \text{also linear}\\
+		&bel(x_0) && \text{initial belief must be Gaussian}
+	\end{align*}
+\end{itemize}
+
+\begin{align*}
+	x_t &= A_t x_{t-1} + B_t u_t + \varepsilon_t\\
+	p(x_t | u_t, x_{t-1}) &= \det \left( 2\pi\Sigma_t \right)^{-\frac{1}{2}} \exp\left[ -\frac{1}{2} \left( x_t - A_t x_{t-1} - B_t u_t \right)^T R_t^{-1} \left( x_t - A_t x_{t-1} - B_t u_t \right) \right]\\
+	z_t &= C_t x_t + \delta_t \quad(=y)\\
+	p(z_t | x_t) &= \det \left( 2\pi Q_t \right)^{-\frac{1}{2}} \exp\left[ -\frac{1}{2} \left( z_t - C_t x_t \right)^T Q_t^{-1} \left( z_t - C_t x_t \right) \right]\\
+	bel(x_0) = p(x_0) &= \det \left( 2\pi\Sigma_0 \right)^{-\frac{1}{2}} \exp\left[ -\frac{1}{2} \left( x_t - \mu_0 \right)^T \Sigma_0^{-1} \left( x_t - \mu_0 \right) \right]
+\end{align*}
+
+\hlr{\underline{Kalman Filter Algorithm:}} $(\mu_{t-1}, \Sigma_{t-1}, u_t, z_t)$
+\begin{align*}
+	&\begin{rcases}
+		2 \qquad \overline{\mu}_t = A_t \mu_{t-1} + B_t u_t\\
+		3 \qquad \overline{\Sigma}_t = A_t \Sigma_{t-1} A_t^T + R_t \qquad\qquad\qquad\qquad\qquad\quad
+	\end{rcases} \text{incorporate } u_t \text{ - prediction step - } \mathcal{O}(n^2)\\
+	&\begin{rcases}
+		4 \qquad K_t = \overline{\Sigma}_t C_t^T \left( C_t \overline{\Sigma}_t C_t^T + Q_t \right)^{-1} \qquad \text{(Kalman gain)}\\
+		5 \qquad \mu_t = \overline{\mu}_t + K_t (z_t - C_t \overline{\mu}_t)\\
+		6 \qquad \Sigma_t = (I - K_t C_t) \overline{\Sigma}_t
+	\end{rcases} \text{incorporate } z_t \text{ - correction step - } \mathcal{O}(n^{2,8})\\
+	&\;7 \qquad  \text{return } \mu_t, \Sigma_t \qquad\qquad\qquad\qquad\qquad\quad\qquad\qquad\Rightarrow\; \text{belief at time } t
+\end{align*}
+$\Rightarrow$ quite computationally expensive, \hlr{everything are Gaussians}
+
+\subsection{Extended Kalman Filter (EKF)}
+Overcome the assumption on linearity by only approximate by Gaussians
+\begin{align*}
+	x_t &= g(u_t, x_{t-1}) + \varepsilon_t\\
+	z_t &= h(x_t) + \delta_t
+\end{align*}
+
+\begin{align*}
+	g(u_t, x_{t-1}) &\approx g(u_t, \mu_{t-1}) + g'(u_t, \mu_{t-1}) (x_t - \mu_{t-1}) \\
+	&= g(u_t, \mu_{t-1}) + G_t(x_t - \mu_{t-1})\\
+	& g' \text{ is the Jacobian of state } (n\times n \text{ matrix})\\
+	p(x_t | u_t, x_{t-1}) &\approx \det \left( 2\pi R_t \right)^{-\frac{1}{2}} \exp \left\{-\frac{1}{2} [x_t - g(u_t, x_{t-1})] ^T R_t^{-1} [x_t - g(u_t, x_{t-1})] \right\} \\
+	h(t) &\approx h(\overline{\mu}_t) + h'(\mu_t) (x_t - \mu_{t-1})\\
+	&= h(\overline{\mu}_t) + H_t (x_t - \mu_{t-1})\\
+	p(z_t | x_t) &= \det \left( 2\pi Q_t \right)^{-\frac{1}{2}} \exp \left\{-\frac{1}{2} [z_t - h(x_t)] ^T Q_t^{-1} [z_t - h(x_t)]\right\} \\
+\end{align*}
+
+\hlr{\underline{Extended Kalman Filter Algorithm:}} $(\mu_{t-1}, \Sigma_{t-1}, u_t, z_t)$
+\begin{align*}
+	&2 \qquad \overline{\mu}_t = g(u_t, \mu_{t-1})\\
+	&3 \qquad \overline{\Sigma}_t = G_t \Sigma_{t-1} G_t^T + R_t\\
+	&4 \qquad K_t = \overline{\Sigma}_t H_t^T \left( H_t \overline{\Sigma}_t H_t^T + Q_t \right)^{-1} \\
+	&5 \qquad \mu_t = \overline{\mu}_t + K_t [z_t - h(\overline{\mu}_t)]\\
+	&6 \qquad \Sigma_t = (I - K_t H_t) \overline{\Sigma}_t\\
+	&7 \qquad \text{return } \mu_t, \Sigma_t
+\end{align*}
+
+\begin{itemize}
+	\item Can extend \ac{EKF} $\Rightarrow$ \ac{MHEKF}
+	\item \ac{EKF}'s performance depends on degree of nonlinearities and uncertainty
+	\item Unscented \ac{KF} and moments matching \ac{KF} are better
+\end{itemize}
+
+\subsection{Information Filter (IF)}
+\begin{itemize}
+	\item Moment representation:\tab\tab $\mu \quad\&\quad \Sigma$
+	\item Canonical representation:\tab\tab $\xi \quad\&\quad \Omega$\\
+	Information \ precision matrix: \tab $\Omega = \Sigma^{-1};\qquad \Sigma = \Omega^{-1}$\\
+	Information vector: \tab \tab \tab $\xi = \Sigma^{-1}\mu;\qquad \mu = \Omega^{-1}\xi$
+\end{itemize}
+\begin{align*}
+	p(x) &= \det(2\pi\Sigma)^{-\frac{1}{2}} \exp \left\{-\frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu) \right\}\\
+	&= \eta \exp\left\{ -\frac{1}{2} x^T\Omega x + x^T \xi \right\}
+\end{align*}
+
+\hlr{\underline{Information Filter Algorithm:}} $(\xi_{t-1}, \Omega_{t-1}, u_t, z_t)$
+\begin{align*}
+	&\begin{rcases}
+		2 \qquad \overline{\Omega}_t = (A_t \Omega_{t-1}^{-1} A_t^T + R_t)^{-1} \qquad\qquad\\
+		3 \qquad \overline{\xi}_t = \overline{\Omega}_t ( A_t \Omega_{t-1}^{-1} \xi_{t-1} + B_t u_t )
+	\end{rcases} \mathcal{O}(n^{2,8})\\
+	&\begin{rcases}
+		4 \qquad \Omega_t = C_t^T Q_t^{-1} C_t + \overline{\Omega}_t\\
+		5 \qquad \xi_t = C_t^T Q_t^{-1} z_t + \overline{\xi}_t \qquad\qquad\qquad\quad
+	\end{rcases} \mathcal{O}(n^2)\\
+	&\;6 \qquad \text{return } \xi_t, \Omega_t
+\end{align*}
+
+\subsection{Extended Information Filter (IF)}
+\begin{align*}
+	x_t &= g(u_t, x_{t-1}) + \varepsilon_t\\
+	z_t &= h(x_t) + \delta_t\\
+	G_t &= g'(u_t, \mu_{t-1})\\
+	H_t &= h'(\mu_t)
+\end{align*}
+
+\hlr{\underline{Extended Information Filter Algorithm:}} $(\xi_{t-1}, \Omega_{t-1}, u_t, z_t)$
+\begin{align*}
+	&2 \qquad \mu_{t-1} = \Omega_{t-1}^{-1} \xi_{t-1}\\
+	&3 \qquad \overline{\Omega}_t = (G_t \Omega_{t-1}^{-1} G_t^T + R_t)^{-1}\\
+	&4 \qquad \overline{\xi}_t = \overline{\Omega}_t\, g(u_t, \mu_{t-1})\\
+	&5 \qquad \overline{\mu}_t = g(u_t, \mu_{t-1})\\
+	&6 \qquad \Omega_t = \overline{\Omega}_t + H_t^T Q_t^{-1} H_t\\
+	&7 \qquad \xi_t = \overline{\xi}_t + H_t^T Q_t^{-1} \left[ z_t - h(\overline{\mu}_t) - H_t \overline{\mu}_t \right]
+\end{align*}
+
+\begin{itemize}
+	\item \hlb{Global uncertainty:} set $\Omega=0$ is better than set $|\Sigma| = \infty$
+	\item \ac{IF} tends to be numerically more stable than \ac{KF}
+	\item \ac{IF} is better for multi-robot problems
+	\item For high dimensional state, \ac{EKF} is computational better than \ac{EIF}
+\end{itemize}
+
+\section{Measurements}
+\subsection{Map Representation}
+Maps: $m = \{ m_1, m_2, \dots, m_N \}$\\
+\hlr{There are \underline{2 ways} to represent a map:}
+\begin{table}[hbt!]
+	\centering
+	\begin{tabular}{c|c}
+		feature-based & location-based \\\hline\hline
+		$m_n$: properties of a feature and location of feature & a specific location \\\hline
+		\hlr{only the shape} of the environment & volumetric: \hlr{label for any location} \\
+		\hlr{at the specific locations} & in the world\\\hline
+		easy to adjust positions of objects & occupancy grid map \\
+		$\Rightarrow$ popular in the robotic mapping field &
+	\end{tabular}
+\end{table}
+
+\todo{Add images}
+
+\subsection{Measurement Noise}
+The 4 types of measurement noise:
+\begin{itemize}
+	\item Correct range with local measurement noise\\
+	With $z_t^{k*}$ as the correct distance
+	\begin{equation}
+		p_{hit}(z_t^k | x_t, m) = \begin{cases}
+			\eta\; \mathcal{N}(z_t^k| z_t^{k*}, \sigma^2_{hit}) \qquad \text{if } 0 \leq z_t^k \leq z_{\max}\\
+			0 \qquad\qquad\qquad\qquad\quad \text{otherwise}
+		\end{cases}
+	\end{equation}
+	\item Unexpected object
+	\begin{equation}
+		p_{short}(z_t^k | x_t, m) = \begin{cases}
+			\eta\lambda_{short} e^{-\lambda_{short} z_t^k} \qquad \text{if } 0 \leq z_t^k \leq z_t^{k*}\\
+			0 \qquad\qquad\qquad\qquad \text{otherwise}
+		\end{cases}
+	\end{equation}
+	\item Failures
+	\begin{equation}
+		p_{\max}(z_t^k | x_t, m) = I(z=z_{\max})
+	\end{equation}
+	\item Random measurements
+	\begin{equation}
+		p_{rand}(z_t^k | x_t, m) = \begin{cases}
+			\frac{1}{z_{\max}} \qquad \text{if } 0 \leq z_t^k < z_{\max}\\
+			0 \qquad\quad \text{otherwise}
+		\end{cases}
+	\end{equation}
+\end{itemize}
+
+\todo{Add image, plot}
+
+\begin{equation}
+	p(z_t^k | x_t, m) = \begin{bmatrix}
+		z_{hit}\\ z_{short}\\
+		z_{max}\\ z_{rand}
+	\end{bmatrix}^T . \begin{bmatrix}
+		p_{hit}(z_t^k | x_t, m)\\ p_{short}(z_t^k | x_t, m)\\
+		p_{max}(z_t^k | x_t, m)\\ p_{rand}(z_t^k | x_t, m)
+	\end{bmatrix}
+\end{equation}
+
+\section{Robot Motion}
+Pose: $[x, y, \theta]^T$ at location $[x, y]^T$ and orientation $\theta$
+
+\subsection{Motion Model}
+
+Motion Model, \ac{aka} Probabilistic Kinematic Model: $p(x_t,  u_t, x_{t-1})$
+
+\begin{table}[hbt!]
+	\centering
+	\begin{tabular}{c|c}
+		Velocity commands & Odometry \\
+		& (distance traveled, angle turned, \etc)\\\hline\hline
+		& \hlr{more accurate}\\
+		& \hlr{but post-the-fact}\\
+		& \hlr{(not for motion planning)}\\
+		Use for Probabilistic motion planning & Use for estimation
+	\end{tabular}
+\end{table}
+
+Each has closed form calculation and sampling algorithm.
+
+\subsection{Velocity Motion Model}
+Assuming we can control a robot through velocities:
+\begin{equation*}
+	u_t = \begin{bmatrix}
+		v_t\\ \omega_t
+	\end{bmatrix}; \qquad
+	x_{t-1} = \begin{bmatrix}
+		x \\ y \\ \theta
+	\end{bmatrix}; \qquad
+	x_t = \begin{bmatrix}
+		x'\\ y'\\ \theta'
+	\end{bmatrix}
+\end{equation*}
+
+\hlr{\underline{Motion Model Velocity Algorithm:}} $(x_t, u_t, x_{t-1})$
+\begin{align*}
+	& \begin{rcases} \displaystyle
+		2 \qquad \mu = \frac{1}{2} \frac{(x-x')\cos\theta+(y-y')\sin\theta}{(y-y')\cos\theta-(x-x')\sin\theta} \qquad\qquad\\
+		3 \qquad x^* = \frac{x+x'}{2} + \mu (y-y')\\
+		4 \qquad y^* = \frac{y+y'}{2} + \mu (x'-x)\\
+		5 \qquad r^* = \sqrt{(x-x^*)^2 + (y-y^*)^2}
+	\end{rcases} \text{Invert the motion model}\\
+	& \;6 \qquad \Delta \theta = \text{atan2}(y'-y^*, x'-x^*) - \text{atan2}(y-y^*, x-x^*)\\
+	& \begin{rcases}
+		7 \qquad\hat{v} = \frac{\Delta\theta}{\Delta t} r^*\\
+		8 \qquad\hat{\omega} = \frac{\Delta\theta}{\Delta t}\\
+		9 \qquad\hat{\gamma} = \frac{\theta' - \theta}{\Delta t} - \hat{\omega}
+		\qquad\qquad
+	\end{rcases} \text{compared actual velocities with the desired}\\
+	& 10 \qquad \text{return } p(v-\hat{v}, \alpha_1|v| + \alpha_2|\omega|) 
+	\cdot p(\omega-\hat{\omega}, \alpha_3|v| + \alpha_4|\omega|)
+	\cdot p(\hat{\gamma}, \alpha_5|v| + \alpha_6|\omega|)
+\end{align*}
+
+\hlr{\underline{Sample Motion Model Velocity Algorithm:}} $(u_t, x_{t-1})$
+\begin{align*}
+	& 2 \qquad \hat{v} = v + sample(\alpha_1|v| + \alpha_2|\omega|) \\
+	& 3 \qquad \hat{\omega} = \omega + sample(\alpha_3|v| + \alpha_4|\omega|) \\
+	& 4 \qquad \hat{\gamma} = sample(\alpha_5|v| + \alpha_6|\omega|) \\
+	& 5 \qquad x' = x - \frac{\hat{v}}{\hat{\omega}}\sin\theta + \frac{\hat{v}}{\hat{\omega}}\sin(\theta + \hat{\omega}\Delta t)\\
+	& 6 \qquad y' = y + \frac{\hat{v}}{\hat{\omega}}\cos\theta - \frac{\hat{v}}{\hat{\omega}}\cos(\theta + \hat{\omega}\Delta t)\\
+	& 7 \qquad \theta' = \theta + \hat{\omega} \Delta t + \hat{\gamma} \Delta t \\
+	& 8 \qquad \text{return } x_t = [x', y', \theta']^T
+\end{align*}
+
+\begin{itemize}
+	\item Probability normal distribution(a, b): \qquad return $\displaystyle \frac{1}{\sqrt{2\pi b}}e^{-\frac{a^2}{2b}}$
+	\item Probability triangular distribution(a, b): \qquad return $\displaystyle \begin{cases}
+		0 \qquad\qquad \text{if } |a| > \sqrt{6b}\\
+		\frac{\sqrt{6b} - |a|}{6b} \qquad \text{else}
+	\end{cases}$
+	\item Sample normal distribution(b): \qquad return $\displaystyle \frac{b}{6} \sum_{i=1}^{12} rand(-1, 1)$
+	\item Sample triangle distribution(b): \qquad return $b.rand(-1,1).rand(-1,1)$
+\end{itemize}
+
+\subsection{Odometry Motion Model}
+Only available after the robot has moved\\
+$\Rightarrow$ only use for filter algorithm\\
+not for accurate motion planning and control
+
+\hlr{\underline{Motion Model Odometry Algorithm:}} $(x_t, u_t, x_{t-1})$
+\begin{align*}
+	& \;2 \qquad \delta_{rot1} = \text{atan2}(\bar{y}'-\bar{y}, \bar{x}'-\bar{x}) - \bar{\theta} \\
+	& \;3 \qquad \delta_{trans} = \sqrt{(\bar{x}-\bar{x}')^2 + (\bar{y}-\bar{y}')^2} \\
+	& \;4 \qquad \delta_{rot2} = \bar{\theta}' - \bar{\theta} - \delta_{rot1} \\
+	& {\color{red} \begin{rcases}
+		{\color{black} 5 \qquad \hat{\delta}_{rot1} = \text{atan2}(y'-y, x'-x) - \theta} \qquad\qquad \\
+		{\color{black} 6 \qquad \hat{\delta}_{trans} = \sqrt{(x-x')^2 + (y-y')^2}} \\
+		{\color{black} 7 \qquad \hat{\delta}_{rot2} = \theta' - \theta - \hat{\delta}_{rot1}}
+	\end{rcases} \Rightarrow \text{inverse motion model}} \\	
+	& \;8 \qquad p_1 = prob(\delta_{rot1} - \hat{\delta}_{rot1}, \alpha_1 \hat{\delta}_{rot1} + \alpha_2 \hat{\delta}_{trans}) \\
+	& \;9 \qquad  p_2 = prob(\delta_{trans} - \hat{\delta}_{trans}, \alpha_3 \hat{\delta}_{trans} + \alpha_4 (\hat{\delta}_{rot1} + \hat{\delta}_{rot2})) \\
+	& 10 \qquad  p_3 = prob(\delta_{rot2} - \hat{\delta}_{rot2}, \alpha_1 \hat{\delta}_{rot2} + \alpha_2 \hat{\delta}_{trans}) \\
+	& 11 \qquad \text{return}\quad p_1.p_2.p_3 \qquad (=p(x_t| u_t, x_{t-1}))
+\end{align*}
+
+\note
+\begin{itemize}
+	\item Bar $\Leftrightarrow$ measurements
+	\begin{align*}
+		\overline{x}_{t-1} &= [\bar{x} \quad \bar{y} \quad \bar{\theta}]^T\\
+		\overline{x}_t &= [\bar{x}' \quad \bar{y}' \quad \bar{\theta}']^T
+	\end{align*}
+	\item Hat $\Leftrightarrow$ estimations
+	\item No bar and hat $\Leftrightarrow$ hypothesized final pose $x, y$
+\end{itemize}
+
+\hlr{\underline{Sample Motion Model Odometry Algorithm:}} $(u_t, x_{t-1})$
+\begin{align*}
+	2 \qquad & \delta_{rot1} = \text{atan2}(\bar{y}'-\bar{y}, \bar{x}'-\bar{x}) - \bar{\theta} \\
+	3 \qquad & \delta_{trans} = \sqrt{(\bar{x}-\bar{x}')^2 + (\bar{y}-\bar{y}')^2} \\
+	4 \qquad & \delta_{rot2} = \bar{\theta}' - \bar{\theta} - \delta_{rot1} \\
+	5 \qquad & \hat{\delta}_{rot1} = \delta_{rot1} - sample(\alpha_1\delta_{rot1} + \alpha_2\delta_{trans}) \\
+	6 \qquad & \hat{\delta}_{trans} =\delta_{trans} - sample(\alpha_3\delta_{trans} + \alpha_4(\delta_{rot1} + \delta_{rot2}) )\\
+	7 \qquad & \hat{\delta}_{rot2} = \delta_{rot2} - sample(\alpha_1\delta_{rot2} + \alpha_2\delta_{trans}) \\
+	8 \qquad & x' = x + \hat{\delta}_{trans} \cos(\theta + \hat{\delta}_{rot1})\\
+	9 \qquad  & y' = y + \hat{\delta}_{trans} \sin(\theta + \hat{\delta}_{rot1})\\
+	10 \qquad  & \theta' = \theta + \hat{\delta}_{rot1} + \hat{\delta}_{rot2} \\
+	11 \qquad & \text{return}\quad x_t = [x' \quad y' \quad \theta']^T
+\end{align*}
+
+\subsection{Map-based Motion Model}
+
+Map-based Motion Model: $p(x_t | u_t, x_{t-1}, m)$
+\begin{itemize}
+	\item Occupancy maps: $p(x_t | m) = 0 \Leftrightarrow$ the robot collides
+	\item If the distance from $x_{t-1} \rightarrow x_t$ is small enough (< half the robot's diameter), we can estimate the \ac{prob} $p(x_t | u_t, x_{t-1}, m) \approx \eta p(x_t | u_t, x_{t-1})p(x_t | m)$, which discards the info relating the robot's path to $x_t$
+\end{itemize}
+
+\hlr{\underline{Motion Model with Map Algorithm:}} $(x_t, u_t, x_{t-1}, m)$\\
+return $p(x_t | u_t, x_{t-1}).p(x_t | m)$
+
+\hlr{\underline{Sample Motion Model with Map Algorithm:}} $(u_t, x_{t-1}, m)$\\
+\begin{align*}
+	&do:\\
+	& \qquad x_t = sample\_motion\_model(u_t, x_{t-1})\\
+	& \qquad \pi = p(x_t | m)\\
+	&until \quad \pi > 0\\
+	&return <x_t, \pi>
+\end{align*}

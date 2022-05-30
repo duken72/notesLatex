@@ -14,16 +14,18 @@
 % Language, font and text
 % --------------------------------------------------------------------------
 \RequirePackage[utf8]{inputenc}    		% Input-encoding
-\RequirePackage{babel}          			% Spell aid
+\RequirePackage{babel}          		% Spell aid
 \RequirePackage[autostyle]{csquotes} 	% German quotation marks
 \RequirePackage[T1]{fontenc}         	% T1-encoded fonts, correct seperation of words with umlauts
-\RequirePackage{lmodern}						  % Nicer font
-\RequirePackage{textcomp}						  % Special characters in the text (e.g. €)
-\RequirePackage{textgreek}						% Greek symbols in the text
-
+\RequirePackage{lmodern}				% Nicer font
+\RequirePackage{textcomp}			 	% Special characters in the text (e.g. €)
+\RequirePackage{textgreek}				% Greek symbols in the text
+\RequirePackage[dvipsnames]{xcolor}	% Accessing additional named colours
+%\RequirePackage[paper=portrait,pagesize]{typearea}
 % --------------------------------------------------------------------------
 %	Layout of the pages
 % --------------------------------------------------------------------------
+\RequirePackage[none]{hyphenat}		% No word break with hyphen
 % Adjust the font and font size of the headings
 %\setkomafont{chapter}{\rmfamily\bfseries}
 \setkomafont{section}{\rmfamily\large\underline}
@@ -49,14 +51,15 @@
 % \RequirePackage[automark, headsepline]{scrpage2}  % Header and footer
 % \pagestyle{scrheadings}
 \RequirePackage[
-format          = hang,
-textformat 		  = simple,         % no modifications, period = full stop at the end
-justification   = justified,
-font 			      = {normalsize},   % stretch =1.25},
-labelfont 		  = {bf},
-parskip			    = 24pt,
-aboveskip 	    = 6pt
-]{caption}       	                % adjust multiline captions
+format			= hang,
+textformat 		= simple,			% no modifications, period = full stop at the end
+justification 	 = justified,
+font			= {normalsize},		% stretch =1.25},
+labelfont		= {bf},
+parskip			= 24pt,
+aboveskip 	    = 4pt,
+belowskip		= 2pt,
+]{caption}							% adjust multiline captions
 
 % --------------------------------------------------------------------------
 %	Tables
@@ -64,7 +67,7 @@ aboveskip 	    = 6pt
 \RequirePackage{booktabs}		 				% Nicer horizontal lines
 \RequirePackage{multirow}		 				% Divide lines and columns further
 \RequirePackage{rccol}			 				% Align columns according to the decimal point
-\RequirePackage{tabularx}
+\RequirePackage{tabularx, tabularray}
 
 % --------------------------------------------------------------------------
 %	Graphics
@@ -73,16 +76,18 @@ aboveskip 	    = 6pt
 \graphicspath{{./Contents/images}}
 \RequirePackage{subcaption}         % Sub-illustrations
 \RequirePackage{tikz}
-
+\usetikzlibrary{positioning, tikzmark}
 % --------------------------------------------------------------------------
 %	Mathematics-mode
 % --------------------------------------------------------------------------
-\RequirePackage[intlimits]{amsmath} % Complex mathematic constructions
-\RequirePackage{mathtools}					% Mathematical formula: Indeces top left
+\RequirePackage[intlimits]{amsmath} 	% Complex mathematic constructions
+\RequirePackage{mathtools}				% Mathematical formula: Indeces top left
 \RequirePackage{mathrsfs,amssymb}		% Mathematical formula: Symbols
-\RequirePackage{amsfonts}					  % Mathematical formula: Fonts
-\RequirePackage{bm}							    % Bold lettering for matrices and vectors
-\RequirePackage{arydshln}				    % lines for matrices and vectors
+\RequirePackage{amsfonts}				% Mathematical formula: Fonts
+\RequirePackage{bm}						% Bold lettering for matrices and vectors
+\RequirePackage{arydshln}				% lines for matrices and vectors
+\RequirePackage{empheq}					% Boxed equations
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
 
 % --------------------------------------------------------------------------
 %	Bibliopraphy
@@ -124,7 +129,7 @@ urlcolor		= cyan			% Reference to internet links
 ]{hyperref}
 
 \RequirePackage[
-left        = 3cm,
+left        = 2cm,
 right       = 2cm,
 top         = 1.15cm,
 bottom      = 1.25cm,
@@ -155,8 +160,8 @@ includeheadfoot
 \def\eqref#1{Eq.~\ref{#1}}
 \def\tabref#1{Tab.~\ref{#1}}
 \def\algref#1{Alg.~\ref{#1}}
-\def\citeaus#1{\citeauthor{#1} \cite{#1}}
-\def\citeausm#1{\citeauthor*{#1} \cite{#1}}
+\def\citeaus#1{\citeauthor{#1} (\citeyear{#1}) \cite{#1}}
+\def\citeausm#1{\citeauthor*{#1} (\citeyear{#1}) \cite{#1}}
 
 %% Other useful macros
 \newcommand\todo[1]{\textbf{[TODO: #1}]}
@@ -166,6 +171,7 @@ includeheadfoot
 \newcommand\hlre[1]{\hlr{$\displaystyle \mathbf{#1}$}}
 \newcommand\expectation[1]{\mathbb{E} \left[ #1 \right]}
 \newcommand\tab[1][1cm]{\hspace*{#1}}
+\newcommand\dunderline[1]{\underline{\underline{#1}}}
 
 \makeatletter
 \usepackage{xspace}

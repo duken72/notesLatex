@@ -1,0 +1,56 @@
+% !TeX spellcheck = en_US
+\chapter{Convexity}
+
+\section{Convex Sets}
+\begin{itemize}
+	\item Definition 1: line connects 2 points of a convex set lies within the set
+	\item Definition 2: $\mathcal{C}$ is a convex set if for $\forall x_1, x_2 \in \mathcal{C}$:
+	\[ x_\theta = \theta x_1 + (1-\theta) x_2 \in \mathcal{C}, \quad \forall\; 0 \leq \theta \leq 1\]
+	\item Hyperplane is a \hlb{convex set}
+	\[ a_1x_1 + a_2x_2 + \dots + a_nx_n = \textbf{a}^T\textbf{x} = b, \quad b, a_i \in \mathbb{R}, \quad i \in \mathbb{N} \]
+	\item Half-space is a \hlb{convex set}
+	\[ a_1x_1 + a_2x_2 + \dots + a_nx_n = \textbf{a}^T\textbf{x} \leq b, \quad b, a_i \in \mathbb{R}, \quad i \in \mathbb{N} \]
+	\item Matrix $A$ is \hlb{positive definite} if:
+	\[ \textbf{x}^T \textbf{A} \textbf{x} \geq 0, \quad \forall \textbf{x} \in \mathbb{R}^n \iff {\color{red} \boxed{A \succ 0}}\]\\
+	because $\exists A^{-1} \Rightarrow \forall \lambda \neq 0$ (eigenvalues)
+	\item Intersection of convex sets ia a \hlb{convex set}\\
+	$\Rightarrow$ Polyhedra, which is the intersection of halfspaces and hyperplanes \hlb{is convex}.
+	\item $x$ is said to be a \hlb{convex combination} of $x_1, x_2, \dots, x_k$ if
+	\[ x = \theta_1 x_1 + \theta_2 x_2 + \dots + \theta_k x_k \quad \text{with} \quad \theta_1 + \theta_2 + \dots + \theta_k = 1 \]
+	\item \hlb{Convex hull} of a set $(x_1, x_2, \dots, x_k)$ is a set of all possible convex combination of that set.\\
+	\hlr{Convex hull of a set is the smallest convex set that contains that set.}
+	\item Two convex sets $\mathcal{C}$ and $\mathcal{D}$ are \hlb{disjoint} then exist $a, b$ such:
+	\[\begin{cases}
+		\textbf{a}^T \textbf{x} \leq b \quad \forall \textbf{x} \in \mathcal{C} \\
+		\textbf{a}^T \textbf{x} \geq b \quad \forall \textbf{x} \in \mathcal{D}
+	\end{cases}\]
+	Set of all $\textbf{x}$ that $\textbf{a}^T \textbf{x} -b = 0$ is a hyperplane that separate $\mathcal{C}$ and $\mathcal{D}$\\ $\Rightarrow$ \hlb{separating hyperplane}
+\end{itemize}
+
+\section{Convex function}
+\hlb{Definition:} $f: \mathbb{R}^n \rightarrow \mathbb{R}$ is a convex function if the domain dom$(f)$ is a convex set and:
+\[ f(\theta x + (1-\theta)y) \leq \theta f(x) + (1-\theta) f(y), \quad \forall x, y \in \text{dom}(f),\quad 0\leq\theta\leq1 \]
+
+\begin{itemize}
+	\item A function $f$ is \hlb{strictly convex} if:
+	\[ f(\theta x + (1-\theta)y) < \theta f(x) + (1-\theta) f(y)\]
+	If there is a minimum point that it is the only minimum point and a global minimum
+	\item \hlb{Affine function:} $f(\textbf{x}) = \textbf{a}^T\textbf{x}+b$ is both convex and concave\\
+	If the variable is a matrix $\textbf{X}: f(\textbf{X}) = trace(\textbf{A}^T \textbf{X}) + b$
+	\item \hlb{Quadratic form:} $f(\textbf{x}) = \textbf{x}^T \textbf{A x} + \textbf{b}^T \textbf{x} + c$ is
+	\begin{itemize}
+		\item convex if $A \succeq 0$
+		\item concave if $-A \succeq 0$
+	\end{itemize}
+	\item A function satisfies 3 norm conditions $\Rightarrow$ convex
+	\item $\alpha$-subset level of $f: \mathbb{R}^n \rightarrow \mathbb{R}$: $\mathcal{C}_\alpha = \{ \textbf{x} \in \text{dom}f | f(\textbf{x}) \leq \alpha \}$
+\end{itemize}
+
+Checking if $f$ is convex:
+\begin{itemize}
+	\item First order condition \ac{iff}: $\begin{cases}
+		\text{differentiable with convex domain}\\
+		f(x) \geq f(x_0) + \nabla f(x_0)^T(x-x_0), \quad \forall x, x_0 \in \text{dom}f
+	\end{cases}$
+	\item Second order condition: the Hessian $\nabla^2f(x) \succeq 0$
+\end{itemize}

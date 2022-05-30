@@ -1,0 +1,13 @@
+% !TeX spellcheck = en_US
+\chapter{Generative Models}
+
+\section{Basics Definitions}
+Check \secref{sec:vae-defs}
+\begin{itemize}
+	\item Generative models: are models that generate data $x$. \Eg: $p(x)$ is a generative model, because knowing $p(x)$, we can sample $x$.
+\end{itemize}
+
+\note
+\begin{itemize}
+	\item Not all generative models are not necessary latent variable models, and not all latent variable models are generative models. But it's common for a generative model to be a latent variable model, because sometimes, to generate data, we usually want to know the \ac{prob} distribution of it. When that \ac{prob} distribution is complex, we would represent it as a product of multiple simple \ac{prob} distribution, using some latent variables.
+\end{itemize}

@@ -1,33 +1,62 @@
 % !TeX spellcheck = en_US
-\chapter{Logistics Regression}
+\section{Logistics Regression}
 
-Though named as "regression", logistics regression is used for classification problem. For the classification problem with 2 classes, instead of a hard threshold (from linear classification), we could have a soft one, and find the \ac{prob} of the input belongs to either class.
-\begin{equation}
-	f(x) = \theta(\omega^Tx)
-\end{equation}
+Though named as "regression", logistics regression is used for classification problem, just like Linear Discriminant (\secref{sec:linear-classification}).
 
-The sigmoid function:
+\hlb{Problem:} In many of binary classification problems (classification problem with 2 classes), it's rather hard (or even impossible) to be certain about the class of the output, and the training data is not linear separable. Instead of a hard threshold, we could have a soft one, represent by the \ac{prob} belonging to either classes.
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=0.79\textwidth]{sigmoid-example.png}
+	\caption{Example of exam results based on study hours (\href{https://machinelearningcoban.com/2017/01/27/logisticregression/}{src}). Given the number of hours, instead of predicting whether fail or pass, the model predicts the \ac{prob} that the student will pass, or fail.}
+\end{figure}
+
+The sigmoid function gives a nice nonlinear transition for the \ac{prob}. The further the data point is from the threshold, the higher the \ac{prob} it belongs to one class, and small to the others.
 \begin{align}
 	f(s) 		&= \frac{1}{1 + e^{-s}} \overset{\triangle}{=} \sigma(s) \\
 	s 			&= \text{ln} \left( \frac{\sigma}{1-\sigma} \right) \\
 	\sigma'(s)	&= \sigma(s) \left( 1- \sigma(s) \right)
+	\label{eq:sigmoid}
 \end{align}
-The cross entropy error function:
-\begin{equation}
-	J(w, x, y) = -\left( y_i log\,z_i + (1-y_i) \,log(1-z_i)  \right)
-\end{equation}
-with $z_i = f(w^T x_i)$
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{sigmoid.png}
+	\caption{Sigmoid function (\href{https://en.wikipedia.org/wiki/Sigmoid_function}{src}).}
+\end{figure}
 
-\begin{align}
-	\Rightarrow &\frac{\partial J}{\partial w} = (z_i - y_i) x_i \\
-	\Rightarrow &w \;\;\;= w + \eta (y_i - z_i) x_i
-\end{align}
+\hlb{Approach:}
+\begin{itemize}
+	\item Design of the error function.\\
+	Assume that the \ac{prob} of data point $\textbf{x}$ falls into class 1 is $f(\textbf{w}^T\textbf{x})$ and class 0 is $1-f(\textbf{w}^T\textbf{x})$. With $z_i = f(\textbf{w}^T\textbf{x}_i)$:
+	\begin{equation}
+		\begin{cases}
+			P(y_i=1|\textbf{x}_i; \textbf{w}) &= f(\textbf{w}^T\textbf{x}_i) = z_i \\
+			P(y_i=0|\textbf{x}_i; \textbf{w}) &= 1 - f(\textbf{w}^T\textbf{x}_i) =1 - z_i
+		\end{cases} \Leftrightarrow P(y_i | \textbf{x}_i; \textbf{w}) = z_i^{y_i}(1-z_i)^{1-y_i}
+	\end{equation}
+	With the aim to find the model \ac{param} that maximizes the data \ac{prob} (\subsecref{subsec:mle}):
+	\begin{align*}
+		\textbf{w}^* &= \arg \underset{\textbf{w}}{\max}\;P(\textbf{y}|\textbf{X; w}) && \\
+		&= - \arg \underset{\textbf{w}}{\min} \log P(\textbf{y}|\textbf{X; w}) && \text{(negative log-likelihood)} \\
+		P(\mathbf{y}|\mathbf{X}; \mathbf{w}) &= \prod_{i=1}^N P(y_i| \mathbf{x}_i; \mathbf{w}) = \prod_{i=1}^N z_i^{y_i}(1 - z_i)^{1- y_i} && \text{(independence assumption)} \\
+		- \log P(\textbf{y}|\textbf{X; w}) &= - \sum_{i=1}^{N} [ y_i\log z_i + (1-y_1)\log (1-z_i) ] && \text{(the cross entropy error)}
+	\end{align*}
+	
+	\item Optimization with \ac{SGD}:
+	\begin{align}
+			\textbf{w} &= \textbf{w} - \eta.\frac{\partial J}{\partial x} \tab \text{($\eta$ as the learning rate)}
+			\label{eq:log-reg-sgd}\\			
+			J(\textbf{w}, \textbf{x}_i, y) &= -\left( y_i\log z_i + (1-y_i)\log(1-z_i) \right), \tab \text{data point $(\textbf{x}_i, y_i)$} \\
+			\Rightarrow \; \frac{\partial J}{\partial \textbf{w}} &= - \left( \frac{y_i}{z_i} - \frac{1-y_i}{1-z_i} \right) \frac{\partial z_i}{\partial\textbf{w}} = \frac{z_i - y_i}{z_i(1-z_i)} \frac{\partial z_i}{\partial\textbf{w}} \\
+			\frac{\partial z_i}{\partial s} &= z_i(1-z_i) \tab \text{(the beauty of sigmoid function, \eqref{eq:sigmoid})} \\
+			\Rightarrow \; \frac{\partial z_i}{\partial\textbf{w}} &= \frac{\partial z_i}{\partial s} \frac{\partial s}{\partial \textbf{w}} = z_i(1-z_i) \frac{\partial(\textbf{w}^T\textbf{x})}{\partial \textbf{w}} = z_i(1-z_i) \textbf{x} \\
+			\Rightarrow \; \frac{\partial J}{\partial \textbf{w}} &= (z_i - y_i) \textbf{x}_i\\
+			\Rightarrow \; w &= w + \eta (y_i - z_i) \textbf{x}_i \tab \text{(replace into \eqref{eq:log-reg-sgd})}
+	\end{align}
+\end{itemize}
 
-\note Require less \ac{param}, only $D$ dimensions, compared to Gaussians with
+\note Require less \ac{param}, only $D$ with $D$ as the \ac{no} dimensions, compared to Gaussians with $\displaystyle \left[\frac{M(M+5)}{2}+1\right]$ \ac{param}.
 
-$\displaystyle \frac{M(M+5)}{2}+1$ \ac{param}
-
-\chapter{Softmax Regression}
+\section{Softmax Regression}
 
 \hlr{Multinomial Logistics Regression, Maximum Entropy Classifier}
 

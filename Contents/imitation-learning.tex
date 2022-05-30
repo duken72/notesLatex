@@ -1,0 +1,35 @@
+% !TeX spellcheck = en_US
+\chapter{Imitation Learning}
+Also known as Behavior Cloning, essentially, this is \hlb{\underline{supervised learning}}. One problem might arise: applying the learned policy $\pi_{\theta}$ might lead to different action $\textbf{a}_t$, which then leads to different observations and states, comparing to the given dataset: $p_{data}(\textbf{o}_t)~\neq~p_{\pi_{\theta}}(\textbf{o}_t)$. This \hlb{distribution mismatch} can be tackled by adding on-policy data.
+
+\section{DAgger}
+\label{sec:dagger}
+\ac{dagger} aggregates training data from $p_{\pi_{\theta}}(\textbf{o}_t)$ instead of just $p_{data}(\textbf{o}_t)$. Without \ac{dagger}, it is proven that the error will grow quadratically with the number of time steps $\mathcal{O}(\epsilon T^2)$. \cite{ross2011ais}
+\begin{enumerate}
+	\item \tikzmark{il1}Train $p_{\pi_{\theta}}(\textbf{o}_t)$ from human data $\mathcal{D} = \{ (\textbf{o}_t, \textbf{a}_t)_i\}$
+	\item Run $p_{\pi_{\theta}}(\textbf{o}_t)$ to get data set $\mathcal{D}_\pi = \{\textbf{o}_1, \dots, \textbf{o}_M\}$
+	\item Ask human to label $\mathcal{D}_\pi$ with action $\textbf{a}_t$
+	\item \tikzmark{il4}Aggregate $\mathcal{D} \leftarrow \mathcal{D} \bigcup \mathcal{D}_\pi$
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex] ([xshift=-7mm,yshift=1mm]pic cs:il4) --++ (-.5,0) |- ([xshift=-7mm,yshift=1mm]pic cs:il1);
+	\end{tikzpicture}
+\end{enumerate}
+The major problem with \ac{dagger} is that it requires human input again in step 3.
+
+\section{Recap}
+\begin{itemize}
+	\item Requires human to annotate the data
+	\item Often (but not always) insufficient by itself (distribution mismatch problem)
+	\item Sometimes works well
+\end{itemize}
+\hlb{Problems:}
+\begin{itemize}
+	\item Non-Markovian behavior
+	\item Multimodal behavior
+\end{itemize}
+\hlb{Solutions:}
+\begin{itemize}
+	\item Output a mixture of Gaussians
+	\item Latent variable models
+	\item Auto-regressive discretization (\href{https://www.youtube.com/watch?v=988gLurg01U&list=PL_iWQOsE6TfURIIhCrlt-wj9ByIVpbfGc&index=7}{src})
+\end{itemize}

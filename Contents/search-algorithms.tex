@@ -1,0 +1,48 @@
+% !TeX spellcheck = en_US
+\chapter{Search Algorithms}
+
+\hlr{Search problem} is one common type of problem which has numerous presences in our lives. The well-known \ac{TSP} and its variants are search problems, in which the salesman have to find the shortest route that visit every cities. Many \ac{RL} problems can also be viewed as search problems, in which the machine find the most optimal plan to reach the goal.
+
+A search problem consists of: an agent in a state space, a successor function, a start state and a goal state. The \hlr{agent} is the one taking the \hlr{action}, \eg, in \ac{TSP}, the agent is the salesman, and the action is to travel; in \ac{RL}, the agent is the robot or the machine, and the action could be to move to a different position. The \hlr{search state} represents the current situation that the agent is in, which would not necessary equivalent to the world state, which includes every possible details about the environment. \Eg, in \ac{TSP}, the state is the current city, every time the action traveling is taken, the agent moves from one city to another (one state to another). The \hlr{successor function} describes the transition from one state to another. This function usually comes with the transition action and costs.
+
+A \hlr{solution of search problem} is a sequence of actions (a plan) which transform the start state to a goal state. \hlr{Search algorithms} find search solutions, which can be optimal, but in many practical cases, close to optimal within time limitation.
+
+This chapter structures as follows:
+\begin{itemize}
+	\item The first section describes how a search problem is formulated mathematically as a graph.
+	\item The second section presents some well-known search algorithms.
+\end{itemize}
+
+\section{Graph}
+
+A graph is the mathematical representation of a search problem. A graph consists of nodes and edges.
+
+\subsection{Undirected Graph}
+
+\subsection{Directed Graph}
+
+\subsection{Adjacency Matrix}
+
+\subsection{Incidence Matrix}
+
+\subsection{Trees and Forest}
+
+\section{Search Algorithms}
+
+\subsection{Properties}
+
+\subsection{Depth-first search}
+
+\subsection{Breadth-first search}
+
+\subsection{Prim's Algorithm}
+
+\subsection{Kruskal's Algorithm}
+
+\subsection{Dijkstra's Algorithm}
+
+\subsection{Bellman and Ford's Algorithm}
+
+\subsection{A* Algorithm}
+
+\todo{}

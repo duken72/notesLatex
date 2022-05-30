@@ -1,0 +1,46 @@
+% !TeX spellcheck = en_US
+\documentclass[
+english,
+openany,
+draft = false,
+twoside = true,
+fleqn
+]{scrbook}
+\usepackage{learning-notes}
+
+\author{Huu Duc Nguyen}
+\authordegreefront{}
+\authordegreeback{ M.Sc.}
+\subject{RL}
+\title{RL Notes}
+\date{2 May 2022}
+
+\begin{document}
+	\setlength{\abovedisplayskip}{3pt}
+	\setlength{\belowdisplayskip}{3pt}
+	
+	\frontmatter
+	\TitlePage
+	\tableofcontents
+	
+	\mainmatter
+	\include{Contents/abbrievations.tex}
+	\include{Contents/rl-overview.tex}
+	\include{Contents/imitation-learning.tex}
+	\include{Contents/policy-gradient.tex}
+	\include{Contents/actor-critic.tex}
+	\include{Contents/value-function-based-algorithms.tex}
+	\include{Contents/rl-optimal-control.tex}
+	\include{Contents/model-based-rl.tex}
+	\include{Contents/model-based-rl-latent-space.tex}
+	\include{Contents/model-based-policy-learning.tex}
+	\include{Contents/rl-exploration.tex}
+	\include{Contents/inverse-rl.tex}
+	
+	\include{Contents/rl-challenges-open-probs.tex}
+	
+	\backmatter
+	\pagenumbering{Roman}
+	\printbibliography[heading=bibintoc]
+	\appendix
+\end{document}

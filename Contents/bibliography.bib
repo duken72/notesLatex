@@ -4,6 +4,7 @@
 @STRING{amai	  = {Annals of Mathematics and Artificial Intelligence} }
 @STRING{ar      = {Autonomous Robots} }
 @STRING{flairs  = {Proc.~of the Int.~Conf.~of Florida Artificial Intelligence Research Society (FLAIRS)} }
+@STRING{icml  = {Proc.~of the Int.~Conf.~on Machine Learning} }
 @STRING{fsr		  = {Field and Service Robotics} }
 @STRING{icar    = {Proc.~of the Int.~Conf.~on Advanced Robotics (ICAR)} }
 @STRING{icra    = {Proc.~of the IEEE Intl.~Conf.~on Robotics \& Automation (ICRA)} }
@@ -21,12 +22,14 @@
 @STRING{jise    = {Journal of Information Science \& Engineering} }
 @STRING{jrs		  = {Journal of Robotic systems} }
 @STRING{js		  = {Journal of Sensors} }
+@STRING{jml		  = {Journal of Machine Learning} }
 @STRING{mdpi	  = {Multidisciplinary Digital Publishing Institute} }
 @STRING{or		  = {Operations Research} }
 @STRING{orl		  = {Operations Research Letters} }
-@STRING{ras     = {Journal on Robotics and Autonomous Systems (RAS)} }
+@STRING{ras		= {Journal on Robotics and Autonomous Systems (RAS)} }
 @STRING{tsmc	  = {IEEE Trans. on Systems, Man, and Cybernetics} }
 @STRING{wcica	  = {Proc.~of the World Congress on Intelligent Control and Automation} }
+@STRING{NeurIPS	  = {Proc.~of the Conf.~on Neural Information Processing Systems} }
 
 @InProceedings{zelinsky1993icar,
 	author    = {Zelinsky, Alexander and Jarvis, Ray A. and Byrne, J. C. and Yuta, Shinichi},
@@ -66,5 +69,356 @@
 	year = {1545},
 	author={Frisius, Rainer Gemma},
 	publisher={Ap. Gul Cavellat}
+}
+@book{thrun2006probalistic,
+	title={Probalistic robotics},
+	author={Thrun, Sebastian and Burgard, Wolfram and Fox, Dieter},
+	year={2006},
+	publisher={Emerald Group Publishing Limited}
+}
+@inproceedings{ross2011ais,
+	title={A reduction of imitation learning and structured prediction to no-regret online learning},
+	author={Ross, St{\'e}phane and Gordon, Geoffrey and Bagnell, Drew},
+	booktitle={Proceedings of the Fourteenth International Conference on Artificial Intelligence and Statistics},
+	pages={627--635},
+	year={2011},
+	organization={JMLR Workshop and Conference Proceedings}
+}
+@article{williams1992jml,
+	title={Simple statistical gradient-following algorithms for connectionist reinforcement learning},
+	author={Williams, Ronald J},
+	journal=jml,
+	volume={8},
+	number={3},
+	pages={229--256},
+	year={1992},
+	publisher={Springer}
+}
+@article{peters2008nn,
+	title={Reinforcement learning of motor skills with policy gradients},
+	author={Peters, Jan and Schaal, Stefan},
+	journal={Neural Networks},
+	volume={21},
+	number={4},
+	pages={682--697},
+	year={2008},
+	publisher={Elsevier}
+}
+@inproceedings{schulman2015icml,
+	title={Trust region policy optimization},
+	author={Schulman, John and Levine, Sergey and Abbeel, Pieter and Jordan, Michael and Moritz, Philipp},
+	booktitle=icml,
+	pages={1889--1897},
+	year={2015},
+	organization={PMLR}
+}
+@inproceedings{levine2013icml,
+	title={Guided policy search},
+	author={Levine, Sergey and Koltun, Vladlen},
+	booktitle=icml,
+	pages={1--9},
+	year={2013},
+	organization={PMLR}
+}
+@article{schulman2017proximal,
+	title={Proximal policy optimization algorithms},
+	author={Schulman, John and Wolski, Filip and Dhariwal, Prafulla and Radford, Alec and Klimov, Oleg},
+	journal={arXiv preprint arXiv:1707.06347},
+	year={2017}
+}
+@inproceedings{thomas2014icml,
+	title={Bias in natural actor-critic algorithms},
+	author={Thomas, Philip},
+	booktitle=icml,
+	pages={441--448},
+	year={2014},
+	organization={PMLR}
+}
+@article{gu2016q,
+	title={Q-prop: Sample-efficient policy gradient with an off-policy critic},
+	author={Gu, Shixiang and Lillicrap, Timothy and Ghahramani, Zoubin and Turner, Richard E and Levine, Sergey},
+	journal={arXiv preprint arXiv:1611.02247},
+	year={2016}
+}
+@article{sutton1999policy,
+	title={Policy gradient methods for reinforcement learning with function approximation},
+	author={Sutton, Richard S and McAllester, David and Singh, Satinder and Mansour, Yishay},
+	journal=NeurIPS,
+	volume={12},
+	year={1999}
+}
+@inproceedings{mnih2016icml,
+	title={Asynchronous methods for deep reinforcement learning},
+	author={Mnih, Volodymyr and Badia, Adria Puigdomenech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
+	booktitle=icml,
+	pages={1928--1937},
+	year={2016},
+	organization={PMLR}
+}
+@article{schulman2015high,
+	title={High-dimensional continuous control using generalized advantage estimation},
+	author={Schulman, John and Moritz, Philipp and Levine, Sergey and Jordan, Michael and Abbeel, Pieter},
+	journal={arXiv preprint arXiv:1506.02438},
+	year={2015}
+}
+@article{munos2016safe,
+	title={Safe and efficient off-policy reinforcement learning},
+	author={Munos, R{\'e}mi and Stepleton, Tom and Harutyunyan, Anna and Bellemare, Marc},
+	journal=NeurIPS,
+	volume={29},
+	year={2016}
+}
+@article{browne2012survey,
+	title={A survey of monte carlo tree search methods},
+	author={Browne, Cameron B and Powley, Edward and Whitehouse, Daniel and Lucas, Simon M and Cowling, Peter I and Rohlfshagen, Philipp and Tavener, Stephen and Perez, Diego and Samothrakis, Spyridon and Colton, Simon},
+	journal={IEEE Transactions on Computational Intelligence and AI in games},
+	volume={4},
+	number={1},
+	pages={1--43},
+	year={2012},
+	publisher={IEEE}
+}
+@inproceedings{tassa2012iros,
+	title={Synthesis and stabilization of complex behaviors through online trajectory optimization},
+	author={Tassa, Yuval and Erez, Tom and Todorov, Emanuel},
+	booktitle=iros,
+	pages={4906--4913},
+	year={2012},
+	organization={IEEE}
+}
+@book{jacobson1970differential,
+	title={Differential dynamic programming},
+	author={Jacobson, David H and Mayne, David Q},
+	number={24},
+	year={1970},
+	publisher={Elsevier Publishing Company}
+}
+@article{levine2014learning,
+	title={Learning neural network policies with guided policy search under unknown dynamics},
+	author={Levine, Sergey and Abbeel, Pieter},
+	journal=NeurIPS,
+	volume={27},
+	year={2014}
+}
+@inproceedings{blundell2015icml,
+	title={Weight uncertainty in neural network},
+	author={Blundell, Charles and Cornebise, Julien and Kavukcuoglu, Koray and Wierstra, Daan},
+	booktitle=icml,
+	pages={1613--1622},
+	year={2015},
+	organization={PMLR}
+}
+@article{gal2017concrete,
+	title={Concrete dropout},
+	author={Gal, Yarin and Hron, Jiri and Kendall, Alex},
+	journal=NeurIPS,
+	volume={30},
+	year={2017}
+}
+@article{chua2018deep,
+	title={Deep reinforcement learning in a handful of trials using probabilistic dynamics models},
+	author={Chua, Kurtland and Calandra, Roberto and McAllister, Rowan and Levine, Sergey},
+	journal=NeurIPS,
+	volume={31},
+	year={2018}
+}
+@inproceedings{nagabandi2020deep,
+	title={Deep dynamics models for learning dexterous manipulation},
+	author={Nagabandi, Anusha and Konolige, Kurt and Levine, Sergey and Kumar, Vikash},
+	booktitle={Conference on Robot Learning},
+	pages={1101--1112},
+	year={2020},
+	organization={PMLR}
+}
+@inproceedings{deisenroth2011icml,
+	title={PILCO: A model-based and data-efficient approach to policy search},
+	author={Deisenroth, Marc and Rasmussen, Carl E},
+	booktitle=icml,
+	pages={465--472},
+	year={2011},
+	organization={Citeseer}
+}
+@inproceedings{feinberg2018icml,
+	title={Model-based value expansion for efficient model-free reinforcement learning},
+	author={Feinberg, Vladimir and Wan, Alvin and Stoica, Ion and Jordan, Michael I and Gonzalez, Joseph E and Levine, Sergey},
+	booktitle=icml,
+	year={2018}
+}
+@article{buckman2018sample,
+	title={Sample-efficient reinforcement learning with stochastic ensemble value expansion},
+	author={Buckman, Jacob and Hafner, Danijar and Tucker, George and Brevdo, Eugene and Lee, Honglak},
+	journal=NeurIPS,
+	volume={31},
+	year={2018}
+}
+@inproceedings{finn2017icra,
+	title={Deep visual foresight for planning robot motion},
+	author={Finn, Chelsea and Levine, Sergey},
+	booktitle=icra,
+	pages={2786--2793},
+	year={2017},
+	organization={IEEE}
+}
+@inproceedings{ebert2017self,
+	title={Self-Supervised Visual Planning with Temporal Skip Connections.},
+	author={Ebert, Frederik and Finn, Chelsea and Lee, Alex X and Levine, Sergey},
+	booktitle={CoRL},
+	pages={344--356},
+	year={2017}
+}
+@article{watkins1989learning,
+	title={Learning from delayed rewards},
+	author={Watkins, Christopher John Cornish Hellaby},
+	year={1989},
+	publisher={King's College, Cambridge United Kingdom}
+}
+@inproceedings{riedmiller2005neural,
+	title={Neural fitted Q iteration--first experiences with a data efficient neural reinforcement learning method},
+	author={Riedmiller, Martin},
+	booktitle={European Conference on Machine Learning},
+	pages={317--328},
+	year={2005},
+	organization={Springer}
+}
+@inproceedings{lange2010deep,
+	title={Deep auto-encoder neural networks in reinforcement learning},
+	author={Lange, Sascha and Riedmiller, Martin},
+	booktitle={The 2010 International Joint Conference on Neural Networks (IJCNN)},
+	pages={1--8},
+	year={2010},
+	organization={IEEE}
+}
+@article{mnih2015human,
+	title={Human-level control through deep reinforcement learning},
+	author={Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A and Veness, Joel and Bellemare, Marc G and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K and Ostrovski, Georg and others},
+	journal={Nature},
+	volume={518},
+	number={7540},
+	pages={529--533},
+	year={2015},
+	publisher={Nature Publishing Group}
+}
+@inproceedings{van2016deep,
+	title={Deep reinforcement learning with double q-learning},
+	author={Van Hasselt, Hado and Guez, Arthur and Silver, David},
+	booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+	volume={30},
+	number={1},
+	year={2016}
+}
+@inproceedings{gu2016continuous,
+	title={Continuous deep q-learning with model-based acceleration},
+	author={Gu, Shixiang and Lillicrap, Timothy and Sutskever, Ilya and Levine, Sergey},
+	booktitle=icml,
+	pages={2829--2838},
+	year={2016},
+	organization={PMLR}
+}
+@inproceedings{wang2016dueling,
+	title={Dueling network architectures for deep reinforcement learning},
+	author={Wang, Ziyu and Schaul, Tom and Hessel, Matteo and Hasselt, Hado and Lanctot, Marc and Freitas, Nando},
+	booktitle=icml,
+	pages={1995--2003},
+	year={2016},
+	organization={PMLR}
+}
+@article{lillicrap2015continuous,
+	title={Continuous control with deep reinforcement learning},
+	author={Lillicrap, Timothy P and Hunt, Jonathan J and Pritzel, Alexander and Heess, Nicolas and Erez, Tom and Tassa, Yuval and Silver, David and Wierstra, Daan},
+	journal={arXiv preprint arXiv:1509.02971},
+	year={2015}
+}
+@article{kalashnikov2018qt,
+	title={Qt-opt: Scalable deep reinforcement learning for vision-based robotic manipulation},
+	author={Kalashnikov, D and Irpan, A and Pastor, P and Ibarz, J and Herzog, A and Jang, E and Quillen, D and Holly, E and Kalakrishnan, M and Vanhoucke, V and others},
+	journal={arXiv preprint arXiv:1806.10293},
+	year={2018}
+}
+@inproceedings{parmas2018icml,
+	title={PIPPS: Flexible model-based policy search robust to the curse of chaos},
+	author={Parmas, Paavo and Rasmussen, Carl Edward and Peters, Jan and Doya, Kenji},
+	booktitle=icml,
+	pages={4065--4074},
+	year={2018},
+	organization={PMLR}
+}
+@incollection{sutton1990integrated,
+	title={Integrated architectures for learning, planning, and reacting based on approximating dynamic programming},
+	author={Sutton, Richard S},
+	booktitle=icml,
+	pages={216--224},
+	year={1990},
+	publisher={Elsevier}
+}
+@inproceedings{gu2016continuous,
+	title={Continuous deep q-learning with model-based acceleration},
+	author={Gu, Shixiang and Lillicrap, Timothy and Sutskever, Ilya and Levine, Sergey},
+	booktitle=icml,
+	pages={2829--2838},
+	year={2016},
+	organization={PMLR}
+}
+@inproceedings{feinberg2018model,
+	title={Model-based value expansion for efficient model-free reinforcement learning},
+	author={Feinberg, Vladimir and Wan, Alvin and Stoica, Ion and Jordan, Michael I and Gonzalez, Joseph E and Levine, Sergey},
+	booktitle=icml,
+	year={2018}
+}
+@article{janner2019trust,
+	title={When to trust your model: Model-based policy optimization},
+	author={Janner, Michael and Fu, Justin and Zhang, Marvin and Levine, Sergey},
+	journal=NeurIPS,
+	volume={32},
+	year={2019}
+}
+@article{levine2014learning,
+	title={Learning neural network policies with guided policy search under unknown dynamics},
+	author={Levine, Sergey and Abbeel, Pieter},
+	journal=NeurIPS,
+	volume={27},
+	year={2014}
+}
+@article{levine2016end,
+	title={End-to-end training of deep visuomotor policies},
+	author={Levine, Sergey and Finn, Chelsea and Darrell, Trevor and Abbeel, Pieter},
+	journal={The Journal of Machine Learning Research},
+	volume={17},
+	number={1},
+	pages={1334--1373},
+	year={2016},
+	publisher={JMLR. org}
+}
+@article{hinton2015distilling,
+	title={Distilling the knowledge in a neural network},
+	author={Hinton, Geoffrey and Vinyals, Oriol and Dean, Jeff and others},
+	journal={arXiv preprint arXiv:1503.02531},
+	volume={2},
+	number={7},
+	year={2015}
+}
+@article{rusu2015policy,
+	title={Policy distillation},
+	author={Rusu, Andrei A and Colmenarejo, Sergio Gomez and Gulcehre, Caglar and Desjardins, Guillaume and Kirkpatrick, James and Pascanu, Razvan and Mnih, Volodymyr and Kavukcuoglu, Koray and Hadsell, Raia},
+	journal={arXiv preprint arXiv:1511.06295},
+	year={2015}
+}
+@article{parisotto2015actor,
+	title={Actor-mimic: Deep multitask and transfer reinforcement learning},
+	author={Parisotto, Emilio and Ba, Jimmy Lei and Salakhutdinov, Ruslan},
+	journal={arXiv preprint arXiv:1511.06342},
+	year={2015}
+}
+@article{ghosh2017divide,
+	title={Divide-and-conquer reinforcement learning},
+	author={Ghosh, Dibya and Singh, Avi and Rajeswaran, Aravind and Kumar, Vikash and Levine, Sergey},
+	journal={arXiv preprint arXiv:1711.09874},
+	year={2017}
+}
+@article{teh2017distral,
+	title={Distral: Robust multitask reinforcement learning},
+	author={Teh, Yee and Bapst, Victor and Czarnecki, Wojciech M and Quan, John and Kirkpatrick, James and Hadsell, Raia and Heess, Nicolas and Pascanu, Razvan},
+	journal=NeurIPS,
+	volume={30},
+	year={2017}
 }
 @Comment{jabref-meta: databaseType:bibtex;}

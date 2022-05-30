@@ -1,0 +1,142 @@
+% !TeX spellcheck = en_US
+\chapter{Markov Decision Process}
+
+\section{Definitions}
+
+\subsection{Markov Chain}
+A Markov Chain $\mathcal{M}$ is a tuple consisting of:
+\begin{align*}
+	\mathcal{M} &= \{ \mathcal{S, T}\} &&\\
+	\mathcal{S} &- \text{state space} && s \in \mathcal{S} \quad\text{(discrete or continuous)}\\
+	\mathcal{T} &- \text{transition operator} && p(s_{t+1} | s_t) \text{ or } \vec{\mu}_{t+1} = \mathcal{T} \vec{\mu}_t \quad (\mathcal{T} \text{ is a matrix})
+\end{align*}
+Markov chain is a process without memories. In other words, the next state $s_{t+1}$ depends only on the current state $s_t$, not the previous state $s_{t-1}$.
+\begin{center}
+	\begin{tikzpicture}[roundnode/.style={circle, draw=black!60, very thick, minimum size=7mm}]
+		\node[roundnode](s1){$\textbf{s}_1$};
+		\node[roundnode](s2)[right=2.7cm of s1]{$\textbf{s}_2$};	
+		\node[roundnode](s3)[right=2.7cm of s2]{$\textbf{s}_3$};
+		\draw[-latex](s1.east) -- (s2.west) node[midway, below]{$p(\textbf{s}_{t+1} | \textbf{s}_t)$};
+		\draw[-latex](s2.east) -- (s3.west) node[midway, below]{$p(\textbf{s}_{t+1} | \textbf{s}_t)$};
+	\end{tikzpicture}
+\end{center}
+
+\subsection{Markov Decision Process (MDP)}
+A \ac{MDP} $\mathcal{M}$ is a tuple consisting of:
+\begin{align*}
+	\mathcal{M} &= \{ \mathcal{S, A, T}, r, \gamma\} &&\\
+	\mathcal{S} &- \text{state space} && s \in \mathcal{S} \quad\text{(discrete or continuous)} \\
+	\mathcal{A} &- \text{action space} && a \in \mathcal{A} \quad\text{(discrete or continuous)}\\
+	\mathcal{T} &- \text{transition operator} &&p(s_{t+1} | s_t) \text{ (now a tensor)}\\
+	r &- \text{reward function} && r : \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}, \quad r(s_t, a_t)\\
+	\gamma &- \text{discount factor} && \gamma\in [0,1] \quad\text{(optional)}
+\end{align*}
+\begin{center}
+	\begin{tikzpicture}[roundnode/.style={circle, draw=black!60, very thick, minimum size=7mm}]
+		\node[roundnode](s1){$\textbf{s}_1$};
+		\node[roundnode](s2)[right=3cm of s1]{$\textbf{s}_2$};	
+		\node[roundnode](s3)[right=3cm of s2]{$\textbf{s}_3$};
+		\node[roundnode](a1)[above right=1cm and 0.2cm of s1]{$\textbf{a}_1$};
+		\node[roundnode](a2)[above right=1cm and 0.2cm of s2]{$\textbf{a}_2$};
+		\draw[-latex](s1.east) -- (s2.west) node[midway, below]{$p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t)$};
+		\draw[-latex](s2.east) -- (s3.west) node[midway, below]{$p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t)$};
+		\draw[-latex](a1.south east) -- (s2.west);
+		\draw[-latex](a2.south east) -- (s3.west);
+	\end{tikzpicture}
+\end{center}
+
+There are definitions relating to \ac{MDP}:
+\begin{itemize}
+	\item Policy: choice of action (at each state): $\pi_\theta(\textbf{a}_t | \textbf{s}_t)$
+	\item Utility: sum of (discounted) rewards
+\end{itemize}
+
+A \ac{MDP} can also be considered as a Markov chain on the augmented state $(\textbf{s, a})$, \ac{aka} Q-state. Knowing the state transition $p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t)$ and policy $\pi_\theta (\textbf{a}_t | \textbf{s}_t)$, the transition of these Q-states can be derived as follows:
+\begin{equation}
+	p((\textbf{s}_{t+1}, \textbf{a}_{t+1}) | (\textbf{s}_t, \textbf{a}_t)) = p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t) \pi_\theta(\textbf{a}_{t+1} | \textbf{s}_{t+1})
+\end{equation}
+
+\ac{MDP} state projects an expectimax-like search tree \todo{add image}
+
+\subsection{Partially Observable Markov Decision Process (POMDP)}
+A \ac{POMDP} $\mathcal{M}$ is a tuple consisting of:
+\begin{align*}
+	\mathcal{M} &= \{ \mathcal{S, A, O, T, E,} r, \gamma\} &&\\
+	\mathcal{S} &- \text{state space} && s \in \mathcal{S} \quad\text{(discrete or continuous)} \\
+	\mathcal{A} &- \text{action space} && a \in \mathcal{A} \quad\text{(discrete or continuous)} \\
+	\mathcal{O} &- \text{observation space} && o \in \mathcal{O} \quad\text{(discrete or continuous)} \\
+	\mathcal{T} &- \text{transition operator} && p(s_{t+1} | s_t)\\
+	\mathcal{E} &- \text{emission \ac{prob}} && p(o_t | s_t)\\
+	r &- \text{reward function} && r : \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}\\
+	\gamma &- \text{discount factor} && \gamma\in [0,1] \quad\text{(optional)}
+\end{align*}
+\begin{center}
+	\begin{tikzpicture}[roundnode/.style={circle, draw=black!60, very thick, minimum size=7mm}]
+		\node[roundnode](s1){$\textbf{s}_1$};
+		\node[roundnode](s2)[right=3cm of s1]{$\textbf{s}_2$};
+		\node[roundnode](s3)[right=3cm of s2]{$\textbf{s}_3$};
+		\node[roundnode](o1)[above left=1cm and 0.5cm of s1]{$\textbf{o}_1$};
+		\node[roundnode](o2)[above left=1cm and 0.5cm of s2]{$\textbf{o}_2$};
+		\node[roundnode](o3)[above left=1cm and 0.5cm of s3]{$\textbf{o}_3$};
+		\node[roundnode](a1)[above right=1cm and 0.2cm of s1]{$\textbf{a}_1$};
+		\node[roundnode](a2)[above right=1cm and 0.2cm of s2]{$\textbf{a}_2$};
+		\draw[-latex](s1.east) -- (s2.west);
+		\draw[-latex](s2.east) -- (s3.west);
+		\draw[-latex](a1.south east) -- (s2.west);
+		\draw[-latex](a2.south east) -- (s3.west);
+		\draw[-latex](s1.north west) -- (o1.south east);
+		\draw[-latex](s2.north west) -- (o2.south east);
+		\draw[-latex](s3.north west) -- (o3.south east);
+	\end{tikzpicture}
+\end{center}
+
+Finite \ac{vs} infinite horizon: \todo{}
+
+\hlb{To solve infinite utilities:}
+\begin{itemize}
+	\item Finite horizon
+	\item Discounting
+	\item Absorbing state (like the fire hole, overheating)
+\end{itemize}
+
+\section{Bellman equations}
+\begin{itemize}
+	\item $T(s, a, s') = P(s'| s, a)$ \qquad \text{the \ac{prob} of reaching state $s'$ from taking action $a$ at state $s$}
+	\item $R(s, a, s') \qquad \text{the reward of making the transition}$
+	\item $Q^*(s, a)$: expected utility starting in state $s$ and having taken action $a$, then act optimally
+	\begin{align}
+		Q^*(s, a) = \sum_{s'} T(s, a, s') \left[ R(s, a, s') + \gamma V^*(s') \right]
+	\end{align}
+	It is the sum over possible next state $s'$, because there is uncertainty of which state $s'$ will be reached, even with the same starting state $s$ and action $a$.
+	\item $V^*(s)$: value of a state - expected utility starting in state $s$ and acting optimally
+	\begin{align}
+		V^*(s) & = \underset{a}{\max}\;Q^*(s, a)\\
+		\Rightarrow \quad V^*(s) & = \underset{a}{\max} \sum_{s'} T(s, a, s') \left[ R(s, a, s') + \gamma V^*(s') \right]
+	\end{align}
+	
+	\item $\pi^*(s)$: optimal action / policy from state $s$
+\end{itemize}
+
+\todo{Explain this??}
+\begin{equation}
+	\hlre{V(s) = \mathbb{E}[G_t|S_t = s] = \mathbb{E}\left[ R_{t+1} + \gamma V(S_{t+1}) | S_t = s \right] = R_s + \gamma\sum_{s'} P_{ss'} V(s')}
+\end{equation}
+
+\section{Partially Observable Markov Decision Process}
+\ac{POMDP} is defined with a tuple: $<S, A, O, P, R, Z, \gamma>$:
+\begin{itemize}
+	\item $S$: state
+	\item $A$: action
+	\item $O$: \hlr{observation}
+	\item $P$: transition matrix
+	\item $R$: reward
+	\item $Z$: \hlr{observation \ac{func}}
+	\item $\gamma$: discount factor (optional)
+\end{itemize}
+\begin{align}	
+	&Z_{s'o}^a = P \left[ O_{t+1} =o | S_{t+1} = s', A_t = a \right]\\
+	\Rightarrow \quad &\begin{cases}
+		\displaystyle V^*(b) \leftarrow \underset{a}{\max}\left[ R_b^a + \gamma \sum_{s'} P_{bb'}^a V(b') \right]\\
+		\displaystyle \pi^*(b) = \underset{a}{\arg\max} \left[ R_b^a + \gamma \sum_{s'} P_{bb'}^a V(b') \right]
+	\end{cases}
+\end{align}

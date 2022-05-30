@@ -1,0 +1,107 @@
+% !TeX spellcheck = en_US
+\chapter{Model-based RL with Images}
+\section{Latent Space Models}
+In state space (latent-space) models, the inputs are given observations, not states.
+\begin{align}
+	& p(\textbf{o}_t | \textbf{s}_t) && \text{- observation model: high-dimensional, but not dynamic}\\
+	& p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t) && \text{- dynamics model: low-dimensional, but dynamic}\\
+	& p(r_t | \textbf{s}_t, \textbf{a}_t) && \text{- reward model}
+\end{align}
+\begin{center}
+	\begin{tikzpicture}[roundnode/.style={circle, draw=black!60, very thick, minimum size=7mm}]
+		\node[roundnode](s1){$\textbf{s}_1$};
+		\node[roundnode](s2)[right=3cm of s1]{$\textbf{s}_2$};
+		\node[roundnode](s3)[right=3cm of s2]{$\textbf{s}_3$};
+		\node[roundnode](o1)[above left=1cm and 0.5cm of s1]{$\textbf{o}_1$};
+		\node[roundnode](o2)[above left=1cm and 0.5cm of s2]{$\textbf{o}_2$};
+		\node[roundnode](o3)[above left=1cm and 0.5cm of s3]{$\textbf{o}_3$};
+		\node[roundnode](a1)[above right=1cm and 0.2cm of s1]{$\textbf{a}_1$};
+		\node[roundnode](a2)[above right=1cm and 0.2cm of s2]{$\textbf{a}_2$};
+		\node[roundnode](a3)[above right=1cm and 0.2cm of s3]{$\textbf{a}_3$};
+		\node[roundnode](r1)[below right=.7cm and 0.5cm of s1]{$\textbf{r}_1$};
+		\node[roundnode](r2)[below right=.7cm and 0.5cm of s2]{$\textbf{r}_2$};
+		\node[roundnode](r3)[below right=.7cm and 0.5cm of s3]{$\textbf{r}_3$};
+		\draw[-latex](s1.east) -- (s2.west);
+		\draw[-latex](s2.east) -- (s3.west);
+		\draw[-latex](a1.south east) -- (s2.west);
+		\draw[-latex](a2.south east) -- (s3.west);
+		\draw[-latex](s1.north west) -- (o1.south east);
+		\draw[-latex](s2.north west) -- (o2.south east);
+		\draw[-latex](s3.north west) -- (o3.south east);
+		\draw[-latex](a1.south) -- (r1.north);
+		\draw[-latex](a2.south) -- (r2.north);
+		\draw[-latex](a3.south) -- (r3.north);
+		\draw[-latex](s1.south east) -- (r1.north west);
+		\draw[-latex](s2.south east) -- (r2.north west);
+		\draw[-latex](s3.south east) -- (r3.north west);
+	\end{tikzpicture}
+\end{center}
+
+With the above state space model, we now learn a different model:
+\begin{itemize}
+	\item Before: standard (fully observable) model
+	\[ \underset{\phi}{\max} \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \log p_\phi (\textbf{s}_{t+1, i} | \textbf{s}_{t, i}, \textbf{a}_{t,i}) \]
+	\item Now: latent space model
+	\[ \underset{\phi}{\max} \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \mathbb{E}\left[ \log p_\phi (\textbf{s}_{t+1, i} | \textbf{s}_{t, i}, \textbf{a}_{t,i}) + \log p_\phi(\textbf{o}_{t,i}|\textbf{s}_{t, i}) \right] \]
+	the expectation with regard to $(\textbf{s}_t, \textbf{s}_{t+1})\sim p(\textbf{s}_t, \textbf{s}_{t+1} | \textbf{o}_{1:T}, \textbf{a}_{1:T})$ \hlr{(very complicate)}
+\end{itemize}
+
+The above objective can be learn by the approximate posterior $q_\psi(\textbf{s}_t | \textbf{o}_{1:t}, \textbf{a}_{1:t})$ \hlr{"encoder"}. There are also other choices for approximate posterior, depending on each problem settings:
+\begin{align*}
+	&q_\psi(\textbf{s}_t, \textbf{s}_{t+1} | \textbf{o}_{1:T}, \textbf{a}_{1:T}) &&\text{full smoothing posterior} &&\begin{matrix*}[l]
+		\color{Green}+ \text{most accurate}\\
+		\color{red}- \text{most complicated (big \ac{RNN})}
+	\end{matrix*}\\
+	&\quad q_\psi(\textbf{s}_t | \textbf{o}_t) &&\text{single-step encoder} &&\begin{matrix*}[l]
+		\color{Green}+ \text{simplest}\\
+		\color{red}- \text{least accurate (\ac{CNN})}
+	\end{matrix*}
+\end{align*}
+\begin{itemize}
+	\item If the situation is more partially observed, you would want a more accurate approximation.
+	\item If the state can be entirely guessed by one single current observation, then this single-step posterior is a good choice.
+\end{itemize}
+
+\section{Deterministic Single-Step Encoder}
+Simple special case: $q(\textbf{s}_t, \textbf{o}_t)$ is \hlb{deterministic}
+\begin{align}
+	&q_\psi(\textbf{s}_t | \textbf{o}_t) = \delta(\textbf{s}_t = g_\psi(\textbf{o}_t)) \Rightarrow \textbf{s}_t = g_\psi(\textbf{o}_t) && \text{deterministic encoder}
+\end{align}
+$\Rightarrow$ The goal for model-based \ac{RL} with latent space is now:
+\begin{equation}
+	\underset{\phi, \psi}{\max} \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \log p_\phi \left[g_\psi(\textbf{o}_{t+1, i}) | g_\psi(\textbf{o}_{t,i}), \textbf{a}_{t,i}\right] + \log p_\phi\left[ \textbf{o}_{t,i} | g_\psi(\textbf{o}_{t,i}) \right]
+\end{equation}
+\begin{align*}
+	\underset{\phi, \psi}{\max} \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T &\log p_\phi \left[g_\psi(o_{t+1, i}) | g_\psi(o_{t,i}), a_{t,i}\right] + &\log p_\phi\left[ o_{t,i} | g_\psi(o_{t,i}) \right] + &&\log p_\phi \left[ r_{t, i} | g_\psi(o_{t,i}) \right]\\
+	& \text{\hlr{\fontsize{11}{0}\selectfont latent space dynamics}} & \text{\hlr{\fontsize{11}{0}\selectfont image reconstruction}} && \text{\hlr{\fontsize{11}{0}\selectfont reward model}}
+\end{align*}
+
+\section{Model-based RL with Latent Space Model}
+This is the model-based \ac{RL} with latent space model, assuming deterministic observation model:
+\begin{enumerate}
+	\item Run based policy $\pi_0(\textbf{a}_t|\textbf{o}_t)$ (\eg, random policy) to collect $\mathcal{D} = \{ (\textbf{o, a, o}')_i \}$
+	\item \tikzmark{mbrllsm2}Learn $p_\phi(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t), p_\phi(r_t, \textbf{s}_t), p(\textbf{o}_t | \textbf{s}_t), g_\psi(\textbf{o}_t)$
+	\item \tikzmark{mbrllsm3}Plan through the model to choose actions (\eg, \ac{MCTS}, \ac{LQR}, random shooting)
+	\item Execute the first planned action, observe result $\textbf{o}'$ (\ac{MPC})
+	\item \tikzmark{mbrllsm5}Append resulting $(\textbf{o, a, o}')$ to $\mathcal{D}$
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-7mm,yshift=2mm]pic cs:mbrllsm5) --++ (-.5,0) |-
+		([xshift=-7mm,yshift=1mm]pic cs:mbrllsm3);
+		\draw[very thick, -latex]
+		([xshift=-7mm,yshift=1mm]pic cs:mbrllsm5) --++ (-.7,0) |-
+		([xshift=-7mm,yshift=1mm]pic cs:mbrllsm2);
+		\node at ([xshift=-16mm,yshift=-2mm]pic cs:mbrllsm3) {\fontsize{10}{0}\selectfont \rotatebox{90}{every $N$ steps}};
+	\end{tikzpicture}
+\end{enumerate}
+
+\section{Learning in Observation Space}
+Im some situation, there are too many objects, thus, it's complicate to learn/build a compact state space. The better solution would be to directly learn $p(\textbf{o}_{t+1} | \textbf{o}_t, \textbf{a}_t)$ (taken in image $\rightarrow$ split out image).
+
+References:
+\begin{itemize}
+	\item \citeaus{finn2017icra}. Deep visual foresight for planning robot motion.
+	\item \citeaus{ebert2017self}. Self-Supervised Visual Planning with Temporal Skip Connections.
+\end{itemize}
+
+Gigantic model: \ac{RNN}. \todo{??}
