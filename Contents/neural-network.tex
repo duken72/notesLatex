@@ -119,7 +119,7 @@ Check derivative:
 			b &= b - \alpha \frac{v^{cor.}_{db}}{\sqrt{s^{cor.}_{db}} + \varepsilon}
 		\end{cases}
 	\end{equation}
-	\item Tips: choose \hlre{\beta_1 = 0.9, \;\;\beta_2 = 0.999, \;\;\varepsilon = 10^{-7}}
+	\item Tips: choose \hlre{\beta_1 = 0.9, \quad\beta_2 = 0.999, \quad\varepsilon = 10^{-7}}
 	\item Reference source: \href{https://youtu.be/JXQT_vxqwIs}{DeepLearning.AI}.
 \end{itemize}
 
@@ -134,7 +134,7 @@ Check derivative:
 		\item The mean of each input variable $=0$
 		\item Scale $\Rightarrow$ same covariance
 	\end{itemize}
-	Mean cancellation $\Rightarrow$ \ac{kl} expansion $\Rightarrow$ covariance equalization (if possible)
+	Mean cancellation $\Rightarrow$ \ac{KL} expansion $\Rightarrow$ covariance equalization (if possible)
 	\item Leaky \ac{relu} is better a bit than \ac{relu}, ELU
 	\item Weights initialization: Xavier-Glorot:
 	\[ W \sim U\left(0, \sqrt{\frac{6}{n_{in} + n_{out}}}\right) \]

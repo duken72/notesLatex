@@ -1,23 +1,25 @@
 % !TeX spellcheck = en_US
 \chapter{Overview}
-\ac{RL} are approaches for learning decision making from experience. In the \ac{AI} context, many \ac{RL} algorithms handle the scarcity of available (human-annotated) data.
+This if my learning notes for \ac{RL}. \ac{RL} are approaches for learning decision making from experience. In the \ac{AI} context, many \ac{RL} algorithms handle the scarcity of available (human-annotated) data.
 
-Instead of trying to produce a program to simulate the adult mind, why not rather try to produce one which simulates the child's? If this were then subjected to an appropriate course of education, one would obtain the adult brain. (Alan Turing)
+\begin{displayquote}
+	\textit{Instead of trying to produce a program to simulate the adult mind, why not rather try to produce one which simulates the child's? If this were then subjected to an appropriate course of education, one would obtain the adult brain.} - Alan Turing -
+\end{displayquote}
 
 A \ac{RL} problem has 3 major blocks as follows:
 \begin{figure}[hbt!]
 	\centering
 	\begin{tikzpicture}
-		\fill[green, very thick] (.35,1.25) rectangle (4.2,2.7);
-		\fill[blue, very thick] (.35,-1.4) rectangle (4.2,-2.5);
-		\fill[orange, very thick] (-5.7,-.7) rectangle (-1.4,.7);
-		\node[black, text width=4cm] at (2.5,2) {Fit a model / estimate the return};
-		\node[white, text width=4cm] at (2.5,-2) {Improve the policy};
-		\node[white, text width=3.7cm] at (-3.5,0) {Generate samples (\ie run the policy)};
+		\fill[green, very thick] (.25,1.25) rectangle (4.5,2.7);
+		\fill[blue, very thick] (.25,-1.4) rectangle (4.5,-2.5);
+		\fill[orange, very thick] (-5.75,-.7) rectangle (-1.4,.7);
+		\node[black, text width=4.2cm] at (2.5,2) {\textbf{Fit a model / estimate the return}};
+		\node[white, text width=4.2cm] at (2.5,-2) {\textbf{Improve the policy}};
+		\node[white, text width=4.2cm] at (-3.5,0) {\textbf{Generate samples (\ie run the policy)}};
 		\node[red, text width=3.7cm] at (-6.5,0) {Real time or simulation};
 		\draw[thick, -latex] (2,1.25) -- (2,-1.4);
-		\draw[thick, -latex] (.35,-2) -- (-3.5,-2) -- (-3.5,-.7);
-		\draw[thick, -latex] (-3.5,.7) -- (-3.5,2) -- (.35,2);
+		\draw[thick, -latex] (.25,-2) -- (-3.5,-2) -- (-3.5,-.7);
+		\draw[thick, -latex] (-3.5,.7) -- (-3.5,2) -- (.25,2);
 	\end{tikzpicture}
 	\caption{Structure of \ac{RL} algorithms.}
 	\label{fig:RL-structure}
@@ -27,6 +29,7 @@ A \ac{RL} problem has 3 major blocks as follows:
 \begin{itemize}
 	\item \href{http://rail.eecs.berkeley.edu/deeprlcourse/}{Deep \ac{RL} - CS285, UC Berkeley - Sergey Levine}
 	\item \href{http://ai.berkeley.edu/lecture_videos.fhtml}{CS188 Berkeley AI}
+	\item Reinforcement learning: An introduction \cite{sutton2018reinforcement}
 \end{itemize}
 
 \section{Terminology \& Notation}

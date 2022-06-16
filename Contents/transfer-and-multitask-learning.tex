@@ -1,0 +1,232 @@
+% !TeX spellcheck = en_US
+\chapter{Transfer and Multi-Task Learning}
+If we’ve solved prior tasks, we might acquire useful knowledge for solving a new task. In \ac{RL}, knowledge is stored in:
+\begin{itemize}
+	\item Q-function: tells us which actions or states are good
+	\item Policy: tells us which actions are potentially useful. Some actions are never useful!
+	\item Models: what are the laws of physics that govern the world?
+	\item Features/hidden states: provide us with a good representation
+\end{itemize}
+
+\section{Definitions}
+\begin{itemize}
+	\item \textit{Transfer learning} is using experience from \textit{\textbf{one set of tasks}} for faster learning and better performance on a \textit{\textbf{new task}} in \ac{RL}.
+	\item In \ac{RL}, task = \ac{MDP}
+	\item \textit{Shot}: number of attempts in the target domain
+	\begin{itemize}
+		\item 0-shot: just run the policy trained in the source domain
+		\item 1-shot: try the task once
+		\item few shot: try the task a few times
+	\end{itemize}
+\end{itemize}
+
+No single solution!
+\begin{itemize}
+	\item Forward transfer: train on one task, transfer to a new task
+	\begin{itemize}
+		\item Transferring visual representations \& domain adaptation
+		\item Domain adaptation in reinforcement learning
+		\item Randomization
+	\end{itemize}
+	\item Multi-task transfer: train on many tasks, transfer to a new task
+	\begin{itemize}
+		\item Sharing representations and layers across tasks in multi-task learning
+		\item Contextual policies
+		\item Optimization challenges for multi-task learning
+		\item Algorithms
+	\end{itemize}
+	\item Transferring models and value functions
+	\begin{itemize}
+		\item Model-based RL as a mechanism for transfer
+		\item Successor features \& representations
+	\end{itemize}	
+\end{itemize}
+
+\section{Forward Transfer}
+\textit{Forward transfer}: train on one task, transfer to a new task.
+\begin{itemize}
+	\item Transferring visual representations \& domain adaptation
+	\item Domain adaptation in reinforcement learning
+	\item Randomization
+\end{itemize}
+
+Common challenges:
+\begin{itemize}
+	\item Domain shift: representations learned in the source domain might not work well in the target domain
+	\item Difference in the \ac{MDP}: some things that are possible to do in the source domain are not possible to do in the target domain
+	\item Finetuning issues: if pretraining \& finetuning, the finetuning process may still need to explore, but optimal policy during finetuning may be deterministic!
+\end{itemize}
+
+\subsection{Domain Adaptation}
+\hlb{Invariance assumption:} everything that is \textbf{different} between domains is \textbf{irrelevant}.
+
+\hlb{Idea:} force a representation layer (a layer) to be domain invariant.
+$p(x)$ is different, exists some $z=f(x)$ such that $p(y|z) = p(y|x)$, but $p(z)$ is the same in both source and target domains. \cite{tzeng2020adapting}
+
+Invariance is not enough when the dynamics don't match. \cite{eysenbach2020off}
+\begin{align*}
+	\tilde{r}(s,a) =& r(s,a) + \Delta r(s,a)\\
+	\Delta r(s_t, a_t, s_{t+1}) =& \log p_{target}(s_{t+1} | s_t, a_t) - \log p_{source}(s_{t+1} | s_t, a_t)\\
+	\Delta r(s_t, a_t, s_{t+1}) =& \log p(target | s_t, a_t, s_{t+1}) - \log p(target | s_t, a_t)\\
+	&- \log p(source | s_t, a_t, s_{t+1}) - \log p(source | s_t, a_t)
+\end{align*}
+\hlb{Problems:}
+\begin{itemize}
+	\item The above approach considers limits in the target domain that doesn't present in source domain.
+	\item But it doesn't consider things that can happen in target domain but limited in source domain.
+\end{itemize}
+
+\subsection{Finetuning}
+Challenges:
+\begin{itemize}
+	\item RL tasks are generally much less diverse
+	\begin{itemize}
+		\item Features are less general
+		\item Policies \& value functions become overly specialized
+	\end{itemize}	
+	\item Optimal policies in fully observed \ac{MDP}s are deterministic
+	\begin{itemize}
+		\item Loss of exploration at convergence
+		\item Low-entropy policies adapt very slowly to new settings
+	\end{itemize}	
+\end{itemize}
+
+Finetuning with maximum-entropy policies: act \hlb{as randomly as possible} while collecting high rewards. \cite{haarnoja2017reinforcement}
+
+\subsection{References}
+Domain adaptation:
+\begin{itemize}
+	\item \citeausm{tzeng2014deep}. Deep domain confusion: Maximizing for domain invariance.
+	\item \citeausm{ganin2016domain}. Domain-adversarial training of neural networks.
+	\item \citeausm{tzeng2020adapting}. Adapting deep visuomotor representations with weak pairwise constraints.
+	\item \citeausm{eysenbach2020off}. Off-dynamics reinforcement learning: Training for transfer with domain classifiers.
+\end{itemize}
+
+Finetuning:
+\begin{itemize}
+	\item \citeausm{haarnoja2017reinforcement}. Reinforcement learning with deep energy-based policies.
+	\item \citeaus{andreas2017modular}. Modular multitask reinforcement learning with policy sketches.
+	\item \citeaus{florensa2017stochastic}. Stochastic neural networks for hierarchical reinforcement learning.
+	\item \citeausm{kumar2020one}. One solution is not all you need: Few-shot extrapolation via structured \ac{MaxEnt} \ac{RL}.
+\end{itemize}
+
+\section{Forward Transfer with Randomization}
+\hlb{Idea:} If we can design the source domain, then vary it to prepare for the difficult in target domain.
+
+\begin{itemize}
+	\item Randomizing physical \ac{param} \cite{rajeswaran2016epopt}
+	\item Explicit system identification \cite{yu2017preparing}
+	\item Randomization for real-world control \cite{sadeghi2016cad2rl}
+\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+	\item \citeausm{rajeswaran2016epopt}. EPOpt: Learning robust neural network policies using model ensembles.
+	\item \citeausm{yu2017preparing}. Preparing for the unknown: Learning a universal policy with online system identification.
+	\item \citeaus{sadeghi2016cad2rl}. CAD2RL: Real single-image flight without a single real image.
+	\item \citeausm{tobin2017domain}. Domain randomization for transferring deep neural networks from simulation to the real world.
+	\item \citeaus{james2017transferring}. Transferring end-to-end visuomotor control from simulation to real world for a multi-stage task.
+	\item \citeausm{bousmalis2018using}. Using simulation and domain adaptation to improve efficiency of deep robotic grasping.
+	\item \citeausm{rao2020rl}. RL-CycleGAN: Reinforcement learning aware simulation-to-real.
+\end{itemize}
+
+\section{Multi-Task Transfer}
+\hlb{Definition:} train on many tasks, transfer to a new task.
+\begin{itemize}
+	\item Sharing representations and layers across tasks in multi-task learning
+	\item Contextual policies
+	\item Optimization challenges for multi-task learning
+	\item Algorithms
+\end{itemize}
+
+Multi-task \ac{RL} corresponds to a single-task \ac{RL} in a \hlb{joint \ac{MDP}}.
+
+\hlb{Challenges:}
+\begin{itemize}
+	\item \hlb{Gradient interference:} becoming better on one task can make you worse on another\\
+	\textit{Negative transfer} implies the transfer actually hurting the task's performance.
+	\item \hlb{Winner-take-all problem:} imagine one task starts getting good algorithm is likely to prioritize that task (to increase average expected reward) at the expensive of others.
+\end{itemize}
+
+The two approaches is not really multi-task transfer. Not really fasten the learning speed of other tasks
+\subsection{Actor-Mimic}
+\begin{itemize}
+	\item Train multiple single-task policy, then use supervised learning to combine them into one single policy. \cite{rusu2015policy}
+	\item Analogous to guided policy search (\secref{sec:guided-policy-search}), but for transfer learning. \cite{levine2013icml}
+\end{itemize}
+
+\subsection{Policy Distillation}
+Divide and Conquer does has some transfer between central policy and local policies, but not \hlb{much}. \cite{parisotto2015actor}
+
+\subsection{Contextual Policies}
+Can do (discern) multiple things in the same environment.
+\begin{itemize}
+	\item Standard policy: $\pi_\theta(\textbf{a|s})$
+	\item Contextual policy: $\pi_\theta(\textbf{a|s}, \omega)$
+	\item Augmented state space: $\tilde{\textbf{s}} = \begin{bmatrix}
+		\textbf{s}\\
+		\omega
+	\end{bmatrix} \qquad \tilde{\mathcal{S}} = \mathcal{S} \times \Omega$
+\end{itemize}
+
+\section{Transferring Models and Value Functions}
+\hlb{Assumption:}
+\begin{itemize}
+	\item the \textbf{dynamics} is the same in both domains
+	\item but the \textbf{reward function} is different
+\end{itemize}
+
+\Eg:
+\begin{itemize}
+	\item Autonomous car learns how to drive to a few destinations, and then has to navigate to a new one.
+	\item A kitchen robot learns to cook many different recipes, and
+\end{itemize}
+
+\subsection{Transferring Models}
+Due to distribution shift, zero-shot might not always work. Although the dynamics is the same, they could be in different contexts: things present in source domain might not be present in target domain, and vice versa.
+
+Unless the samples in the source domain is broad enough that they covers target domain's. 
+
+\subsection{Transferring Value Functions}
+Value functions couple dynamics, rewards, and policies, but in linearity.
+\begin{equation}
+	Q^\pi(\textbf{s,a}) = \underbrace{r(\textbf{s,a})}_{\textstyle \text{rewards}} + \gamma \mathbb{E}_{\textbf{s}' \sim \underbrace{p(\textbf{s}'|\textbf{s,a})}_{\textstyle \text{dynamics}}, \textbf{a}'\sim \underbrace{\pi(\textbf{a}'|\textbf{s}')}_{\textstyle \text{policies}}} [Q^\pi (\textbf{s}', \textbf{a}')]
+\end{equation}
+
+Let $\textbf{P}^\pi \textbf{v}$ denote a vector \textbf{w} of length $|S||A|$:
+\begin{align}
+	\textbf{w}(\textbf{s,a}) &= \mathbb{E}_{\textbf{s}' \sim p(\textbf{s}'|\textbf{s,a}), \textbf{a}'\sim \pi(\textbf{a}'|\textbf{s}')} [\textbf{v}(\textbf{s}', \textbf{a}')]\\
+	\textbf{w}_{|S||A|\times 1} &= \textbf{P}^\pi_{|S||A|\times|S||A|} \textbf{v}_{|S||A|\times 1}\\
+	Q^\pi &= r + \gamma \textbf{P}^\pi Q^\pi\\
+	Q^\pi &= (\textbf{I} - \gamma \textbf{P}^\pi)^{-1} r
+\end{align}
+
+Let:
+\begin{itemize}
+	\item $\phi$ be an $|S||A| \times N$ \textit{feature} matrix
+	\item $\psi$ be an $|S||A| \times N$ matrix such that $\psi = (\textbf{I} - \textbf{P}^\pi)^{-1}\phi$
+	\item if $r=\phi w$, then $Q^\pi = \psi w$, with $w$ is a $1 \times N$ row vector\\
+	In other words, if $r$ is a linear combination of $\phi$, then $Q^\pi$ is a linear combination of $\psi$
+	\item $\psi_i$ is a "successor feature" for $\phi_i$
+	\item for any \textit{new} reward function, if we can fit $r \approx \phi w$, we get $Q^\pi \approx \psi w$\\
+	\note this holds for $Q^\pi$, not $Q^*$
+	\[ Q^*(\textbf{s,a}) = r(\textbf{s,a}) + \gamma \mathbb{E}_{\textbf{s}' \sim p(\textbf{s}'|\textbf{s,a})}\left[ \underset{\textbf{a}'}{\max} Q^\pi(\textbf{s}', \textbf{a}') \right] \qquad \text{(no longer linear)}\]
+\end{itemize}
+
+\todo{} how to find $\psi, \phi$ given $\textbf{P}^\pi$
+
+\hlb{Simplest use:} evaluation
+\begin{enumerate}
+	\item get small amount of data $(\textbf{s}_i, \textbf{a}_i, r_i, \textbf{s}_i')$ in new \ac{MDP}
+	\item fit $w$ such that $\phi(\textbf{s}_i, \textbf{a}_i)w \approx r_i$ (linear regression)
+	\item initialize $Q^\pi(\textbf{s,a}) = \psi(\textbf{s,a}) w$
+	\item finetune $\pi$ and $Q^\pi$ with any \ac{RL} method
+\end{enumerate}
+
+\hlb{More sophisticated use:} train multiple $\psi^{\pi_i}$ functions for different $\pi_i$
+\begin{itemize}
+	\item choose initial policy $\pi(\textbf{s,a}) = \underset{\textbf{a}}{\arg\max} \psi^{\pi_i}(\textbf{s,a}) w$
+	\item this provides a better initial policy in general
+\end{itemize}
+
+\hlb{Additional notes:} successor representations with $\phi = \textbf{I}$ \dots \cite{dayan1993improving}

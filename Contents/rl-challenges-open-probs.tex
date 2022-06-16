@@ -1,2 +1,104 @@
 % !TeX spellcheck = en_US
 \chapter{Challenges and Open Problems}
+
+Multi-task transfer learning: deeper explanation for gradient interference and winner-take-all problem
+
+\section{Stability}
+\subsection{Problem}
+\begin{itemize}
+	\item Devising stable RL algorithms is very hard
+	\item Q-learning/value function estimation
+	\begin{itemize}
+		\item Fitted Q/fitted value methods with deep network function estimators are typically not contractions, hence no guarantee of convergence
+		\item Lots of parameters for stability: target network delay, replay buffer size, clipping, sensitivity to learning rates, etc.
+	\end{itemize}	
+	\item Policy gradient/likelihood ratio/REINFORCE
+	\begin{itemize}
+		\item Very high variance gradient estimator
+		\item Lots of samples, complex baselines, etc.
+		\item Parameters: batch size, learning rate, design of baseline
+	\end{itemize}	
+	\item Model-based RL algorithms
+	\begin{itemize}
+		\item Model class and fitting method
+		\item Optimizing policy w.r.t. model non-trivial due to back-propagation
+		\item More subtle issue: policy tends to exploit the model
+	\end{itemize}
+	\item How representative is your simulator? Usually the answer is "not very"
+\end{itemize}
+\subsection{Directions}
+Can we develop more stable algorithms that are less sensitive to hyperparameters?
+\begin{itemize}
+	\item Algorithms with favorable improvement and convergence properties
+	\begin{itemize}
+		\item Trust region policy optimization \cite{schulman2015icml}
+		\item Safe \ac{RL}, high-confidence policy improvement
+	\end{itemize}
+	\item Algorithms that adaptively adjust parameters
+	\begin{itemize}
+		\item Q-Prop: Sample-efficient policy gradient with an off-policy critic \cite{gu2016q}
+	\end{itemize}
+\end{itemize}
+
+\section{Sample Complexity}
+\subsection{Problem}
+Efficiency: how long does it take to converge? (how many samples)
+\begin{itemize}
+	\item Real-world learning becomes difficult or impractical
+	\item Precludes the use of expensive, high-fidelity simulators
+	\item Limits applicability to real-world problems
+\end{itemize}
+\subsection{Directions}
+\begin{itemize}
+	\item Better model-based \ac{RL} algorithms
+	\item Design faster algorithms
+	\begin{itemize}
+		\item Addressing Function Approximation Error in Actor-Critic Algorithms \cite{fujimoto2018addressing}
+		\item Soft Actor-Critic \cite{haarnoja2018soft}
+	\end{itemize}
+	\item Reuse prior knowledge to accelerate reinforcement learning
+	\begin{itemize}
+		\item RL2: Fast reinforcement learning via slow reinforcement learning \cite{duan2016rl}
+		\item Learning to reinforcement learning \cite{wang2016learning}
+		\item Model-agnostic meta-learning \cite{finn2017model}
+		\item DREAM \cite{liu2020explore}
+	\end{itemize}
+\end{itemize}
+
+\section{Scaling and Generalization}
+Off-policy and Offline \ac{RL}
+
+\section{Problem Formulation}
+\subsection{Single Task or Multi-Task}
+We have the assumption that the trained tasks and the test task are from the same distribution. As the result, with enough trials, the agent will visit every possible situations. But in real world, it's never like that.
+
+Prior works on generalizing from multi-task learning:
+\begin{itemize}
+	\item Train on multiple tasks, then try to generalize or finetune
+	\begin{itemize}
+		\item Policy distillation \cite{rusu2015policy}
+		\item Actor-mimic \cite{parisotto2015actor}
+		\item Model-agnostic meta-learning \cite{finn2017model}
+	\end{itemize}
+	\item Unsupervised or weakly supervised learning of diverse behaviors
+	\begin{itemize}
+		\item Stochastic neural networks \cite{florensa2017stochastic}
+		\item Reinforcement learning with deep energy-based policies \cite{haarnoja2017reinforcement}
+		\item Unsupervised information-theoretic exploration
+	\end{itemize}
+\end{itemize}
+
+\subsection{Supervision}
+\begin{itemize}
+	\item If you want to learn from many different tasks, you need to get those tasks somewhere!
+	\item Supervision comes from reward.
+	\item Learn objectives/rewards from demonstration (inverse \ac{RL})
+	\item Generate objectives automatically?
+\end{itemize}
+
+Unsupervised \ac{RL}
+\begin{itemize}
+	\item Interact with the world, without a reward function
+	\item Learn something about the world (what?)
+	\item Use what you learned to quickly solve new tasks
+\end{itemize}

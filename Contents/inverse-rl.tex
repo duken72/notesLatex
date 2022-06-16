@@ -1,4 +1,184 @@
 % !TeX spellcheck = en_US
 \chapter{Inverse Reinforcement Learning}
 
-Prior to this, we have been manually design the reward function, which defines the task. In other cases, the reward function is unavailable or difficult to specify. The idea behind inverse \ac{RL} is to use human / expert's experience to learn the reward function, then use it for \ac{RL} as a goal to optimize.
+Prior to this, we have been manually design the reward function, which defines the task. There are cases, the reward function is unavailable or difficult to specify. The idea behind inverse \ac{RL} is to use human / expert's experience to \textit{learn} the reward function, then use it for \ac{RL} as a goal to optimize.
+
+There is a difference between standard imitation learning and human imitation learning:
+\begin{itemize}
+	\item Standard imitation learning:
+	\begin{itemize}
+		\item copy the \textit{actions} performed by the expert
+		\item no reasoning about outcomes of actions
+	\end{itemize}	
+	\item Human imitation learning:
+	\begin{itemize}
+		\item copy the \textit{intent} of the expert
+		\item might take very different actions!
+	\end{itemize}	
+\end{itemize}
+
+\section{Definition}
+Inverse \ac{RL} \ac{vs} "forward" \ac{RL}:
+\begin{center}
+	\begin{tabular}[hbt!]{l|l}
+		"Forward" \ac{RL} & Inverse \ac{RL} \\\hline\hline
+		given: & given: \\
+		states $s \in \mathcal{S}$, actions $a \in \mathcal{A}$ & states $s \in \mathcal{S}$, actions $a \in \mathcal{A}$\\
+		(sometimes) transitions $p(\textbf{s}' | \textbf{s,a})$ & (sometimes) transitions $p(\textbf{s}' | \textbf{s,a})$\\
+		reward function $r(\textbf{s,a})$ & samples $\{ \tau_i\}$ sampled from $\pi^*(\tau)$\\ \hline
+		learn $\pi^*(\textbf{a}|\textbf{s})$ & learn $r_\psi(\textbf{s,a})$\\
+		& \dots and then use it to learn $\pi^*(\textbf{a}|\textbf{s})$
+	\end{tabular}
+\end{center}
+
+Choices for $\psi$:
+\begin{itemize}
+	\item linear reward function: $r_\psi(\textbf{s,a}) = \sum_i \psi_i f_i(\textbf{s,a}) = \psi^T \textbf{f}(\textbf{s,a})$
+	\item neural net reward function: $r_\psi(\textbf{s,a})$
+\end{itemize}
+
+\section{Feature matching IRL}
+\begin{itemize}
+	\item Linear reward function: $r_\psi(\textbf{s,a}) = \sum_i \psi_i f_i(\textbf{s,a}) = \psi^T \textbf{f}(\textbf{s,a})$
+	\item Let $\pi^{r_\psi}$ be the optimal policy for $r_\psi$, $\pi^*$ be the unknown optimal policy
+	\item Pick $\psi$ such that $\mathbb{E}_{\pi^{r_\psi}}[\textbf{f}(\textbf{s,a})] = \mathbb{E}_{\pi^*} [\textbf{f}(\textbf{s,a})]$
+\end{itemize}
+
+\hlb{Problem:} still ambiguous
+
+Maximum Margin Principle:
+\begin{align*}
+	&\underset{\psi, m}{\max}\; m &&\text{such that}\; \psi^T \mathbb{E}_{\pi^*}[\textbf{f}(\textbf{s,a})] \geq \underset{\pi \in \Pi}{\max} \psi^T \mathbb{E}_\pi [\textbf{f}(\textbf{s,a})] + m\\
+	\Leftrightarrow &\underset{\psi}{\min} \frac{1}{2} ||\psi||^2 &&\text{such that}\; \psi^T \mathbb{E}_{\pi^*}[\textbf{f}(\textbf{s,a})] \geq \underset{\pi \in \Pi}{\max} \psi^T \mathbb{E}_\pi [\textbf{f}(\textbf{s,a})] + D(\pi, \pi^*) \quad\text{(\ac{SVM} trick)}
+\end{align*}
+
+\hlb{Issues:} \cite{abbeel2004apprenticeship, ratliff2006maximum}
+\begin{itemize}
+	\item Maximizing the margin is a bit arbitrary
+	\item No clear model of expert suboptimality (can add slack variables…)
+	\item Messy constrained optimization problem – not great for deep learning!
+\end{itemize}
+
+\section{MaxEnt IRL Algorithm}
+Using the graphical model (\secref{sec:probabilistic-graphical-model}), we approach the problem as maximum likelihood learning: learning the \ac{param} $\psi$ to maximize the \ac{prob} of expert's trajectories given that they are (sub)optimal.
+\begin{align}
+	&p(\mathcal{O}_t | \textbf{s}_t, \textbf{a}_t, \psi) = \exp (r_\psi(\textbf{s}_t, \textbf{a}_t))\\
+	&p(\tau | \mathcal{O}_{1:T}) = \frac{p(\tau, \mathcal{O}_{1:T})}{p(\mathcal{O}_{1:T})} \propto \cancel{p(\tau)} \exp \left( \sum_{t} r_\psi(\textbf{s}_t, \textbf{a}_t) \right) && (\text{$p(\tau)$ is independent of $\psi$})
+\end{align}
+
+The \ac{IRL}'s goal:
+\begin{align}
+	\psi =  \underset{\psi}{\arg\max} \frac{1}{N} \sum_{i=1}^N \log p(\tau_i | \mathcal{O}_{1:T}, \psi) = \underset{\psi}{\arg\max} \frac{1}{N} \sum_{i=1}^N r_\psi(\tau_i) - \log Z = \underset{\psi}{\arg\max} \mathcal{L}(\psi)
+\end{align}
+
+The \ac{IRL} partition function:
+\begin{align}
+	Z &= \int p(\tau) \exp(r_\psi(\tau)) d\tau \qquad\qquad (Z - \text{partition function})\\
+	\nabla_\psi \mathcal{L} &= \frac{1}{N} \sum_{i=1}^N \nabla_\psi r_\psi(\tau_i) - \underbrace{\frac{1}{Z} \int p(\tau) \exp(r_\psi(\tau))}_{\textstyle p(\tau | \mathcal{O}_{1:T}, \psi)} \nabla_\psi r_\psi(\tau) d\tau\\
+	&= \underset{\textstyle \text{expert samples}}{\mathbb{E}_{\tau \sim \pi^*(\tau)} [\nabla_\psi r_\psi(\tau_i)]} - \underset{\textstyle \text{soft optimal policy}}{\mathbb{E}_{\tau \sim p(\tau | \mathcal{O}_{1:T}, \psi)} [\nabla_\psi r_\psi(\tau)]} \label{eq:irl-goal}
+\end{align}
+The gradient is the difference between the expectation of the derivative of trajectory's reward between the expert's and the one from rolling out the current policy.
+
+Estimation of the 2nd term:
+\begin{align}
+	\mathbb{E}_{\tau \sim p(\tau | \mathcal{O}_{1:T}, \psi)} [\nabla_\psi r_\psi(\tau)] &= \mathbb{E}_{\tau \sim p(\tau | \mathcal{O}_{1:T}, \psi)} \left[\nabla_\psi \sum_{t=1}^T r_\psi(\textbf{s}_t, \textbf{a}_t)\right]\\
+	&= \sum_{t=1}^T \mathbb{E}_{(\textbf{s}_t, \textbf{a}_t) \sim p(\textbf{s}_t, \textbf{a}_t | \mathcal{O}_{1:T}, \psi)} [\nabla_\psi r_\psi(\textbf{s}_t, \textbf{a}_t)]\\
+	p(\textbf{s}_t, \textbf{a}_t | \mathcal{O}_{1:T}, \psi) &= \underbrace{p(\textbf{a}_t | \textbf{s}_t, \mathcal{O}_{1:T}, \psi)}_{\textstyle \text{the policy}} \underbrace{p(\textbf{s}_t | \mathcal{O}_{1:T}, \psi)}_{\textstyle \text{the state marginal \ac{prob}}}
+\end{align}
+\begin{align*}
+	&p(\textbf{a}_t | \textbf{s}_t, \mathcal{O}_{1:T}, \psi) = \frac{\beta(\textbf{s}_t, \textbf{a}_t)}{\beta(\textbf{s}_t)} \qquad\qquad
+	p(\textbf{s}_t | \mathcal{O}_{1:T}, \psi) \propto \alpha(\textbf{s}_t) \beta(\textbf{s}_t) \qquad\qquad (\text{\secref{sec:control-as-inference}})\\
+	\Rightarrow &p(\textbf{s}_t, \textbf{a}_t | \mathcal{O}_{1:T}, \psi) \propto \beta(\textbf{s}_t, \textbf{a}_t) \alpha(\textbf{s}_t) \qquad\qquad \text{let}\; \mu_t(\textbf{s}_t, \textbf{a}_t) \propto \beta(\textbf{s}_t, \textbf{a}_t) \alpha(\textbf{s}_t)
+\end{align*}
+\begin{align}
+	\Rightarrow \mathbb{E}_{\tau \sim p(\tau | \mathcal{O}_{1:T}, \psi)} [\nabla_\psi r_\psi(\tau)] &= \sum_{t=1}^T \int\int \mu_t(\textbf{s}_t, \textbf{a}_t) \nabla_\psi r_\psi(\textbf{s}_t, \textbf{a}_t) d\textbf{s}_t d\textbf{a}_t = \sum_{t=1}^T \vec{\mu}_t \nabla_\psi \vec{r}_\psi
+\end{align}
+
+\ac{MaxEnt} \ac{IRL} Algorithm:
+\begin{enumerate}
+	\item \tikzmark{maxentirl1}Given $\psi$, compute backward message $\beta(\textbf{s}_t, \textbf{a}_t)$
+	\item Given $\psi$, compute forward message $\alpha(\textbf{s}_t)$
+	\item Compute $\mu(\textbf{s}_t, \textbf{a}_t) \propto \beta(\textbf{s}_t, \textbf{a}_t) \alpha(\textbf{s}_t)$
+	\item Evaluate $\nabla_\psi \mathcal{L} = \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \nabla_\psi r_\psi(\textbf{s}_{i,t}, \textbf{a}_{i,t}) - \sum_{t=1}^T \int\int \mu(\textbf{s}_t, \textbf{a}_t) \nabla_\psi r_\psi(\textbf{s}_t, \textbf{a}_t) d\textbf{s}_t d\textbf{a}_t$
+	\item \tikzmark{maxentirl5}$\psi \leftarrow \psi + \eta \nabla_\psi \mathcal{L}$
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-7mm,yshift=1mm]pic cs:maxentirl5) --++ (-.5,0) |-
+		([xshift=-7mm,yshift=1mm]pic cs:maxentirl1);
+	\end{tikzpicture}
+\end{enumerate}
+
+\hlb{The name \ac{MaxEnt}:} when $r_\psi(\textbf{s}_t, \textbf{a}_t) = \psi^T \textbf{f}(\textbf{s}_t, \textbf{a}_t)$, the procedure optimizes $\underset{\psi}{\max} \mathcal{H}(\pi^{r_\psi})$ such that $\mathbb{E}_{\pi^{r_\psi}} [\textbf{f}] = \mathbb{E}_{\pi^*} [\textbf{f}]$. It is as random as possible while matching features. \cite{ziebart2008maximum}
+
+
+\section{Guided Cost Learning Algorithm}
+\hlb{Problems:} \ac{MaxEnt} \ac{IRL} so far requires:
+\begin{itemize}
+	\item Solving for (soft) optimal policy in the inner loop
+	\item Enumerating all state-action tuples for visitation frequency and gradient
+\end{itemize}
+
+Practical problem settings:
+\begin{itemize}
+	\item Large and continuous state and action spaces
+	\item States obtained via sampling only
+	\item Unknown dynamics
+\end{itemize}
+
+\hlb{Idea:} learn $p(\textbf{a}_t | \textbf{s}_t, \mathcal{O}_{1:T}, \psi)$ using any $\max$ entropy \ac{RL} \ac{algor}, then run that policy to sample trajectories $\{\tau_j\}$
+\begin{equation}
+	\nabla_\psi \mathcal{L} \approx \frac{1}{N} \sum_{i=1}^N \nabla_\psi r_\psi(\tau_i) - \frac{1}{M} \sum_{j=1}^M \nabla_\psi r_\psi(\tau_j)
+\end{equation}
+
+If instead of expensively learning the policy, we just improve the policy (a little), we could use \textbf{\textit{importance sampling}} to handle the biased estimator. \cite{finn2016guided}
+\begin{align}
+	\nabla_\psi \mathcal{L} &\approx \frac{1}{N} \sum_{i=1}^N \nabla_\psi r_\psi(\tau_i) - \frac{1}{\sum_j w_j} \sum_{j=1}^M w_j \nabla_\psi r_\psi(\tau_j)\\
+	w_j &= \frac{p(\tau) \exp(r_\psi(\tau_j))}{\pi(\tau_j)}\\
+	&= \frac{\cancel{p(\textbf{s}_1)} \prod_t \cancel{p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t)} \exp(r_\psi(\textbf{s}_t, \textbf{a}_t))}{\cancel{p(\textbf{s}_1)} \prod_t \cancel{p(\textbf{s}_{t+1} | \textbf{s}_t, \textbf{a}_t)} \pi(\textbf{a}_t | \textbf{s}_t)} = \frac{\exp \big( \sum_t r_\psi(\textbf{s}_t, \textbf{a}_t) \big)}{\prod_t \pi(\textbf{a}_t | \textbf{s}_t)}
+\end{align}
+
+\section{IRL and GANs}
+Similarity between \ac{IRL} and \ac{GAN}:
+\begin{center}
+	\begin{tabular}[hbt!]{p{8.5cm}|p{7.5cm}}
+		\ac{IRL} & \ac{GAN} \cite{goodfellow2014generative} \\\hline\hline
+		Player 1: policy $\pi_\theta$ & Player 1: the generator $p_\theta(\textbf{x|z})$\\
+		Player 2: reward function $r_\psi$ & Player 2: the discriminator $p_\psi(\textbf{z|x})$ \\ \hline
+		- The policy improves itself to make it \hlb{harder} to distinguish its samples and the expert demonstrations & - The generator improves itself to make it \hlb{harder} to distinguish its samples and the real images\\
+		- The reward model improves itself to make it \hlb{easier} to distinguish the expert demonstrations and the policy's samples (\eqref{eq:irl-goal}) & - The discriminator improves itself to make it \hlb{easier} to distinguish the real images and the generator's samples
+	\end{tabular}
+\end{center}
+
+\subsection{IRL as a GAN}
+The optimal discriminator for \ac{GAN} is: $\displaystyle D^*(\textbf{x}) = \frac{p^*(\textbf{x})}{p_\theta(\textbf{x}) + p^*(\textbf{x})}$. For \ac{IRL}, optimal policy approaches $\pi_\theta(\tau) \propto p(\tau) \exp(r_\psi(\tau))$. Thus choosing parameterization for discriminator in the following way can remove importance weights (they are subsumed into $Z$) \cite{finn2016connection}
+\begin{align}
+	D_\psi(\tau) &= \frac{p(\tau)\frac{1}{Z}\exp(r(\tau))}{p_\theta(\tau) + p(\tau)\frac{1}{Z}\exp(r(\tau))} = \frac{\cancel{p(\tau)}\frac{1}{Z}\exp(r(\tau))}{\cancel{p(\tau)} \prod_t \pi_\theta(\textbf{a}_t | \textbf{s}_t) + \cancel{p(\tau)}\frac{1}{Z}\exp(r(\tau))}\\
+	&= \frac{\frac{1}{Z}\exp(r(\tau))}{\prod_t \pi_\theta(\textbf{a}_t | \textbf{s}_t) + \frac{1}{Z}\exp(r(\tau))}\\
+	\psi &\leftarrow \underset{\psi}{\arg\max} \mathbb{E}_{\tau \sim p^*} [\log D_\psi(\tau)] + \mathbb{E}_{\tau \sim \pi_\theta} [\log (1 - D_\psi(\tau))]
+\end{align}
+
+\subsection{Generative adversarial imitation learning}
+We could also use regular discriminator ($D_\psi(\tau)$ as standard binary classifier) \cite{ho2016generative}.
+\[\begin{matrix*}[l]
+	\color{Green}+ \text{often simpler to set up optimization, fewer moving parts}\\
+	\color{red}- \text{discriminator knows nothing at convergence}\\
+	\color{red}- \text{generally cannot re-optimize the “reward”}
+\end{matrix*}\]
+
+\subsection{Generalization via IRL}
+We need to decouple the \textbf{goal} from the \textbf{dynamics!} \cite{fu2017learning}
+
+\section{References}
+\hlb{Classic Papers:}
+\begin{itemize}
+	\item \citeaus{abbeel2004apprenticeship}. Apprenticeship learning via inverse reinforcement learning.
+	\item \citeausm{ziebart2008maximum}. Maximum entropy inverse reinforcement learning.
+\end{itemize}
+
+\hlb{Modern Papers:}
+\begin{itemize}
+	\item \citeaus{finn2016guided}. Guided cost learning: Deep inverse optimal control via policy optimization.
+	\item \citeaus{wulfmeier2015maximum}. Maximum entropy deep inverse reinforcement learning.
+	\item \citeaus{ho2016generative}. Generative adversarial imitation learning.
+	\item \citeaus{fu2017learning}. Learning robust rewards with adversarial inverse reinforcement learning.
+\end{itemize}

@@ -37,6 +37,7 @@ Knowing the value functions, we could just remove the policy gradient completely
 \end{enumerate}
 
 \section{Value Iteration Algorithm}
+\label{sec:value-iteration}
 Since $\underset{\textbf{a}_t'}{\arg\max}\; A^\pi(\textbf{s}_t, \textbf{a}_t) = \underset{\textbf{a}_t'}{\arg\max}\; Q^\pi(\textbf{s}_t, \textbf{a}_t)$, we can simplify above \ac{algor}:
 \begin{enumerate}
 	\item \tikzmark{vi1}Set $Q^\pi(\textbf{s, a}) \leftarrow r(\textbf{s, a}) + \gamma\mathbb{E}[V^\pi(\textbf{s}')]$
@@ -153,6 +154,7 @@ Q-learning with replay buffer $\mathcal{B}$ and target network $\phi'$:\\
 \end{tikzpicture}}
 
 \section{Deep Q-learning}
+\label{sec:dql}
 \begin{enumerate}
 	\item \tikzmark{dql1}Take some action $\textbf{a}_i$ and observe $(\textbf{s}_i, \textbf{a}_i, \textbf{s}_i', r_i)$, add it to $\mathcal{B}$
 	\item Sample mini-batch $\{(\textbf{s}_j, \textbf{a}_j, \textbf{s}_j', r_j) \}$ from $\mathcal{B}$ uniformly

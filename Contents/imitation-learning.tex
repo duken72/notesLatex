@@ -1,6 +1,6 @@
 % !TeX spellcheck = en_US
 \chapter{Imitation Learning}
-Also known as Behavior Cloning, essentially, this is \hlb{\underline{supervised learning}}. One problem might arise: applying the learned policy $\pi_{\theta}$ might lead to different action $\textbf{a}_t$, which then leads to different observations and states, comparing to the given dataset: $p_{data}(\textbf{o}_t)~\neq~p_{\pi_{\theta}}(\textbf{o}_t)$. This \hlb{distribution mismatch} can be tackled by adding on-policy data.
+Also known as \textit{Behavior Cloning}, essentially, this is \hlb{\underline{supervised learning}}. One problem might arise: applying the learned policy $\pi_{\theta}$ might lead to different action $\textbf{a}_t$, which then leads to different observations and states, comparing to the given dataset: $p_{data}(\textbf{o}_t)~\neq~p_{\pi_{\theta}}(\textbf{o}_t)$. This \hlb{distribution mismatch} can be tackled by adding on-policy data.
 
 \section{DAgger}
 \label{sec:dagger}

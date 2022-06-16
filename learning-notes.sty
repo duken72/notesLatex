@@ -22,6 +22,7 @@
 \RequirePackage{textgreek}				% Greek symbols in the text
 \RequirePackage[dvipsnames]{xcolor}	% Accessing additional named colours
 %\RequirePackage[paper=portrait,pagesize]{typearea}
+
 % --------------------------------------------------------------------------
 %	Layout of the pages
 % --------------------------------------------------------------------------
@@ -43,6 +44,7 @@
 \clubpenalty 	= 1000 	  % orphan child
 \widowpenalty 	= 1000 	% Widow
 
+\RequirePackage{multicol}		% Multi columns
 % --------------------------------------------------------------------------
 %	Line spacing, header and footer
 % --------------------------------------------------------------------------
@@ -86,6 +88,8 @@ belowskip		= 2pt,
 \RequirePackage{amsfonts}				% Mathematical formula: Fonts
 \RequirePackage{bm}						% Bold lettering for matrices and vectors
 \RequirePackage{arydshln}				% lines for matrices and vectors
+\RequirePackage{cancel}					% text strikeout
+\renewcommand\CancelColor{\color{red}}
 \RequirePackage{empheq}					% Boxed equations
 \newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
 

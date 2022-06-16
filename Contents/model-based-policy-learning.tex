@@ -125,10 +125,9 @@ $\Rightarrow$ Not very nice for Policy Gradients, but is okay for value-based ap
 \section{Local Models}
 This is the second solution for model-based \ac{RL} v.2.0 (\secref{sec:model-based-rl-2.0}): instead of using neural network, we use simple policies, which is time-varying linear controller, \ie, \ac{LQR}-\ac{FLM}.
 
-In order to use \ac{LQR} (\secref{sec:lqr}), we need $\displaystyle\frac{df}{d\textbf{x}_t}, \frac{df}{d\textbf{u}_t}, \frac{dc}{d\textbf{x}_t}, \frac{dc}{d\textbf{u}_t}$. In which, knowing the model would give us $\displaystyle\frac{df}{d\textbf{x}_t}, \frac{df}{d\textbf{u}_t}$.\\
-$\Rightarrow$ \hlb{Idea:} fit $\displaystyle\frac{df}{d\textbf{x}_t}$ and $\displaystyle\frac{df}{d\textbf{u}_t}$ around \hlb{current trajectory / policy}
+In order to use \ac{LQR} (\secref{sec:lqr}), we need $\displaystyle\frac{df}{d\textbf{x}_t}, \frac{df}{d\textbf{u}_t}, \frac{dc}{d\textbf{x}_t}, \frac{dc}{d\textbf{u}_t}$, in which, knowing the model would give us $\displaystyle\frac{df}{d\textbf{x}_t}, \frac{df}{d\textbf{u}_t}$. If continuous system sufficiently smooth and initial state distribution quite tight $\Rightarrow$ do linearization regression at every time step
 
-If continuous system sufficiently smooth and initial state distribution quite tight $\Rightarrow$ do linearization regression at every time step
+$\Rightarrow$ \hlb{Idea:} fit $\displaystyle\frac{df}{d\textbf{x}_t}$ and $\displaystyle\frac{df}{d\textbf{u}_t}$ around \hlb{current trajectory / policy}
 
 \hlb{\ac{LQR}-\ac{FLM} Algorithm:}
 \begin{enumerate}
@@ -176,9 +175,10 @@ $\Rightarrow$ Keep \ac{KL} divergence small (between old and new trajectories) \
 \end{align}
 
 \section{Guided Policy Search}
+\label{sec:guided-policy-search}
 This is the extension of local policies to global policies. However, the idea behind this, which is similar to distillation of ensemble (Sec. 5.8, \href{AI_notes.pdf}{AI notes}), is also important in other settings.
 
-Given many local policies, we take the data from these local policies and treat them as demonstrations of expert and combine them into a global policy. The global policy can now be represented by a neural net and learned by supervised learning from these local data.
+Given many local policies, we take the data from these local policies and treat them as expert's demonstrations and combine them into a global policy. The global policy can be learned as a neural net with supervised learning from these local data.
 
 \hlb{Guided Policy Search Algorithm:} \cite{levine2016end}
 \begin{enumerate}
