@@ -2,6 +2,9 @@
 \chapter{Research Proposal}
 
 \section{Introduction and Background of Interest}
+
+\todo{ignore for now}
+
 Robots are complex machines designed to support our lives.
 
 Since mid 19th century, its emergence has received research attention in both the academic and industry. The first major application was in the automotive industry. Its presence is entering our lives in different fields is spreading even more and more.
@@ -10,14 +13,14 @@ Its appearance has improved
 
 \section{Literature Review}
 
-To my best current knowledge, robot arms have made significant improvement, but are still far from delivering general-purpose tasks. Initially, robot arms are programmed explicitly and only capable of working in the known and constrained environment of factories. Progress in different fields of technology has provided the robots more inputs (\eg, vision, audio, haptic) to operate in more dynamics and challenging environment. State-of-the-art robot arm models can deliver complex human tasks, \eg, cook \cite{moley}, make coffee \cite{coffeemaster}, and clean around the house \cite{bothandy}. However, the behaviors of these models are still awkwardly disruptive and far from the mastery level of human hand's dexterity. In addition, instead of having the adaptability for a wide range of working conditions, most models still operate in designed environments with known tools and configurations.
+To my best current knowledge, robot arms have made significant improvement, but are still far from delivering general-purpose tasks. Initially, robot arms are programmed explicitly and only capable of working in the known and constrained environment of factories. Progress in different fields of technology has provided the robots more inputs (\eg, vision, audio, haptic) to operate in dynamics and unstructured environment. State-of-the-art robot arm models can deliver complex human tasks, \eg, cooking \cite{moley}, making coffee \cite{coffeemaster}, and cleaning around the house \cite{bothandy}. However, the behaviors of these models are still awkwardly disruptive and far from the mastery level of human hand's dexterity. In addition, instead of having the adaptability for a wide range of working conditions, most models still operate in designed environments with known tools and configurations.
 
-\subsection{Robot Grasping and Tactile Sensor}
+\subsection{Robot Grasping}
 
-Grasping object has always been a fundamental problem for robot arms, whether for industrial or service robots. It is a unavoidable task for pick-and-place task and object manipulation. Prior works approach the grasping problem as finding a grasping representation or grasping position. The most successful approaches are empirical, which use deep learning on large dataset to find the best grasping positions or grasping representations. 
-\cite{caldera2018review}
+Grasping is one of the fundamental and unavoidable problems for robot arms, whether for the logistics or service robots. Most successful approaches are empirical, using deep learning on large dataset to find the best grasping representations. Majority of models are supervised training using single-modal input, \ie RGB images. A few has considered multi-modal input: RGB with depth images, tactile input. \cite{caldera2018review}
 
-and use RGB images. Recent works start to dive into multi-modal model, but mostly still for RGB-D images. Only a few consider tactile input and it's still  unclear if it bring significant benefit for grasping.
+\todo{previous grasping approach that use tactile input?}
+
 \cite{calandra2017feeling} 
 
 \subsection{Robot Learning}
@@ -49,32 +52,60 @@ a mapping from human arm behavior to robot arm behavior. helpful for different t
 
 \section{Approaches and Choice of Methods}
 \subsection{Key Points for Improvement}
-Prior works suffer from, is limited on, make assumptions on \dots
+The progress I wish to work towards concerns robotic collective learning for collaborative tasks. For example, a system of multiple robot arms playing 2v2 table tennis, packaging an item or cooking. Building up towards the mentioned progress, the improvement points I want to make are as follows:
+
+\begin{itemize}
+	\item Extend the usage of tactile sensors to learning object grasping and manipulation. Tactile sensor has mostly been used for the development of safety robot / soft robotics \cite{haddadin2018tactile}. Previous works using tactile sensor on robotic grasping focus on \todo{sth, read UC Bekerly's paper}
+	\item Robotic grasping mostly with rigid object.
+	\item Meta \ac{RL} / generalization problem of \ac{RL}
+	\item Data efficiency problem
+\end{itemize}
+
+[\textbf{FORMAT:} Prior works suffer from, limited, make assumptions on, I want to extend \dots]
+
 \subsection{Approaches and Research Contributions}
+Directions / smaller problems I want to pursue:
+
+\begin{itemize}
+	\item A data collection pipeline for robot arms. Preferably a mapping to imitate human’s movements, which, at the same time, collecting visual and haptic information.
+	\item Integrate tactile information to robotic object grasping. Combining with visual data, process the haptic data to extract other possible object's characteristics, \eg, weight, material, deformability.
+	This will then possibly extend to some learning on object manipulation.
+	\item An approach for faster, purposeful exploration and generalization: not necessarily exploration from scratch, but based on some prior expert inputs.
+	\item 
+\end{itemize}
+Integration with generative models. Could generative models be incorporated effectively into RL algorithms? They can perhaps generate expert-like samples for imitation learning. Should and how can we evaluate the importance of different samples?
+
 sth can be broken down into different approaches, sub-problem, aspects, \dots
 
 I intend to clarify these questions, extend these directions, improve \dots
 
-pipeline to mapping human arm behavior to robot arm behavior, movement, grasping object
-
 simplified models for rigid, liquid, deformable objects
 
+Prior work mostly concern with rigid objects.
+tactile inputs would bring adaptability, optimal grip force, and perhaps more underlying information regarding material, \etc. for non-rigid, soft, deformable object. dynamics load
+
+in addition, it would enable more complex object manipulation tasks that computer vision alone would be insufficient
+
+\begin{itemize}
+	\item A approach to map human behaviors to single-arm manipulator. Use for visual and tactile data collection. Possibly generalized for different arm manipulator, gripper, sensor input, \etc. As demonstration for other approach, imitation learning, object grasping, reaching, object manipulation, \etc
+	\item Robotic grasping as few-shot meta-\ac{RL}
+\end{itemize}
+
+I also curious with the usage of some deep learning techniques: generative model, score matching, \etc.
+
 \section{Proposed Research Plan}
-The progress I want to make in robotics, which innately goes back to my bachelor’s thesis, concerns the learning of multiple robots for collaborative tasks. For example, a system of two (mobile) robot arms playing 2v2 table tennis, or multiple robot arms carrying on packaging tasks. I wonder, whether there should be a single unified controller or multiple separated ones, how to teach them to delegate different subtasks, will the model optimize each arm with one single subtask or switch between different ones.
 
-The above is a complex long-term challenge. To gradually formalize and break down the problem, there are still knowledge gaps for me to fill. Some specific problems I want to research are:
-A pipeline for robot arms to imitate human’s movements: concerns with pose estimation, controller designs.
-An approach for faster, purposeful exploration and generalization: not necessarily exploration from scratch, but based on some prior expert inputs.
+\todo{}
 
-Integration with generative models: In CV, these models can already output quite realistic samples. Could generative models be incorporated effectively into RL algorithms? They can perhaps generate expert-like samples for imitation learning. Should and how can we evaluate the importance of different samples?
-Increase the efficiency of the robot arm’s movement, in terms of speed and accuracy: integration of time metric into the reward function, data from tactile sensors.
+\todo{How the IAS lab is related to this research plan?}
+\begin{itemize}
+	\item There is alignment in our directions
+	\item t thay vi tri m tuyen phu hop vs t => nen t muon join
+	\item It’s amazing that there is a great diversity at IAS, not just in terms of backgrounds, but also academic focuses. Each person works on different topics, MCTS, robot dynamics, imitation learning, etc. Regardless, different works support others and the whole team is pushing the frontier of robotics.
+\end{itemize}
 
-I read your papers about … let alone the works on …
-
-There is alignment in our directions
-
-There is an African quote: “If you want to go fast, go alone. If you want to go far, go together”. Robotics and ML are interdisciplinary. This makes the study of RL even more challenging, yet immensely appealing. Thus, it’s amazing that there is a great diversity at IAS, not just in terms of backgrounds, but also academic focuses. Each person works on different topics, MCTS, robot dynamics, imitation learning, etc. Regardless, different works support others and the whole team is pushing the frontier of robotics. I believe that my direction aligns with the team’s to great extent. It would mean a lot for me, to be a part of a team, to learn and cooperate with others.
-
-give compliment to their works
-t thay vi tri m tuyen phu hop vs t => nen t muon join
-mention more explicitly regarding the topics, what research they have done
+\todo{Give compliments to their works!}
+\begin{itemize}
+	\item mention more explicitly regarding the topics, what research they have done
+	\item I read your papers about … let alone the works on …
+\end{itemize}
