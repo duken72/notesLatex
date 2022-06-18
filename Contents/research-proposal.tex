@@ -13,21 +13,11 @@ Its appearance has improved
 
 \section{Literature Review}
 
-To my best current knowledge, robot arms have made significant improvement, but are still far from delivering general-purpose tasks. Initially, robot arms are programmed explicitly and only capable of working in the known and constrained environment of factories. Progress in different fields of technology has provided the robots more inputs (\eg, vision, audio, haptic) to operate in dynamics and unstructured environment. State-of-the-art robot manipulators can deliver complex human tasks, \eg, cooking \cite{moley}, making coffee \cite{coffeemaster}, and cleaning around the house \cite{bothandy}. However, the behaviors of these models are still awkwardly disruptive and far from the mastery level of human hand's dexterity. In addition, instead of having the adaptability for a wide range of working conditions, most models still operate in designed environments with known tools and configurations.
+To my best current knowledge, robot arms have made significant improvement, but are still far from delivering general-purpose tasks. Initially, robot arms are programmed explicitly and only capable of working in the known and constrained environment of factories. Progress in different fields of technology has provided the robots more inputs (\eg, vision, audio, haptic) to operate in dynamics and unstructured environment. State-of-the-art robot manipulators can deliver complex human tasks, \eg, cooking \cite{moley}, making coffee \cite{coffeemaster}, and cleaning around the house \cite{bothandy}. However, the behaviors of these models are still awkwardly disruptive and far from the mastery level of human hand's dexterity. In addition, instead of having the adaptability for a wide range of conditions, most models still operate in designed environments with known tools and settings.
 
 \subsection{Robot Grasping}
 
-Grasping is one of the fundamental and unavoidable problems for robot arms, whether for the logistics or service robots. Most successful approaches are empirical, using deep learning on large dataset to find the best grasping representations. Majority of models are supervised training using single-modal input, \ie RGB images. A few has considered multi-modal input: RGB with depth images, tactile input. \cite{caldera2018review, li2019review}
-
-\todo{previous grasping approach that use tactile input?}
-\begin{itemize}
-	\item Single-modal: grasp stability, adaptability to object's weight \cite{bekiroglu2011assessing, li2014learning}
-	\item Multi-modal: \ac{prob} of successful grasp \cite{calandra2017feeling}
-\end{itemize}
-
-\cite{calandra2017feeling} use multi-modal data, but the tactile input is simply image-like and the task is to predict prob of successful grasp, nothing related to force, torque
-
-Robotic grasping mostly with rigid object.
+Grasping is one of the critical and unavoidable problems for robot arm manipulators, especially for logistics and service robots. Among approaches that used tactile input, most use as the sole input to improve grasp stability, adaptability to object's weight \cite{bekiroglu2011assessing, li2014learning}, a few combine with other modality for improvement \cite{calandra2017feeling}. Overall, most successful grasping approaches are empirical, using deep learning on large dataset to find the best grasping candidates. Majority of models are supervised learning using single-modal input, \ie RGB images. A few has considered multi-modal inputs: RGB with depth images or tactile input. \cite{bohg2013data, caldera2018review, li2019review, kleeberger2020survey}
 
 \subsection{Robot Learning}
 Works on reaching target, handling objects
@@ -58,7 +48,7 @@ With the current attention on 3D CV, I believe that soon there will be a approac
 \subsection{Key Points for Improvement}
 [\textbf{FORMAT:} Prior works suffer from, limited, make assumptions on \dots]
 
-Prior works for robotic manipulators were limited on their utilization of tactile sensor. Complex manipulation tasks, \ie, using chopsticks, ironing, require some level of force and pressure feedback. Thus, these sensors can potentially leverage the manipulators to the mastery level as of human's arms. However, tactile sensors are currently been used mostly for the development of soft robotics \cite{haddadin2018tactile}. For grasping task, despite certain successes from using visual and tactile input separately, there hasn't been a multi-modal approach capable of combining the strength of both side, \ie, accurate localization, adaptability to object weight and deformability. A model, which has knowledge from both visual and tactile sources, promises to deliver complex manipulation tasks with diverse objects.
+Prior works on robotic manipulators were limited on their utilization of tactile sensors. Complex hand and arm behaviors require some level of force and pressure feedback. Thus, these sensors can potentially leverage the manipulators to the dexterity level as of human's arms. However, tactile sensors are currently been used mostly for the development of soft robotics \cite{haddadin2018tactile}. For grasping task, despite certain successes from using visual and tactile input separately, there hasn't been a multi-modal approach capable of combining the strengths of both side, \ie, accurate localization, adaptability to object's weight and deformability. A model, which has knowledge from both visual and tactile sources, promises to deliver complex manipulation tasks with diverse objects.
 
 On the other hand, generalization is still a major challenge for \ac{RL}. 
 
@@ -69,11 +59,10 @@ Prior \ac{RL} works on robotic grasping are value-based approaches, policy gradi
 \subsection{Approaches and Research Contributions}
 [\textbf{FORMAT:} I want to extend, clarify these questions, extend these directions, improve \dots]
 
-The progress I wish to work towards concerns robotic collective learning for collaborative tasks. For example, a system of multiple robot arms playing 2v2 table tennis, packaging an item or cooking. Building up towards the mentioned progress, the improvement points I want to make are as follows:
+The progress I wish to work towards concerns robotic collective learning for collaborative tasks. For example, a system of multiple robot arms playing 2v2 table tennis, packaging an item or cooking. Building up towards this progress, I intend to work and gain more experiences on the following problems:
 
 \begin{itemize}
-	\item More diverse object grasping and manipulation
-	\item The use of tactile input in multi-modal deep learning.
+	\item Using visual and tactile input in multi-modal deep learning.
 	\item Transfer learning for \ac{RL}
 	\item Data efficiency for \ac{RL} with meta-\ac{RL}
 	\item Few shot learning with meta RL
