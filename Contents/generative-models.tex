@@ -49,7 +49,7 @@ This section describes how to calculate $p(z|x_i)$
 	Maximize the 2nd term $\mathcal{H}(q_i)$ will increase the randomness of $z$
 \end{itemize}
 
-In another point of view, as we approximate $p(z|x_i)$ with $q_i(z)$, the \ac{KL}-divergence $D_{KL}(q_i(z) || p(z|x_i))$ can measure how good is the approximation:
+In another point of view, as we approximate $p(z|x_i)$ with $q_i(z)$, how good is the approximation can be measured with the \ac{KL}-divergence $D_{KL}(q_i(z) || p(z|x_i))$:
 
 \begin{align}
 	D_{KL}(q_i(z) || p(z|x_i)) &= \mathbb{E}_{z\sim q_i(z)} \left[ \log\frac{q_i(z)}{p(z|x_i)} \right] = \mathbb{E}_{z\sim q_i(z)} \left[ \log\frac{q_i(z)p(x_i)}{p(x_i, z)} \right]\\
@@ -59,7 +59,7 @@ In another point of view, as we approximate $p(z|x_i)$ with $q_i(z)$, the \ac{KL
 	\Rightarrow\; \log p(x_i) & \geq \mathcal{L}_i (p, q_i), \qquad \text{since } D_{KL}(q||p) \geq 0
 \end{align}
 
-In addition, since $\log p(x_i)$ is independent of $q_i$, maximizing $\mathcal{L}_i (p, q_i)$ \ac{wrt} $q_i$ will minimize the \ac{KL}-divergence.
+Since $\log p(x_i)$ is independent of $q_i$, maximizing $\mathcal{L}_i (p, q_i)$ \ac{wrt} $q_i$ will minimize the \ac{KL}-divergence, thus, improving the approximation.
 
 \subsection{Algorithm}
 Again, the goal is to model the complex distribution $p(x)$. Since the common maximum likelihood is intractable, we maximize its lower bound.
@@ -87,9 +87,7 @@ In the above $6^{th}$ step, assuming $q_i(z) = \mathcal{N}(\mu_i, \sigma_i)$:
 \hlb{Problem:} for each $x_i$, there will be one $\mu_i$ and one $\sigma_i$, with the appropriate dimension. Thus, the total number of \ac{param} would be huge: $|\theta| + (|\mu_i| + |\sigma_i|) \times N$
 
 \section{Amortized Variational Inference}
-The word \textit{amortize} means to reduce or pay off (a debt) with regular payments.
-
-As mentioned above, the problem with using a Gaussian for $q_i(z)$ is the huge number of \ac{param}. This section proposes an alternative, which is to use a neural network (\figref{fig:amortized-variational-inference})
+As mentioned above, the problem with using a Gaussian for $q_i(z)$ is the huge number of \ac{param}. The word \textit{amortize} means to reduce or pay off (a debt) with regular payments. \textit{Amortized Variational Inference} alleviates the \ac{param} problem by using a neural network (\figref{fig:amortized-variational-inference})
 \begin{align}
 	&q_i(z) = q(z | x_i) \approx q_\phi(z|x) = \mathcal{N}(\mu_\phi(x), \sigma_\phi(x))\\
 	\Rightarrow\;& \log p(x_i) \geq \underbrace{\mathbb{E}_{z\sim q_\phi(z|x_i)} [ \log p_\theta(x_i|z) + \log p(z) ] + \mathcal{H}(q_\phi(z|x_i))}_{\textstyle \mathcal{L}_i (p_\theta(x_i|z), q_\phi(z|x_i))}
@@ -172,6 +170,7 @@ Another way to look:
 \end{itemize}
 
 \section{Conditional Variational Inference Models}
+\label{sec:conditional-variational-inference-models}
 \begin{equation}
 	\mathcal{L}_i = \mathbb{E}_{z\sim q_\phi(z|x_i, y_i)} \big[\log p_\theta(y_i|x_i, z) + \log p(z|x_i)\big] + \mathcal{H}(q_\phi(z|x_i, y_i))\\
 \end{equation}
@@ -185,10 +184,80 @@ Another way to look:
 \section{Generative Models}
 \textit{Generative models} are models that generate data $x$. \Eg: $p(x)$ is a generative model, because knowing $p(x)$, we can sample $x$.
 
-\note Not all generative models are not necessary latent variable models, and not all latent variable models are generative models. But it's common for a generative model to be a latent variable model, because sometimes, to generate data, we usually want to know the \ac{prob} distribution of it. When that \ac{prob} distribution is complex, we would represent it as a product of multiple simple \ac{prob} distribution, using some latent variables.
+\note Not all generative models are not necessary latent variable models, and not all latent variable models are generative models. But it's common for a generative model to be a latent variable model, because to generate data, we usually want to know the \ac{prob} distribution of it. When that \ac{prob} distribution is complex, we would represent it as a product of multiple simple \ac{prob} distribution, using some latent variables.
 
 \subsection{Generative Adversarial Network}
-\todo{\ac{GAN}}
+\ac{GAN} by \citeausm{goodfellow2014generative}:
+\begin{align}
+	&D(x) &&-\text{\ac{prob} that $x$ is real (from training data)}\\
+	&1-D(x) &&-\text{\ac{prob} that $x$ is fake (from the generator)}\\
+	&\underset{D}{\max}\, \mathbb{E}_{x \sim p_{data}(x)} [\log D(x)] &&-\text{the discriminator goal}\\
+	&\underset{G}{\min}\, \mathbb{E}_{z \sim p_z(z)} [\log (1-D(G(z)))] &&-\text{the generator goal}
+\end{align}
+\begin{itemize}
+	\item The discriminator goal is to maximize the $\log$ \ac{prob} of the data from the training set classified as real.
+	\item The generator goal is to minimize the $\log$ \ac{prob} of the data from the generator classified as fake.
+\end{itemize}
+
+The loss function of \ac{GAN}:
+\begin{equation}
+	\underset{G}{\min}\, \underset{D}{\max} V(D,G) = \underset{G}{\min}\, \underset{D}{\max} \mathbb{E}_{x \sim p_{data}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1-D(G(z)))]
+\end{equation}
+
+In \texttt{pytorch}, there is BCELOSS (Binary Cross Entropy loss):
+\begin{align}
+	&l(x,y) = L = \{l_1, \dots, l_N\}^T\\
+	&l_n = - w_n [y_n \log x_n + (1-y_n) \log(1-x_n)]
+\end{align}
+
+\subsection{DCGAN}
+\ac{DCGAN} by \citeaus{radford2015unsupervised} is the completely convolutional version of \ac{GAN}.
+\begin{itemize}
+	\item The discriminator has strided convolution, batch norm layers, Leaky \ac{relu} activations.
+	\item The generator has transposed convolution, batch norm layers, \ac{relu} activations.
+\end{itemize}
+
+\todo{}
+
+\subsection{CGAN}
+\ac{CGAN} (based on \secref{sec:conditional-variational-inference-models}) is first proposed by \citeaus{mirza2014conditional}.
+
+Example works:
+\begin{itemize}
+	\item pix2pix: image-to-image translation \cite{isola2017image}
+	\begin{align}
+		\texttt{bool} &= D(x,y) &&-\text{given $x$, the discriminator classify whether $y$ is real.}\\
+		y &= G(x,z) &&-\text{given $x$ and noise $z$, the generator generate $y$.}
+	\end{align}
+\end{itemize}
+
+\subsection{Tips And Tricks}
+Tips and tricks for training \ac{GAN} from \href{https://github.com/soumith/ganhacks}{\texttt{github/ganhacks}}
+\begin{itemize}
+	\item Train the Discriminator: maximizing $\log D(x) + \log (1-D(G(z)))$\\
+	Construct different mini-batches for real and fake, then accumulate the gradients
+	\begin{itemize}
+		\item Compute the loss $\log D(x)$ with real samples
+		\item Compute the loss $\log (1 - D(G(z)))$ with fake samples
+	\end{itemize}
+	\item Train the Generator: maximizing $\log D (G(z))$\\
+	Minimizing the $\log(1 - D(G(z)))$ leads to insufficient gradients, especially in early learning process. Thus, we instead maximize $\log D (G(z))$.
+\end{itemize}
+
+\subsection{Examples}
+\begin{itemize}
+	\item \ac{GAN}: \href{https://github.com/diegoalejogm/gans/blob/master/1.%20Vanilla%20GAN%20PyTorch.ipynb}{\texttt{pytorch}}, \href{https://github.com/diegoalejogm/gans/blob/master/1.%20Vanilla%20GAN%20TensorFlow.ipynb}{\texttt{tensorflow}} (MNIST dataset)
+	\item \ac{DCGAN}:
+	\begin{itemize}
+		\item MNIST: \href{https://github.com/diegoalejogm/gans/blob/master/2.%20DC-GAN%20PyTorch-MNIST.ipynb}{\texttt{pytorch}}
+		\item CIFAR10: \href{https://github.com/diegoalejogm/gans/blob/master/2.%20DC-GAN%20PyTorch.ipynb}{\texttt{pytorch}}, \href{https://github.com/diegoalejogm/gans/blob/master/2.%20DC-GAN%20TensorFlow.ipynb}{\texttt{tensorflow}}
+		\item CelebA: \href{https://pytorch.org/tutorials/beginner/dcgan\_faces\_tutorial.html}{\texttt{Pytorch}'s tutorial}
+	\end{itemize}
+	\item \ac{CGAN}
+	\begin{itemize}
+		\item The CMP Facade Database: \href{https://www.tensorflow.org/tutorials/generative/pix2pix}{\texttt{tensorflow}'s tutorial}
+	\end{itemize}
+\end{itemize}
 
 \section{References}
 \begin{itemize}

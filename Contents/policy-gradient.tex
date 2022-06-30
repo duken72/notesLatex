@@ -127,7 +127,7 @@ Natural Policy gradients, \ac{aka}, covariant policy gradient, apply a trick to 
 	&\theta' \leftarrow \underset{\theta'}{\arg\max} (\theta'-\theta)^T \nabla_\theta J(\theta) \quad \text{\ac{st} } D(\pi_{\theta'}, \pi_{\theta}) \leq \epsilon \quad \text{(policy space)}
 \end{align}
 
-A good choice for $D(\pi_{\theta'}, \pi_{\theta})$ is the \ac{KL}-divergence. To simplify the process, the \ac{KL}-divergence is approximated with Fisher information matrix
+A good choice for $D(\pi_{\theta'}, \pi_{\theta})$ is the \ac{KL}-divergence. To simplify the process, the \ac{KL}-divergence is approximated with Fisher information matrix:q
 
 \begin{align}
 	& D_{KL}(\pi_{\theta'} || \pi_{\theta}) \approx (\theta' - \theta)^T \textbf{F} (\theta' - \theta)\\
