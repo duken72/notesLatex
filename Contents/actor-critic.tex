@@ -36,7 +36,7 @@ Using these value functions, we would have a better estimate for the policy grad
 
 \begin{figure}[hbt!]
 	\centering
-	\includegraphics[width=.7\textwidth]{actor-critic.png}
+	\includegraphics[width=.45\textwidth]{actor-critic.png}
 	\caption{The network for value function $V_{\phi}^\pi(s)$ with \ac{param} $\phi$.}
 	\label{fig:actor-critic}
 \end{figure}
@@ -175,3 +175,5 @@ With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 	\item \citeausm{schulman2015high}. High-dimensional continuous control using generalized advantage estimation.
 	\item \citeausm{gu2016q}. Q-prop: Sample-efficient policy gradient with an off-policy critic.
 \end{itemize}
+
+\todo{Read \cite{peters2005natural, haarnoja2018soft}}

@@ -38,7 +38,7 @@ Even though we do not know the initial state \ac{prob} $p(\textbf{s}_1)$ and the
 {\color{red} \begin{subequations}
 		\begin{empheq}[box=\widefbox]{align}
 			\nabla_\theta J(\theta) & \approx \frac{1}{N} \sum_{i=1}^{N} \left[ \left( \sum_{t=1}^{T} \nabla_\theta\log \pi_\theta(\textbf{a}_{i,t} | \textbf{s}_{i,t} ) \right) \left( \sum_{t=1}^{T} r(\textbf{s}_{i,t}, \textbf{a}_{i,t}) \right) \right]\\
-			\text{\underline{then}} \quad \theta &\leftarrow \theta + \alpha \nabla_\theta J(\theta)
+			\Rightarrow \quad \theta &\leftarrow \theta + \alpha \nabla_\theta J(\theta)
 		\end{empheq}
 \end{subequations}}
 
@@ -86,6 +86,7 @@ In general, when we add a constant (either positive or negative) to the rewards,
 \end{itemize}
 
 \section{Off-policy Policy Gradient}
+\label{sec:off-policy-policy-gradient}
 Vanilla Policy Gradient is on-policy, since we have $\tau\sim\ p_\theta(\tau)$. This poses a problem, since the neural networks change only a bit with each gradient step. Off-policy Policy Gradient can be derived with \hlr{Important sampling}:
 \begin{align}
 	\mathbb{E}_{x\sim p(x)}[f(x)] &= \mathbb{E}_{x\sim q(x)} \left[\frac{p(x)}{q(x)}f(x)\right]\\

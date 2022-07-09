@@ -1,0 +1,40 @@
+% !TeX spellcheck = en_US
+\chapter{Research Proposal}
+
+One major challenge in \ac{RL} is the ability to generalize to different tasks. For \ac{CV} with supervised learning, a model can be trained on a large dataset (\eg, ImageNet), then retrained on a smaller dataset to adapt with a specific task. This is possible because it was proven that early layers manage to learn different feature representations from the image. Thus, the feature extraction and inference process (based on that feature learning) can be separated. It is uncertain though, what a \ac{RL} model manages to learn in early layers.
+
+What \ac{RL} differs from more conventional supervised learning are large diverse dataset, training procedure, how and when the data is collected, \etc. There are various proposed solution for \ac{RL} generalization problem: transfer learning, multi-task learning, meta-\ac{RL}. Offline \ac{RL} is one of those. It's strange though, as offline \ac{RL} aims to limit the interaction between the model and the world. Yet this interaction is what differs \ac{RL} with other \ac{AI} algorithms.
+
+\section{Goal-oriented \ac{RL}}
+Why the dataset is packed in the way transitions goes with rewards $\mathcal{D} = \{ (\textbf{s}_i, \textbf{a}_i, \textbf{s}_i', r_i) \}$. Prior works on single task have an underlying goal, from that goal, we have rewards for each state-action transition in the dataset. With different tasks, the rewards should be different, should the transition then goes with a certain goal. This is obvious in the multi-task setting. But even for single task setting, it's a bit strange because human's actions aren't often based on maximize rewards (keep running as far as we can, \etc). Even in business, we divide to quarterly objectives. Is it weird, even with discount factor or constrained reward windows? $\Rightarrow$ conditional \ac{RL} or task-oriented \ac{RL}. What if we remove the reward completely and just decide our actions based on desired goal and current state?
+
+completely removing the reward is also the core idea behind imagined-goal-based exploration strategy, \etc. But what if we apply this idea to common \ac{RL} training and testing
+
+\note
+\begin{itemize}
+	\item The reward can be seen as a representation for the goal.
+	\item Eliminate all problems with value functions (overconfidence, \etc)
+	\item Having a natural extension to multi-task learning
+\end{itemize}
+
+\subsection{Goal-oriented Imitation Learning}
+A policy $\pi_\theta$ that is conditional on the goal $g$, take in state $\textbf{s}$ and output action $a$ (preferably joint configurations). The policy is optimized to copy the expert behaviors
+\begin{equation}
+	\pi_\theta(\textbf{a} | \textbf{s}, g)
+\end{equation}
+
+\subsection{Goal-oriented RL}
+Same as above, but the policy is optimized not by maximize the reward, but by how far / different the goal state is, from the current state.
+
+The prior reward is basically a representation of how different the goal state from the current state.
+
+Would these solve the instability, overestimation problem of value-based \ac{RL} approaches?
+
+\subsection{CGAN}
+\ac{CGAN} idea:
+\begin{itemize}
+	\item Generator: $\textbf{a} = G(\textbf{s} | g)$
+	\item Discriminator: $D(\textbf{s}, \textbf{a}, g) = good/bad?$
+\end{itemize}
+
+\todo{How is this relates to the notion of \textit{"context"} in the literature?}

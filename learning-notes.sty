@@ -79,10 +79,13 @@ belowskip		= 2pt,
 \RequirePackage{subcaption}         % Sub-illustrations
 \RequirePackage{tikz}
 \usetikzlibrary{positioning, tikzmark}
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
 % --------------------------------------------------------------------------
 %	Mathematics-mode
 % --------------------------------------------------------------------------
 \RequirePackage[intlimits]{amsmath} 	% Complex mathematic constructions
+\newlength\ubwidth
+\newcommand\parunderbrace[2]{\settowidth\ubwidth{$#1$}\underbrace{#1}_{\parbox{\ubwidth}{\scriptsize\centering#2}}}
 \RequirePackage{mathtools}				% Mathematical formula: Indeces top left
 \RequirePackage{mathrsfs,amssymb}		% Mathematical formula: Symbols
 \RequirePackage{amsfonts}				% Mathematical formula: Fonts
