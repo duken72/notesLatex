@@ -1,7 +1,10 @@
 % !TeX spellcheck = en_US
 \chapter{Information Theory}
 \label{cha:information-theory}
-\todo{intro}
+Again, for more examples, exercises with solutions, check:
+\begin{itemize}
+	\item \citeaustitle{bishop2006pattern}
+\end{itemize}
 
 \section{Entropy}
 \begin{align}
@@ -63,22 +66,26 @@ With \textbf{p, q} as discrete variables:
 
 \section{Kullback - Leiber Divergence}
 
-The \ac{KL}-divergence tells:
+The \ac{KL} divergence, \ac{aka} \textit{relative entropy}, tells:
 \begin{itemize}
 	\item How \textit{different} are two distributions?
 	\item How small is the expected log \ac{prob} of one distribution under another, \hlr{minus entropy}?
+	\item How many bits of info we expect to loose
+	\item \hlb{A function} that we can \hlb{optimized}
 \end{itemize}
 
 Example reference: 	\href{https://www.countbayesie.com/blog/2017/5/9/kullback-leibler-divergence-explained}{countbayesie}
 
 \begin{align}
 	H &= - \sum_{i=1}^{N} p(x_i) \log p(x_i)\\
-	D_{KL}(p || q) &= \sum_{i=1}^N p(x_i) \left[ \log p(x_i) - \log q(x_i) \right]\\
+	D_{KL}(p || q) &= \sum_{i=1}^N p(x_i) \left[ \log p(x_i) - \log q(x_i) \right] &&\text{discrete case}\\
 	&= \sum_{i=1}^N p(x_i) \log \frac{p(x_i)}{q(x_i)}\\
-	&= \mathbb{E}_{x \sim p(x)} \left[ \log p(x) - \log q(x) \right]
+	&= \mathbb{E}_{x \sim p(x)} \left[ \log p(x) - \log q(x) \right]\\
+	D_{KL}(p || q) &= - \int p(\textbf{x}) \ln q(\textbf{x}) d\textbf{x} - \left( -\int p(\textbf{x}) \ln p(\textbf{x}) d\textbf{x} \right) &&\text{continuous case}\\
+	&= - \int p(\textbf{x}) \ln \frac{q(\textbf{x})}{p(\textbf{x})} d\textbf{x}\\
+	D_{KL}(p || q) & \geq 0\\
+	D_{KL}(p || q) & = 0 \iff p(\textbf{x}) = q(\textbf{x})
 \end{align}
-$\Rightarrow$ How many bits of info we expect to loose\\
-$\Rightarrow$ \hlb{A function} that we can \hlb{optimized}
 
 \textbf{\color{red} cross entropy = entropy + KL Divergence}
 \begin{equation}

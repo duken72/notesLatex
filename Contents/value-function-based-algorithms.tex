@@ -1,7 +1,7 @@
 % !TeX spellcheck = en_US
 \chapter{Value Function Based Algorithms}
 \section{Approach}
-Knowing the value functions, we could just remove the policy gradient completely. The advantage value function $A^\pi(\textbf{s}_t, \textbf{a}_t)$ tells how much better is $\textbf{a}_t$ than the average action according to policy $\pi$, regardless of what $\pi(\textbf{a}_t | \textbf{s}_t)$ is. We could have a policy $\pi'$ by simply choosing the current best action. $\pi'$ would be as good as $\pi$ (probably better).
+Knowing the value functions, we could just remove the policy gradient completely. The advantage function $A^\pi(\textbf{s}_t, \textbf{a}_t)$ tells how much better is $\textbf{a}_t$ than the average action according to policy $\pi$, regardless of what $\pi(\textbf{a}_t | \textbf{s}_t)$ is. We could have a policy $\pi'$ by simply choosing the current best action. $\pi'$ would be as good as $\pi$ (probably better).
 
 \hlb{High-level idea for Policy Iteration:}
 \begin{enumerate}
@@ -167,7 +167,7 @@ Q-learning with replay buffer $\mathcal{B}$ and target network $\phi'$:\\
 		([xshift=-7mm,yshift=1mm]pic cs:dql1);
 	\end{tikzpicture}
 \end{enumerate}
-The above \textit{"Classic"} \ac{DQN} is essentially Q-learning with $K=1$
+The above \textit{"Classic"} \ac{DQN} is essentially Q-learning with $K=1$ \cite{mnih2015human}
 
 Improving \ac{DQN}:
 \begin{itemize}
@@ -213,13 +213,13 @@ Improving \ac{DQN}:
 
 \section{References}
 \begin{itemize}
-	\item \citeaus{watkins1989learning}. Learning from delayed rewards.
-	\item \citeaus{riedmiller2005neural}. Neural fitted Q iteration--first experiences with a data efficient neural reinforcement learning method.
-	\item \citeaus{lange2010deep}. Deep auto-encoder neural networks in reinforcement learning.
-	\item \citeausm{mnih2015human}. Human-level control through deep reinforcement learning.
-	\item \citeausm{van2016deep}. Deep reinforcement learning with double Q-learning.
-	\item \citeausm{lillicrap2015continuous}. Continuous control with deep reinforcement learning.
-	\item \citeausm{gu2016continuous}. Continuous deep q-learning with model-based acceleration.
-	\item \citeausm{wang2016dueling}. Dueling network architectures for deep reinforcement learning.
-	\item \citeausm{kalashnikov2018qt}. Qt-opt: Scalable deep reinforcement learning for vision-based robotic manipulation.
+	\item \citeaustitle{watkins1989learning}
+	\item \citeaustitle{riedmiller2005neural}
+	\item \citeaustitle{lange2010deep}
+	\item \citeaustitle{mnih2015human}
+	\item \citeaustitle{van2016deep}
+	\item \citeaustitle{lillicrap2015continuous}
+	\item \citeaustitle{gu2016continuous}
+	\item \citeaustitle{wang2016dueling}
+	\item \citeaustitle{kalashnikov2018qt}
 \end{itemize}

@@ -1,6 +1,10 @@
 % !TeX spellcheck = en_US
 \chapter{Probabilities}
 \label{cha:probabilities}
+For more examples, exercises with solutions, check:
+\begin{itemize}
+	\item \citeaustitle{bishop2006pattern}
+\end{itemize}
 
 \section{General}
 \subsection{Basic Definitions}
@@ -33,8 +37,8 @@
 \subsection{Expectation}
 \label{subsec:expectation}
 \begin{align*}
-	& \text{For variable $x$:} && \expectation{x} = \underset{x}{\sum}x.p(x) && \left( = \int x.p(x)dx \right)\\
-	& \text{For function $f(\cdot)$:} && \expectation{f(x)} = \underset{x}{\sum}f(x).p(x) && \left( = \int f(x).p(x)dx \right)
+	& \text{For variable $x$:} && \expectation{x} = \underset{x}{\sum}x.p(x) && = \int p(x)x\text\ {d}x \\
+	& \text{For function $f(\cdot)$:} && \expectation{f(x)} = \underset{x}{\sum}f(x).p(x) && = \int p(x)f(x)\ \text{d}x
 \end{align*}
 
 \subsection{Independence and Variability}

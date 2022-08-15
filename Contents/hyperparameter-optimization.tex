@@ -1,0 +1,82 @@
+% !TeX spellcheck = en_US
+\chapter{Hyperparameters Optimization}
+
+\section{Introduction}
+Hyperparameters are \ac{param} that:
+\begin{itemize}
+	\item Define model's architecture
+	\item Do NOT change with your model training
+	\item Are NOT learnt from your model training
+	\item Each model has its own set of \ac{param}
+\end{itemize}
+
+Hyperparameters tuning affects:
+\begin{itemize}
+	\item Speed of convergence
+	\item Generalization of your model
+	\item Find optimal solution space
+	\item Find right capacity for your solution
+	\item Identify ideal architecture
+\end{itemize}
+
+Examples:
+\begin{itemize}
+	\item Different types of gradient descents
+	\item \dots
+\end{itemize}
+
+\section{Exhaustive Search}
+\subsection{Grid Search}
+Grid search will suffer to the curse of dimensionality
+\begin{itemize}
+	\item Define range of possible values for all \ac{param}
+	\item Evaluate model performance for each hyper\ac{param} combination
+	\item Cross validate
+	\item Pick the top $N$ hyper\ac{param}
+\end{itemize}
+
+\subsection{Random Search}
+Random search is generally faster and more efficient, though does NOT guarantee good coverage.
+\begin{itemize}
+	\item Define random sampling space (explicit values or distribution)
+	\item Sample hyper\ac{param} randomly
+	\item Evaluate model performance for each hyper\ac{param} combination
+	\item Cross validate
+	\item Pick the top $N$ hyper\ac{param}
+\end{itemize}
+
+\subsection{Example}
+Python libraries:
+\begin{python}
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+\end{python}
+
+Examples:
+\begin{itemize}
+	\item \href{https://youtu.be/HdlDYng8g9s}{codebasics YouTube}
+\end{itemize}
+
+\section{Sequential Model Based}
+\subsection{Bayesian Optimization}
+Use Acquisition function \todo{}
+\subsection{Genetic Algorithm}
+\todo{}
+
+\begin{python}
+from skopt import BayesSearchCV
+\end{python}
+
+\section{Tools}
+Current good tools for hyper\ac{param} search:
+\begin{itemize}
+	\item Weights \& Biases: \pyth{import wandb}
+	\item Scikit-learn: \pyth{from sklearn.model_selection import *}
+	\item SkOpt: \pyth{skopt}
+\end{itemize}
+
+\section{References}
+\begin{itemize}
+	\item \href{https://youtu.be/ttE0F7fghfk}{Siraj Raval YouTube}
+	\item \href{https://www.youtube.com/channel/UCS1dQr2X_ComHN4PXYDS4gA}{Machine Learning Mastery YouTube}
+\end{itemize}

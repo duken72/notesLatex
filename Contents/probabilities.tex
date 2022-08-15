@@ -57,6 +57,12 @@ First determine the class-conditional densities and separately infer the prior c
 \subsection{Discriminative Methods}
 First solve the inference problem of determined the posterior class \ac{prob}
 
+\note Frequentist versus Bayesian
+\begin{itemize}
+	\item Frequentist: the \ac{param} is fixed $p(\mathcal{D} | \theta)$
+	\item Bayesian: the \ac{param} depends on the given data $p(\theta | \mathcal{D})$
+\end{itemize}
+
 \subsection{Classification with Loss Functions}
 For classification problem with more than 2 classes, the output's predicted class $\mathcal{C}_k$ is the one with the greatest posterior \ac{prob} among all classes $\mathcal{C}_j$, which can still be wrong:
 \begin{align*}

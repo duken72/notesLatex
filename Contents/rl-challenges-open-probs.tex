@@ -1,6 +1,11 @@
 % !TeX spellcheck = en_US
 \chapter{Challenges and Open Problems}
 
+\section{References}
+\begin{itemize}
+	\item Deep Reinforcement Learning Doesn't Work Yet \cite{irpan18}
+	\item \href{http://rail.eecs.berkeley.edu/deeprlcourse/static/slides/lec-23.pdf}{CS 285 at UC Berkeley, Deep \ac{RL}}
+\end{itemize}
 Multi-task transfer learning: deeper explanation for gradient interference and winner-take-all problem
 
 \section{Stability}
@@ -48,6 +53,8 @@ Efficiency: how long does it take to converge? (how many samples)
 	\item Precludes the use of expensive, high-fidelity simulators
 	\item Limits applicability to real-world problems
 \end{itemize}
+\cite{irpan18}
+
 \subsection{Directions}
 \begin{itemize}
 	\item Better model-based \ac{RL} algorithms
@@ -89,6 +96,13 @@ Prior works on generalizing from multi-task learning:
 \end{itemize}
 
 \subsection{Supervision}
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{lego-stacking-reward.png}
+	\caption{Complex reward function \cite{popov2017data}}
+	\label{fig:lego-stacking-reward}
+\end{figure}
+
 \begin{itemize}
 	\item If you want to learn from many different tasks, you need to get those tasks somewhere!
 	\item Supervision comes from reward.

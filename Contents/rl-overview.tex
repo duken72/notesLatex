@@ -29,8 +29,9 @@ A \ac{RL} problem has 3 major blocks as follows:
 \begin{itemize}
 	\item \href{http://rail.eecs.berkeley.edu/deeprlcourse/}{Deep \ac{RL} - CS285, UC Berkeley - Sergey Levine}
 	\item \href{http://ai.berkeley.edu/lecture_videos.fhtml}{CS188 Berkeley AI}
-	\item Reinforcement learning: An introduction \cite{sutton2018reinforcement}
+	\item The book \textit{Reinforcement learning: An introduction} \cite{sutton2018reinforcement}
 	\item \href{https://www.tensorflow.org/agents/overview}{\texttt{TensorFlow} Agents' tutorial}
+	\item \href{https://simoninithomas.github.io/Deep_reinforcement_learning_Course/#}{A Free course in Deep RL}
 \end{itemize}
 
 \section{Terminology \& Notation}
@@ -81,12 +82,12 @@ A \ac{RL} problem has 3 major blocks as follows:
 \end{figure}
 
 \section{Overview on RL Algorithms}
-\ac{RL} problem revolves around maximizing the expectation of total rewards. Thus, we aim to find the \ac{param} to maximize the expected value of the sum of rewards, under the trajectory distribution.
+\ac{RL} problem revolves around maximizing the expectation of total rewards. We aim to find the \ac{param} to maximize the expected value of the sum of rewards, under the trajectory distribution.
 \begin{equation}
 	\theta^* = \underset{\theta}{\arg\max}\; \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[ \sum_t r(\textbf{s}_t, \textbf{a}_t) \right]
 \end{equation}
 
-There are many methods / algorithms because they have their trade-offs and assumptions:
+There are many methods / algorithms with their trade-offs and assumptions:
 \begin{itemize}
 	\item Sampling efficiency \& stability and ease of use
 	\item Stochastic or deterministic
@@ -107,8 +108,8 @@ There are many methods / algorithms because they have their trade-offs and assum
 \begin{landscape}
 	\begin{table}[htb!]
 		\centering
-		\begin{tblr}{colspec={X[0.6]||X|X[1.2]|X|X}, row{1} = {l}}
-			& Model-based approaches & Value function fitting methods & Actor-critic algorithms & Policy Gradient \\ \hline\hline
+		\begin{tblr}{colspec={X[0.6]||X|X[1.1]|X[0.8]|X}, row{1} = {l}}
+			& Model-based & Value function fitting & Actor-critic & Policy Gradient \\ \hline\hline
 			\textbf{\textit{Sample efficiency}} \newline {\fontsize{8}{0}\selectfont (How many samples do we need to get good policy?)}
 			& \SetCell[c=4]{l}{\newline \begin{tikzpicture}[baseline=0]
 					\draw[thick,latex-latex] (-10,0) -- (10,0);
@@ -142,8 +143,8 @@ There are many methods / algorithms because they have their trade-offs and assum
 			\textbf{\textit{Example}} & 
 			- Dyna \newline - Guided policy search &
 			- Q-learning \newline - DQN \newline - Temporal difference \newline - Fitted value iteration &
-			- \ac{A3C} \newline - \ac{SAC} &
-			- REINFORCE \newline - Natural policy gradient \newline - Trusted Region policy optimization\\
+			- \ac{A3C} \cite{mnih2016icml} \newline - \ac{SAC} \cite{haarnoja2018soft} &
+			- REINFORCE \cite{williams1992jml} \newline - Natural policy gradient \cite{kakade2001natural} \newline - Trusted Region policy optimization \cite{schulman2015icml}
 		\end{tblr}
 		\caption{Different \ac{RL} algorithms.}
 		\label{tab:RL-algors}

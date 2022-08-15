@@ -86,7 +86,7 @@ Batch \ac{RL} is just an old name for offline \ac{RL} (around 2000s). Using impo
 \todo{Ignore for now, too many complicated equations}
 
 \subsection{Batch RL via Linear Fitted Value Functions}
-Let's go back to the tabular \ac{RL} setting with linear fitted value functions. This method generally doesn't concern with distributional shift, maybe it was not such a big problem with linear models.
+Let's go back to the model-based \ac{RL} setting with tabular linear fitted value functions. This method generally doesn't concern with distributional shift, maybe it was not such a big problem with linear models.
 
 High level idea procedure:
 \begin{enumerate}
@@ -99,8 +99,53 @@ High level idea procedure:
 \begin{align}
 	&\Phi &&-\text{feature matrix, size} |S| \times K\\
 	&\Phi \textbf{w}_r \approx r &&-\text{reward model}, \textbf{w}_r \in \mathbb{R}^{K\times 1}, r \in \mathbb{R}^{|S| \times 1}\\
-	\Rightarrow & \textbf{w}_r = (\Phi^T \Phi)^{-1} \Phi^T \vec{\textbf{r}} &&-\text{least square}
+	\Rightarrow & \textbf{w}_r = (\Phi^T \Phi)^{-1} \Phi^T \vec{\textbf{r}} &&-\text{least square solution (assume knowing $\vec{\textbf{r}}$)}\\
+	&\Phi \textbf{P}_\Phi \approx \textbf{P}^\pi \Phi &&-\text{transition model}\\
+	&\textbf{P}^\pi \in \mathbb{R}^{|S|\times|S|} &&-\text{real transition matrix (on states)}\\
+	&\textbf{P}_\Phi \in \mathbb{R}^{K\times K} &&-\text{estimated feature-space transition matrix}\\
+	\Rightarrow & \textbf{P}_\Phi = \left(\Phi^T \Phi\right)^{-1} \Phi^T \textbf{P}^\pi \Phi && -\text{least squares}\\
+	\Rightarrow & V^\pi \approx V^\pi_\Phi = \Phi \textbf{w}_V &&-\text{value functions}
 \end{align}
+
+We can find $V^\pi$ in terms of $\textbf{P}^\pi$ and $\textbf{r}$:
+\begin{align}
+	V^\pi &= \textbf{r} + \gamma \textbf{P}^\pi V^\pi\\
+	\Rightarrow V^\pi &= (\textbf{I} - \gamma \textbf{P}^\pi)^{-1} \textbf{r}
+\end{align}
+Same derivation in feature space:
+\begin{align}
+	\textbf{w}_V &= (\textbf{I} - \gamma \textbf{P}_\Phi)^{-1} \textbf{w}_r &&\\
+	&= (\textbf{I} - \gamma (\Phi^T \Phi)^{-1} \Phi^T \textbf{P}^\pi \Phi)^{-1} (\Phi^T \Phi)^{-1} \Phi^T \vec{\textbf{r}} &&-\text{substitute in $\textbf{w}_r$ and $\textbf{P}_\Phi$}\\
+	\Rightarrow \textbf{w}_V &=(\Phi^T\Phi - \gamma\Phi^T \textbf{P}^\pi \Phi)^{-1} \Phi^T \vec{\textbf{r}} &&-\text{LSTD}
+\end{align}
+The above equations are of \ac{LSTD}. However it requires us to know transition matrix $\textbf{P}^\pi$ and reward vector $\vec{\textbf{r}}$. To get a model-free approach, we will use samples. We replace $\textbf{P}^\pi \Phi$ with the feature matrix of the next time step $\Phi'$:
+\begin{align}
+	\Phi'_i = \phi(\textbf{s}'_i)
+\end{align}
+
+\hlb{\ac{LSTD} Algorithm:} not going to work for offline \ac{RL}, because the equation requires samples from $\pi$ for $\textbf{P}^\pi$
+\begin{enumerate}
+	\item \tikzmark{lstd1}$\pi'(\textbf{s}) \leftarrow \text{Greedy}(\Phi \textbf{w}_V)$
+	\item \tikzmark{lstd2}estimate $V^{\pi'}$
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-7mm,yshift=1mm]pic cs:lstd2) --++ (-.5,0) |-
+		([xshift=-7mm,yshift=1mm]pic cs:lstd1);
+	\end{tikzpicture}
+\end{enumerate}
+
+\hlb{\ac{LSPI} Algorithm:} \ac{LSTD}Q - \ac{LSTD} for Q-functions.
+\begin{enumerate}
+	\item \tikzmark{lspi1}compute $\textbf{w}_Q$ for $\pi_k$
+	\item $\pi_{k+1}(\textbf{s}) = \underset{\textbf{a}}{\arg\max} \phi(\textbf{s,a}) \textbf{w}_Q$
+	\item \tikzmark{lspi3}set $\Phi_i' = \phi(\textbf{s}_i', \pi_{k+1}(\textbf{s}_i'))$
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex]
+		([xshift=-7mm,yshift=1mm]pic cs:lspi3) --++ (-.5,0) |-
+		([xshift=-7mm,yshift=1mm]pic cs:lspi1);
+	\end{tikzpicture}
+\end{enumerate}
+Now $\Phi \in \mathbb{R}^{|S||A| \times K'}$, $\textbf{w}_Q = (\Phi^T \Phi - \gamma \Phi^T \Phi')^{-1} \Phi^T \vec{\textbf{r}}$, $\vec{\textbf{r}}_i =r(\textbf{s}_i, \textbf{a}_i)$ \cite{lagoudakis2003least}
 
 \section{Conservative Q-Learning}
 \ac{CQL}
@@ -117,26 +162,26 @@ Readings for importance sampling
 \begin{itemize}
 	\item Classic work on importance sampled policy gradients and return estimation:
 	\begin{itemize}
-		\item \citeaus{precup2000eligibility}. Eligibility traces for off-policy policy evaluation.
-		\item \citeaus{peshkin2002learning}. Learning from scarce experience.
+		\item \citeaustitle{precup2000eligibility}
+		\item \citeaustitle{peshkin2002learning}
 	\end{itemize}
 	\item Doubly robust estimators and other improved importance-sampling estimators:
 	\begin{itemize}
-		\item \citeaus{jiang2016doubly}. Doubly robust off-policy value evaluation for reinforcement learning.
-		\item \citeaus{thomas2016data}. Data-efficient off-policy policy evaluation for reinforcement learning.
+		\item \citeaustitle{jiang2016doubly}
+		\item \citeaustitle{thomas2016data}
 	\end{itemize}	
 	\item Analysis and theory:
 	\begin{itemize}
-		\item \citeaus{thomas2015high}. High-confidence off-policy evaluation.
+		\item \citeaustitle{thomas2015high}
 	\end{itemize}
 	\item Marginalized importance sampling:
 	\begin{itemize}
-		\item \citeaus{hallak2017consistent}. Consistent on-line off-policy evaluation. 
-		\item \citeausm{liu2019off}. Off-policy policy gradient with state distribution correction.
+		\item \citeaustitle{hallak2017consistent}
+		\item \citeaustitle{liu2019off}
 	\end{itemize}
 \end{itemize}
 
 Modern offline \ac{RL}:
 \begin{itemize}
-	\item \citeausm{levine2020offline}. Offline Reinforcement Learning: Tutorial, Review, and Perspectives on Open Problems.
+	\item \citeaustitle{levine2020offline}
 \end{itemize}

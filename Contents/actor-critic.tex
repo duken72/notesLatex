@@ -7,7 +7,7 @@ Actor-Critic is kind of hybrid between policy gradient and value function based 
 \end{itemize}
 
 \section{Approach}
-We continue with the \eqref{eq:Q-value}, where we multiply with the estimate of the expected reward $\widehat{Q}_{i,t}$. The estimate $\widehat{Q}_{i,t}$ is currently calculated as the sum of the reward afterward, in a single run. There are different ways we could go better than that single-sample estimate.
+We continue with the \eqref{eq:Q-value}, where we multiply with the estimate of the expected reward $\widehat{Q}_{i,t}$. The estimate $\widehat{Q}_{i,t}$ is currently calculated as the approximation of the sum of the reward afterward, from roll-outs. There are different ways we could go better than that single-sample estimate.
 
 \begin{itemize}
 	\item $Q^\pi(\textbf{s}_t, \textbf{a}_t)$: the Q-function, \ac{aka}, the state-action value function, represents the total reward from taking $\textbf{a}_t$ at state $\textbf{s}_t$, the \textit{true expected} reward-to-go.
@@ -68,13 +68,11 @@ From the above derivation, let just fit the value function $V^\pi(\textbf{s})$ w
 \section{Batch Actor-Critic}
 \begin{enumerate}
 	\item \tikzmark{bac1}Sample $\{\textbf{s}_i, \textbf{a}_i\}$ from $\pi_{\theta}(\textbf{a|s})$
-	\item Fit $V_{\phi}^\pi(\textbf{s})$ to sampled reward sums (either Monte-Carlo or bootstrapped estimate)
+	\item Fit $V_{\phi}^\pi(\textbf{s})$ to sampled reward sums (either Monte-Carlo \cite{schulman2015high} or bootstrapped estimate)
 	\item Evaluate $\widehat{A}^\pi(\textbf{s}_i, \textbf{a}_i) = r(\textbf{s}_i, \textbf{a}_i) + \widehat{V}_\phi^\pi(\textbf{s}_{i'}) - \widehat{V}_\phi^\pi(\textbf{s}_{i})$
 	\item $\nabla_\theta J(\theta) \approx \sum \nabla_\theta\log\pi_{\theta}( \textbf{a}_{i}|\textbf{s}_{i} ) \widehat{A}^\pi(\textbf{a}_i, \textbf{s}_i)$
 	\item \tikzmark{bac5}$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$
-	\begin{tikzpicture}[overlay,remember picture]
-		\draw[very thick, -latex] ([xshift=-7mm,yshift=1mm]pic cs:bac5) --++ (-.5,0) |- ([xshift=-7mm,yshift=1mm]pic cs:bac1);
-	\end{tikzpicture}
+	\tikzarrow{bac5}{bac1}
 \end{enumerate}
 With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 3. Evaluate $\widehat{A}^\pi(\textbf{s}_i, \textbf{a}_i) = r(\textbf{s}_i, \textbf{a}_i) + \gamma\widehat{V}_\phi^\pi(\textbf{s}_{i'}) - \widehat{V}_\phi^\pi(\textbf{s}_{i})$ \cite{thomas2014icml}
@@ -86,11 +84,9 @@ With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 	\item Evaluate $\widehat{A}^\pi(\textbf{s, a}) = r(\textbf{s, a}) + \widehat{V}_\phi^\pi(\textbf{s}') - \widehat{V}_\phi^\pi(\textbf{s})$
 	\item $\nabla_\theta J(\theta) \approx \nabla_\theta\log\pi_{\theta}(\textbf{a|s}) \widehat{A}^\pi(\textbf{s, a})$
 	\item \tikzmark{oac5}$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$
-	\begin{tikzpicture}[overlay,remember picture]
-		\draw[very thick, -latex] ([xshift=-7mm,yshift=1mm]pic cs:oac5) --++ (-.5,0) |- ([xshift=-7mm,yshift=1mm]pic cs:oac1);
-	\end{tikzpicture}
+	\tikzarrow{oac5}{oac1}
 \end{enumerate}
-\hlr{Problem:} single batch $\Rightarrow$ need parallel actor-critic (synchronous / asynchronous)
+\hlr{Problem:} single batch $\Rightarrow$ need parallel actor-critic (synchronous / asynchronous) \cite{mnih2016icml}
 
 \section{Design Decisions}
 \begin{itemize}
@@ -111,7 +107,6 @@ With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 			\includegraphics[width=0.5\textwidth]{ac-networks-2.png}
 		\end{tabular}
 	\end{table}	
-	
 	\item Critic as state-dependent baselines\\
 	Actor-critic: $\begin{matrix*}[l]
 		\color{Green}+\text{lower variance (due to critic)}\\
@@ -145,9 +140,8 @@ With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 	The second one lead to wrong policy gradient, thus must be corrected with an error term:
 	\begin{equation}
 		\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \nabla_\theta\log\pi_{\theta}(\textbf{a}_{i,t}|\textbf{s}_{i,t}) \left( \widehat{Q}_{i,t} - Q^\pi_\phi(\textbf{s}_{i,t}, \textbf{a}_{i,t}) \right) + \frac{1}{N} \sum_{i=1}^N \sum_{t=1}^T \nabla_\theta\mathbb{E}_{\textbf{a}\sim\pi_\theta(\textbf{a}_t | \textbf{s}_{i,t})}[Q^\pi_\phi(\textbf{s}_{i,t}, \textbf{a}_{i,t})]
-	\end{equation}
-	
-	\item Eligibility traces \& $n$-step returns: reduces the bias
+	\end{equation}	
+	\item Eligibility traces \& $n$-step returns: reduces the bias \cite{mnih2016icml}
 	\begin{align}
 		&\text{Actor-critic:} &&\widehat{A}_C^\pi(\textbf{s}_t, \textbf{a}_t) = r(\textbf{s}_t, \textbf{a}_t) + \gamma \widehat{V}_\phi^\pi(\textbf{s}_{t+1}) - \widehat{V}_\phi^\pi(\textbf{s}_t) \quad \begin{matrix*}[l]
 			{\color{Green} + \text{low variance}}\\
@@ -160,7 +154,7 @@ With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 		&\qquad\Rightarrow &&\widehat{A}_n^\pi (\textbf{s}_t, \textbf{a}_t) = \sum_{t'=t}^{\color{red} t+n} \gamma^{t'-t} r(\textbf{s}_{t'}, a_{t'}) - \widehat{V}_\phi^\pi(\textbf{s}_t) + \gamma^n \widehat{V}_\phi^\pi(\textbf{s}_{t+n})
 	\end{align}
 	Simply put, the further the states are in the future, the higher the variance of those states. \Eg, where would you/the robot be in 5 minutes versus where would you/the robot be in 20 years? The larger $n$ is, the lower the bias, the higher the variance.
-	\item Generalized advantage estimation: extension of $n$-step returns\\
+	\item Generalized advantage estimation: extension of $n$-step returns \cite{schulman2015high}\\
 	To have many $n$-step returns, then take weighted average of them.	
 	\begin{align}
 		&\widehat{A}_{GAE}^\pi(\textbf{s}_t, \textbf{a}_t) = \sum_{n=1}^\infty \omega_n \widehat{A}_n^\pi(\textbf{s}_t, \textbf{a}_t), && \omega_n \propto \lambda^{n-1}\\
@@ -168,12 +162,27 @@ With \hlr{discount factor $\gamma$} $\in [0,1]$ (0.99 works well)\\
 	\end{align}
 \end{itemize}
 
+\section{Natural Actor-Critic}
+Natural Actor-Critic \cite{peters2005natural} is the extension of natural policy gradient \cite{kakade2001natural} to actor-critic approach. \cite{peters2008nn}
+
+\section{Off-policy Actor-Critic}
+\ac{SAC} algorithm: \cite{haarnoja2018soft}
+
+\begin{enumerate}
+	\item \tikzmark{opac1}Take action $\textbf{a} \sim \pi_{\theta}(\textbf{a|s})$, get $(\textbf{s, a, s'}, r)$, store in {\color{red} buffer $\mathcal{B}$}
+	\item Sample a batch $(\textbf{s}_i, \textbf{a}_i, \textbf{s}_i', r_i)$ from $\mathcal{B}$
+	\item Update $\color{red}\widehat{Q}_\phi^\pi$ using targets $\color{red}y_i = r_i + \gamma \widehat{Q}_\phi^\pi(\textbf{s}'_i, \textbf{a}'_i), \quad\textbf{a}'_i \sim \pi_\theta(\textbf{a}'_i|\textbf{s}'_i)$
+	\item $\nabla_\theta J(\theta) \approx \frac{1}{N}\sum_i \nabla_\theta\log\pi_{\theta}({\color{red}\textbf{a}_i^\pi}|\textbf{s}) \widehat{Q}^\pi(\textbf{s}_i, {\color{red}\textbf{a}_i^\pi}), \quad \color{red}\textbf{a}_i^\pi \sim \pi_\theta(\textbf{a} | \textbf{s}_i)$
+	\item \tikzmark{opac5}$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$
+	\tikzarrow{opac5}{opac1}
+\end{enumerate}
+
+\note In step 3 and 4, the actions are not from the replay buffer $\mathcal{B}$, but from our current policy $\textbf{a}'_i \sim \pi_\theta(\textbf{a}'_i|\textbf{s}'_i)$ and $\textbf{a}_i^\pi \sim \pi_\theta(\textbf{a} | \textbf{s}_i)$
+
 \section{References}
 \begin{itemize}
-	\item \citeaus{sutton1999policy}. Policy gradient methods for reinforcement learning with function approximation.
-	\item \citeausm{mnih2016icml}. Asynchronous methods for deep reinforcement learning.
-	\item \citeausm{schulman2015high}. High-dimensional continuous control using generalized advantage estimation.
-	\item \citeausm{gu2016q}. Q-prop: Sample-efficient policy gradient with an off-policy critic.
+	\item \citeaustitle{sutton1999policy}
+	\item \citeaustitle{mnih2016icml}
+	\item \citeaustitle{schulman2015high}
+	\item \citeaustitle{gu2016q}
 \end{itemize}
-
-\todo{Read \cite{peters2005natural, haarnoja2018soft}}

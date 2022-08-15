@@ -1,0 +1,54 @@
+% !TeX spellcheck = en_US
+\chapter{Deep Learning Generalization}
+This chapter presents different techniques and idea to generalize deep learning and make it more applicable to variety of problems.
+
+\section{Transfer Learning}
+Transfer learning focuses on storing knowledge gained while solving a problem and applying it to a different but related problem. Simply put:
+\begin{itemize}
+	\item The new model comprises mostly of layers from a pretrained model.
+	\item We take the structure and corresponding \ac{param} of a model that is pretrained on a large dataset for the feature extraction.
+	\item We add a few (1-2) new layers in the end, which are designated to our current specific problem.
+\end{itemize}
+
+
+\note
+\begin{itemize}
+	\item Lower the learning rate
+\end{itemize}
+
+Example with \texttt{TensorFlow} (\href{https://github.com/codebasics/deep-learning-keras-tf-tutorial/tree/master/18_transfer_learning}{src}):
+\begin{python}
+import tensorflow as tf
+import tensorflow_hub as hub
+
+model_path = "https://tfhub.dev/google/tf2-preview/mobilenet_v2/feature_vector/4"
+pretrained_model = hub.KerasLayer(
+		model_path, input_shape=(224, 224, 3), trainable=False)
+
+num_of_new_classes = 5
+model = tf.keras.Sequential([
+		pretrained_model,
+		tf.keras.layers.Dense(num_of_new_classes)])
+model.summary()
+
+model.compile(
+		optimizer="adam",
+		loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+		metrics=['acc'])
+
+model.fit(X_train_scaled, y_train, epochs=5)
+\end{python}
+
+\section{Fine-Tuning}
+In fine-tuning, a pretrained model is used, just like in transfer learning.
+\begin{itemize}
+	\item In fine-tuning, we retrain the whole model with the new dataset, while in transfer learning, we freeze the \ac{param} of pretrained model.
+	\item Can incrementally adapt the pretrained features to the new dataset
+\end{itemize}
+
+\section{Distillation}
+\todo{Knowledge distillation, model distillation, dataset distillation}
+\section{Meta-Learning}
+\section{Multi-task Learning}
+
+\section{References}

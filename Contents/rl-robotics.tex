@@ -1,0 +1,45 @@
+% !TeX spellcheck = en_US
+\chapter{RL for Robotics}
+
+\section{Motor Primitive Policy}
+Not the same as path primitive from robotic trajectory planning. \cite{ijspeert2002movement}. Motor plans are trajectory plans for each \ac{dof}:
+\begin{itemize}
+	\item Spline-based trajectory plans: the desired movement is parameterized by its spline nodes and the duration of each spline node. \cite{miyamoto1995kendama, siciliano2008springer}
+	\item Nonlinear dynamic motor primitives: the movement plans $(q_d, \dot{q}_d)$ are represented in terms of the time evolution of the nonlinear dynamical systems  \cite{ijspeert2002movement}
+	\begin{align*}
+		&\ddot{q}_d = f(q_d, z, g, \tau, \theta) \quad \text{in which:}\\
+		&(q_d, \dot{q}_d) &&-\text{the desired position and velocity profile of a joint}\\
+		&z &&-\text{the internal state $\ddot{z} = f_c(z,\tau)$}\\
+		&\theta &&-\text{\ac{param} for $f$}\\
+		&\tau &&-\text{the time duration shared by all \ac{dof}s}
+	\end{align*}
+\end{itemize}
+
+We include exploration by adding a small perturbation to the desired accelerations
+\begin{align}
+	&\epsilon \sim \mathcal{N}(0, \sigma^2) &&-\text{small perturbation}\\
+	&\ddot{\hat{q}}_d = \ddot{q}_d + \epsilon &&-\text{the perturbed target output}\\
+	&\pi(\ddot{\hat{q}}_d | \ddot{q}_d) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(\ddot{\hat{q}}_d - \ddot{q}_d)^2}{2\sigma^2} \right) &&-\text{a stochastic policy}
+\end{align}
+
+\section{Requirements}
+Requirements for motor primitive learning in robotics: \cite{peters2008nn}
+\begin{itemize}
+	\item Any change to the policy parameterization has to be smooth, because
+	\begin{itemize}
+		\item drastic changes can be hazardous for the robot and its environment
+		\item rendering initialization of the policy based on domain knowledge or imitation learning useless, as these would otherwise vanish after a single update
+		step due to out-of-distribution problem \cite{schaal1996learning}.
+	\end{itemize}	
+	\item Need to guarantee that the policy is improved in the update steps at least on average. This rules out greedy value function based methods with approximated value functions, as these methods are frequently problematic in regard of this property \cite{kakade2003sample}	
+\end{itemize}
+
+\section{References}
+Resources:
+\begin{itemize}
+	\item \href{https://www.youtube.com/channel/UCXSgDUSFyJDDG3L1PcWq8Xg/featured}{EPHE 245 Motor Learning}
+	\item \citeaustitle{schaal1996learning}
+	\item \citeaustitle{ijspeert2002movement}
+	\item \citeaustitle{kakade2003sample}
+	\item \citeaustitle{peters2008nn}	
+\end{itemize}

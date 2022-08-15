@@ -74,12 +74,17 @@ belowskip		= 2pt,
 % --------------------------------------------------------------------------
 %	Graphics
 % --------------------------------------------------------------------------
-\RequirePackage{graphicx, psfrag} 	% Incorporation of graphics
+\RequirePackage{graphicx, psfrag}	% Incorporation of graphics
+\RequirePackage{wrapfig}			 % Wrapping text around figure
 \graphicspath{{./Contents/images}}
 \RequirePackage{subcaption}         % Sub-illustrations
 \RequirePackage{tikz}
 \usetikzlibrary{positioning, tikzmark}
 \def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+\newcommand\tikzarrow[2]{\begin{tikzpicture}[overlay,remember picture]
+		\draw[very thick, -latex] ([xshift=-7mm,yshift=1mm]pic cs:{#1}) --++ (-.5,0) |- ([xshift=-7mm,yshift=1mm]pic cs:{#2});
+\end{tikzpicture}}
+
 % --------------------------------------------------------------------------
 %	Mathematics-mode
 % --------------------------------------------------------------------------
@@ -169,6 +174,7 @@ includeheadfoot
 \def\algref#1{Alg.~\ref{#1}}
 \def\citeaus#1{\citeauthor{#1} (\citeyear{#1}) \cite{#1}}
 \def\citeausm#1{\citeauthor*{#1} (\citeyear{#1}) \cite{#1}}
+\def\citeaustitle#1{\citeausm{#1}.\textit{\citetitle{#1}}.}
 
 %% Other useful macros
 \newcommand\todo[1]{\textbf{[TODO: #1}]}
