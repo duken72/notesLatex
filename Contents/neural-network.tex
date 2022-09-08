@@ -73,7 +73,8 @@ Check derivative:
 	v_t = \gamma v_{t-1} + \eta \nabla_tJ\left(\theta - \gamma v_{t-1}\right)
 \end{equation}
 
-\subsection{\ac{rmsprop}}
+\subsection{RMSprop}
+\ac{rmsprop}:
 \begin{itemize}
 	\item Init $s_{dW_0} = 0, s_{db_0}=0$
 	\item Calculate $dW, db$
@@ -93,7 +94,7 @@ Check derivative:
 	\item Reference source: \href{https://youtu.be/_e-LFe_igno}{DeepLearning.AI}.
 \end{itemize}
 
-\subsection{\ac{adam}}
+\subsection{Adam}
 \ac{adam} is basically the combination of Momentum and \ac{rmsprop}.
 \begin{itemize}
 	\item Init $v_{dW_0}, s_{dW_0}, v_{db_0}, s_{db_0}=0$
@@ -122,6 +123,58 @@ Check derivative:
 	\item Tips: choose \hlre{\beta_1 = 0.9, \quad\beta_2 = 0.999, \quad\varepsilon = 10^{-7}}
 	\item Reference source: \href{https://youtu.be/JXQT_vxqwIs}{DeepLearning.AI}.
 \end{itemize}
+
+\section{Normalization}
+\subsection{BatchNorm}
+\ac{BatchNorm} normalizes the mean and standard deviation for each individual feature channel \cite{ioffe2015batch}. Given an input batch $x$ from batch size $N$, \ac{no} channel $C$, height $H$ and width $W$:
+
+\begin{align}
+	BN(x) &= \gamma \left(\frac{x - \mu(x)}{\sigma(x)}\right) + \beta, \qquad \begin{matrix*}[l]
+		\text{input}\ x \in \mathbb{R}^{N \times C \times H \times W}\\
+		\text{mean and standard deviation}\ \mu(x), \sigma(x) \in \mathbb{R}^C\\
+		\text{affine \ac{param} to learn}\ \gamma, \beta \in \mathbb{R}^C\\
+	\end{matrix*}\\
+	\mu_c(x) &= \frac{1}{NHW} \sum_{n=1}^{N} \sum_{h=1}^{H} \sum_{w=1}^{W} x_{nchw}\\
+	\sigma_c(x)	&= \sqrt{\frac{1}{NHW} \sum_{n=1}^{N} \sum_{h=1}^{H} \sum_{w=1}^{W} (x_nhcw - \mu_c(x))^2 + \epsilon} \label{eq:batch-norm}
+\end{align}
+
+\hlb{Intuition:}
+\begin{itemize}
+	\item $\gamma$ and $\beta$ are basically the learned standard deviation and mean of the output feature map.
+	\item \ac{BatchNorm} layer simply transforms the output to a different mean and standard deviation.
+	\item Why \ac{BatchNorm} helps?:
+	\begin{itemize}
+		\item Check these videos: \href{https://youtu.be/DtEq44FTPM4}{CodeEmporium}, \href{https://youtu.be/nUUqwaxLnWs}{DeepLearningAI}
+		\item Speeds up training speed: by transforming the parameter space to be more even, instead of being overwhelmed by some parts of \ac{param}. This is basically the same as using \ac{adam} instead of conventional \ac{SGD}
+		\item Allows suboptimal starts: same reason as above.
+		\item Regularizes the model (slightly)
+	\end{itemize}
+\end{itemize}
+
+\subsection{IN}
+\ac{IN} \cite{ulyanov2016texture} show significant improvement over \ac{BatchNorm}, especially for the style transfer problem in \ac{CV}:
+\begin{itemize}
+	\item \ac{BatchNorm} computes mean and deviation for each channel: $\mu(x), \sigma(x) \in \mathbb{R}^C$ (\eqref{eq:batch-norm})
+	\item \ac{IN} computes mean and standard deviation independently for each channel and each sample: $\mu(x), \sigma(x) \in \mathbb{R}^{N \times C}$
+	\begin{align}
+		IN(x) &= \gamma \left(\frac{x - \mu(x)}{\sigma(x)}\right) + \beta\\
+		\mu_nc(x) &= \frac{1}{HW} \sum_{h=1}^{H} \sum_{w=1}^{W} x_{nchw}\\
+		\sigma_nc(x) &= \sqrt{\frac{1}{HW} \sum_{h=1}^{H} \sum_{w=1}^{W} (x_nhcw - \mu_nc(x))^2 + \epsilon}
+	\end{align}
+	\item At test time, \ac{IN} layers are applied unchanged, while \ac{BatchNorm} layers usually replace mini-batch statistics with population statistics.
+	\item \textit{Conditional instance normalization} (CIN) is an extension of \ac{IN} \cite{dumoulin2016learned}
+	\begin{equation}
+		CIN(x; s) = \gamma^s \left(\frac{x - \mu(x)}{\sigma(x)}\right) + \beta^s
+	\end{equation}
+	\item It's interesting that the affine parameters $\gamma, \beta$ can completely change the style of the output image.
+\end{itemize}
+\subsection{AdaIN}
+\ac{AdaIN} simply aligns the mean and variance of content input $x$ to match those of style input $y$. Here, the affine parameters are no longer learnable, but adaptively computed from
+the style input \cite{huang2017arbitrary}
+\begin{equation}
+	AdaIN(x,y) = \sigma(y) \left(\frac{x - \mu(x)}{\sigma(x)}\right) + \mu(y)
+\end{equation}
+\note Using concatenation alone would not disentangle the content and style information for later learning step.
 
 \section{Convolutional Operator}
 \subsection{Convolution}

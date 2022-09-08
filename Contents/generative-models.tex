@@ -101,7 +101,6 @@ As mentioned above, the problem with using a Gaussian for $q_i(z)$ is the huge n
 \end{figure}
 
 \subsection{Algorithm}
-\hlb{The algorithm:}
 \begin{enumerate}
 	\item for each $x_i$ (or mini-batch):
 	\item \quad calculate $\nabla_\theta \mathcal{L}_i (p_\theta(x_i|z), q_\phi(z|x_i))$:
@@ -230,6 +229,9 @@ Example works:
 		y &= G(x,z) &&-\text{given $x$ and noise $z$, the generator generate $y$.}
 	\end{align}
 \end{itemize}
+
+\subsection{StyleGAN}
+\note Move to \ac{CV} notes
 
 \subsection{Tips And Tricks}
 Tips and tricks for training \ac{GAN} from \href{https://github.com/soumith/ganhacks}{\texttt{github/ganhacks}}

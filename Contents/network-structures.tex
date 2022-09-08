@@ -2,7 +2,8 @@
 \chapter{Network Structures}
 This chapter presents some common network structures and their capabilities.
 
-\section{LeNet}
+\section{Base Structures}
+\subsection{LeNet}
 LeNet5 is probably the earliest \ac{CNN} network, proposed by \citeausm{lecun1998gradient}.
 
 \begin{figure}[hbt!]
@@ -41,7 +42,7 @@ class LeNet5(nn.Module):
 		return y
 \end{python}
 
-\section{AlexNet}
+\subsection{AlexNet}
 The classic \ac{CNN} architecture for image classification on the CIFAR10 dataset \cite{krizhevsky2012imagenet}.
 
 \begin{figure}[hbt!]
@@ -73,7 +74,7 @@ class AlexNet(nn.Module):
 		return y
 \end{python}
 
-\section{VGG Net}
+\subsection{VGG Net}
 The runner-up at the ILSVRC 2014 competition by \citeaus{simonyan2014very}:
 
 \begin{figure}[hbt!]
@@ -104,7 +105,7 @@ Example coding with \texttt{pytorch} (\href{https://blog.paperspace.com/vgg-from
 	return y
 \end{python}
 
-\section{Residual Network}
+\subsection{Residual Network}
 The \ac{ResNet} by \citeausm{he2016deep} tackles the vanishing gradient problem for deep neural network with the residual block (\figref{fig:residual-modul}). It creates a highway pass for the gradient to go to the early layers.
 \begin{figure}[hbt!]
 	\centering
@@ -189,10 +190,29 @@ class ResNet(nn.Module):
 model = ResNet(ResidualBlock, [3, 4, 6, 3]).to(device)
 \end{python}
 
-\section{GoogLeNet}
+\subsection{GoogLeNet}
 \todo{}
 
-\section{Comparison between Networks}
+\subsection{U-Net}
+The U-Net architecture by \citeaus{ronneberger2015u} can also be viewed as an encoder-decoder architecture \cite{kingma2013auto} with skip connections of \texttt{ResNet} (\figref{fig:unet1}). This structure is later adopted in \texttt{pix2pix} architecture for image-to-image translation \cite{isola2017image}.
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{unet.png}
+	\caption{The U-Net architecture. \cite{ronneberger2015u}}
+\end{figure}
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=0.35\textwidth]{unet1.png}
+	\caption{The U-Net as a variational auto-encoder with skip connections. \cite{isola2017image}}
+	\label{fig:unet1}
+\end{figure}
+
+\todo{benefits, comments?}
+
+\subsection{DenseNet}
+\todo{} \citeaustitle{huang2017densely}
+
+\subsection{Comparison between Networks}
 \begin{figure}[hbt!]
 	\centering
 	\begin{minipage}{.5\textwidth}
@@ -209,7 +229,8 @@ model = ResNet(ResidualBlock, [3, 4, 6, 3]).to(device)
 	\end{minipage}
 \end{figure}
 
-\section{Recurrent Neural Network}
+\section{Structures for Sequential Data}
+\subsection{Recurrent Neural Network}
 The next three models deal with sequential data. It's a bit uncertain what is the original paper proposing the idea though \cite{elman1990finding}. \ac{BPTT}:\\
 \todo{Add image, content}
 \begin{align}
@@ -218,10 +239,10 @@ The next three models deal with sequential data. It's a bit uncertain what is th
 	\frac{\partial h_t}{\partial h_k} &= \prod_{t \geq i \geq k} \frac{\partial h_i}{\partial h_{i-1}}
 \end{align}
 
-\section{LSTM}
+\subsection{LSTM}
 \cite{sutskever2014sequence} \todo{}
 
-\section{Transformer}
+\subsection{Transformer}
 \ac{RNN} suffers from vanishing/exploding gradient. \ac{LSTM} suffers from slow training time. \citeausm{vaswani2017attention} propose a approach based on the idea of attention. This approach can utilize the computation power of \ac{GPU} for parallelized matrix computation. This technique originally is meant for \ac{NLP} problem, but later on, also show meaningful application in \ac{CV}.
 
 \begin{itemize}
@@ -248,22 +269,6 @@ The next three models deal with sequential data. It's a bit uncertain what is th
 	\end{minipage}
 \end{figure}
 
-\section{U-Net}
-The U-Net architecture by \citeaus{ronneberger2015u} can also be viewed as an encoder-decoder architecture \cite{kingma2013auto} with skip connections of \texttt{ResNet} (\figref{fig:unet1}). This structure is later adopted in \texttt{pix2pix} architecture for image-to-image translation \cite{isola2017image}.
-\begin{figure}[hbt!]
-	\centering
-	\includegraphics[width=0.9\textwidth]{unet.png}
-	\caption{The U-Net architecture. \cite{ronneberger2015u}}
-\end{figure}
-\begin{figure}[hbt!]
-	\centering
-	\includegraphics[width=0.35\textwidth]{unet1.png}
-	\caption{The U-Net as a variational auto-encoder with skip connections. \cite{isola2017image}}
-	\label{fig:unet1}
-\end{figure}
-
-\todo{benefits, comments?}
-
 \section{Bayesian Neural Network}
 Deep neural network's strength is its ability to approximate function. However, as powerful as it is, there is also a threat to overfit to the training data and fail to generalize on the test set. There are various techniques to reduce overfit and improve transfer learning, \eg, weight regularization, dropout, batch norm.
 
@@ -279,7 +284,7 @@ A conventional neural network takes in the same input and produce the same outpu
 	\end{align}
 \end{itemize}
 
-\note There is a thing called Bayesian Network, \ac{aka} belief network. That is not Bayesian neural network.
+\note There is a thing called Bayesian Network, \ac{aka} belief network, which is not the same as Bayesian neural network.
 
 \begin{align*}
 	\mathcal{D}_{tr} = \{\textbf{x}_i, y_i\}^n_{i=1}, \quad \text{model } F_\theta, \quad \text{loss } \mathcal{L}
@@ -303,5 +308,237 @@ A conventional neural network takes in the same input and produce the same outpu
 	\end{tabular}
 \end{center}
 
-\subsection{Example}
-\href{https://keras.io/examples/keras_recipes/bayesian_neural_networks/}{Keras's example}
+\subsection{References}
+Examples:
+\begin{itemize}
+	\item \href{https://www.cs.toronto.edu/~duvenaud/distill_bayes_net/public/}{cs.toronto}
+	\item \href{https://keras.io/examples/keras_recipes/bayesian_neural_networks/}{Keras's example}
+	\item \href{https://github.com/Harry24k/bayesian-neural-network-pytorch}{BNN-pytorch}
+	\item \href{https://github.com/kumar-shridhar/PyTorch-BayesianCNN}{PyTorch-BayesianCNN}
+\end{itemize}
+
+If you want to just get the high level idea, watch these:
+\begin{itemize}
+	\item \href{https://youtu.be/s0S6HFdPtlA}{YouTube/PyData}
+\end{itemize}
+
+References: \note very long and complicate papers, I don't read them
+\begin{itemize}
+	\item \citeaustitle{jospin2022hands}
+	\item \citeaustitle{shridhar2019comprehensive}
+	\item \citeaustitle{liu2018adv}
+\end{itemize}
+
+\section{Graph Neural Networks}
+\subsection{Introduction}
+Many systems and interactions can be represented as graphs. \ac{GNN} are neural networks that operate on graph-structured data. Examples:
+
+\begin{figure}[hbt!]
+	\centering
+	\begin{minipage}{.47\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{molecule-gnn.png}
+		\captionof{figure}{Caffeine molecule structure as a graph. \cite{sanchez2021a}}
+	\end{minipage}
+	\hfil
+	\begin{minipage}{.47\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{social-network-gnn.png}
+		\captionof{figure}{A social network as a graph. \cite{sanchez2021a}}
+	\end{minipage}
+\end{figure}
+
+Image and text can also be modeled as graphs, but it would be redundant, since they have fixed structures. Pixels in image are connected in a grid and words in a sentence are connected only with the prior and next ones.
+
+There are three general types of prediction tasks on graphs: \cite{sanchez2021a}
+\begin{itemize}
+	\item graph-level: predict a single property for a whole graph. This is analogous to classification / regression problem on MNIST or CIFAR datasets.\\
+	\Eg: Given a graph representing a molecule, predict the smell of it.
+	\item node-level: predict some property for each node in a graph. This is analogous to segmentation problem of \ac{CV}, in which we predict the class for each pixel.\\
+	\Eg: Given a graph representing the social network, predict the famous score of a person (a node)
+	\item edge-level: predict the property or presence of edges in a graph.\\
+	\Eg: Given a image of different peoples, objects, predict the interactions between them (\figref{fig:edge-level-task-GNN})
+\end{itemize}
+
+There are also
+\begin{itemize}
+	\item Node clustering task
+	\item Link Prediction: Predicting missing links.
+	\item Influence Maximization: Identifying influential nodes.
+\end{itemize}
+
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=0.79\textwidth]{edge-level-task-GNN.png}
+	\caption{Example of edge-level prediction task \cite{sanchez2021a}.}
+	\label{fig:edge-level-task-GNN}
+\end{figure}
+
+\subsection{Challenges}
+\note Batch learning is difficult the setup
+
+\subsection{Graph Representations in Machine Learning}
+\begin{itemize}
+	\item Using adjacency matrix is not permutation-invariant. (\figref{fig:graph-permutation})
+	\begin{figure}[hbt!]
+		\centering
+		\includegraphics[width=0.79\textwidth]{graph-permutation.png}
+		\caption{Different adjacency matrices represent the same graph \cite{sanchez2021a}.}
+		\label{fig:graph-permutation}
+	\end{figure}
+	\item Another option is adjacency list
+	\begin{itemize}
+		\item Nodes: list of feature vectors for each node, tensor size $[n_{nodes}, dim_{node}]$
+		\item Edges: list of feature vectors for each edge, tensor size $[n_{edges}, dim_{edge}]$
+		\item Adjacency list: list of edges, tensor size $[n_{edges}, 2]$
+		\item Global: a single feature vectors for global value, tensor size $[1, dim_{global}]$
+	\end{itemize}
+	\item Feature vector is also called as representation or embedding
+	\Eg: feature vector for a person node in a social network: $\begin{bmatrix}
+		age\\
+		job\\
+		marriage\ status\\
+		nationality\\
+		location
+	\end{bmatrix}$
+\end{itemize}
+
+\subsection{GNN Block}
+Between layers in \ac{GNN}, there are 3 \ac{MLP} to update graph attributes: feature vectors of nodes, edges and global value. \note The adjacency list stays unchanged.
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{gnn-block.png}
+	\caption{A simple \ac{GNN} block. At layer $N$, the current graph $(V_n, E_n, U_n)$ is updated to $(V_{n+1}, E_{n+1}, U_{n+1})$, in which $V_n$ is the list of feature vectors for nodes, $E_n$ is the list of feature vectors for edges, and $U_n$ is global value. The three \ac{MLP} are $f_{U_n}$, $f_{V_n}$, $f_{E_n}$ correspond to each mentioned graph attributes.}
+	\label{fig:gnn-block}
+\end{figure}
+
+We of course can have multiple of these blocks, similarly to have multiple hidden layers in a \ac{MLP}.
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{gnn-blocks.png}
+	\caption{Multiple \ac{GNN} blocks before prediction network.}
+	\label{fig:gnn-blocks}
+\end{figure}
+
+\subsection{GNN Predictions}
+For specific prediction task, an additional \ac{MLP} operates with corresponding graph attribute.
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{gnn-prediction.png}
+	\caption{Example of node-level prediction task: A \ac{MLP} $C_{V_{i,n}}$ produces prediction score on each node.}
+	\label{fig:gnn-prediction}
+\end{figure}
+
+\subsection{Pooling Information}
+Information may not be sufficient and complete in graph
+\begin{itemize}
+	\item Having only edge-level features, need to make node-level predictions.
+	\item Having only node-level features, need to make edge-level predictions.
+\end{itemize}
+
+In these cases, the information can be transfer via pooling operation:
+\begin{enumerate}
+	\item Embeddings are gathered and concatenate into a matrix.
+	\item The output embedding are then aggregated from the matrix, usually via a sum operation (\figref{fig:gnn-pooling}).
+\end{enumerate}
+\begin{figure}[hbt!]
+	\centering
+	\begin{subfigure}[b]{0.47\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{gnn-pooling.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.47\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{gnn-pooling-1.png}
+	\end{subfigure}
+	\caption{Example of pooling operation via sum. The feature embeddings of neighboring edges are aggregated to the node embedding, via a sum operation.}
+	\label{fig:gnn-pooling}
+\end{figure}
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{gnn-pooling-edge2node.png}
+	\caption{Pooling operation from edge to node $\rho_{E_n \rightarrow V_n}$ before applying node-level prediction $C_{V_n}$.}
+	\label{fig:gnn-pooling-edge2node}
+\end{figure}
+
+\subsection{Message Passing}
+In \ac{GNN}, while pooling implies transferring information from one graph attribute to another (\eg, edge to node), message passing implies exchanging information and influence within the same graph attribute (\eg, node to node). The procedure, however, is similar to pooling.
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{gnn-message-passing.png}
+	\caption{Message passing in graph: $\rho_{V_n \rightarrow V_{n+1}}$}
+	\label{fig:gnn-message-passing}
+\end{figure}
+
+Combining different embeddings from different graph attributes can all be considered as a conditioning function:
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=\textwidth]{gnn-conditioning.png}
+	\caption{Schematic for conditioning one node's embedding based on three other embeddings (adjacent nodes, adjacent edges, global).}
+	\label{fig:gnn-conditioning}
+\end{figure}
+
+\begin{figure}[hbt!]
+	\centering
+	\begin{minipage}{.47\textwidth}
+		\centering
+		\includegraphics[width=.6\textwidth]{gnn-node-edge-learning.png}
+		\captionof{figure}{Node then edge learning}
+	\end{minipage}
+	\hfil
+	\begin{minipage}{.47\textwidth}
+		\centering
+		\includegraphics[width=.6\textwidth]{gnn-edge-node-learning.png}
+		\captionof{figure}{Edge then node learning}
+	\end{minipage}
+\end{figure}
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=.9\textwidth]{gnn-weave.png}
+	\caption{Learning in "weave fashion".}
+\end{figure}
+\begin{figure}[hbt!]
+	\centering
+	\includegraphics[width=.9\textwidth]{gnn-graph-net.png}
+	\caption{Schematic of a Graph Nets architecture leveraging global representations.}
+\end{figure}
+
+\subsection{Some Empirical Design Lessons}
+Source: \citeaustitle{sanchez2021a}
+\begin{itemize}
+	\item A higher number of parameters does correlate with higher performance.
+	\item \ac{GNN}s are a very parameter-efficient model type: for even a small number of parameters
+	\item Models with higher dimensionality or more layers tend to have better mean and lower bound performance, but the same trend is not found for the maximum.
+	\item \ac{GNN} with a higher number of layers will broadcast information at a higher distance and can risk having their node representations ‘diluted’ from many successive iterations
+	\item Sum has a very slight improvement on the mean performance, but max or mean can give equally good models.
+	\item The more type of message passing the model has, the better the performance is.
+\end{itemize}
+
+\subsection{Application}
+Source: \href{https://youtu.be/p2aqXKfRXEA}{CS224W}
+\begin{itemize}
+	\item PinSAGE: \ac{GNN} for Recommendation systems: nodes are users, products. Based on other users' interactions with some products, predict whether one user would interest in a new product.
+	\item Decagon: heterogeneous \ac{GNN} for drug prediction
+	\item Goal-directed generation: GCPN for molecule generation
+\end{itemize}
+
+\subsection{References}
+\begin{itemize}
+	\item \href{https://youtu.be/bA261BF0bdk}{Siraj Raval YouTube}
+	\item \citeaustitle{sanchez2021a}
+	\item \citeaustitle{daigavane2021understanding}
+	\item \citeaustitle{gordic2021how}
+\end{itemize}
+
+There are so many current open problems for research (2022)
+\begin{itemize}
+	\item Convolutions on Graphs \cite{daigavane2021understanding}
+	\item Multi-graphs
+	\item Hyper-graphs
+	\item Hyper-nodes
+	\item hierarchical graphs
+	\item Graph convolutions
+	\item Graph Attention Networks
+	\item Generative modeling
+\end{itemize}

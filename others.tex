@@ -1,0 +1,34 @@
+% !TeX spellcheck = en_US
+\documentclass[
+english,
+openany,
+draft = false,
+twoside = true,
+fleqn
+]{scrbook}
+\usepackage{learning-notes}
+
+\author{Huu Duc Nguyen}
+\authordegreefront{}
+\authordegreeback{ M.Sc.}
+\subject{AI}
+\title{Other Notes}
+\date{02 September 2022}
+
+\begin{document}
+	\setlength{\abovedisplayskip}{3pt}
+	\setlength{\belowdisplayskip}{3pt}
+	
+	\frontmatter
+	\TitlePage
+	\tableofcontents
+	
+	\mainmatter
+	\include{Contents/abbrievations.tex}
+	\include{Contents/neuroscience.tex}
+	
+	\backmatter
+	\pagenumbering{Roman}
+	\printbibliography[heading=bibintoc]
+	\appendix
+\end{document}

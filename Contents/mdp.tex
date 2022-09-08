@@ -1,16 +1,14 @@
 % !TeX spellcheck = en_US
 \chapter{Markov Decision Process}
 
-\section{Definitions}
-
-\subsection{Markov Chain}
+\section{Markov Chain}
 A Markov Chain $\mathcal{M}$ is a tuple consisting of:
 \begin{align*}
 	\mathcal{M} &= \{ \mathcal{S, T}\} &&\\
 	\mathcal{S} &- \text{state space} && s \in \mathcal{S} \quad\text{(discrete or continuous)}\\
 	\mathcal{T} &- \text{transition operator} && p(s_{t+1} | s_t) \text{ or } \vec{\mu}_{t+1} = \mathcal{T} \vec{\mu}_t \quad (\mathcal{T} \text{ is a matrix})
 \end{align*}
-Markov chain is a process without memories. In other words, the next state $s_{t+1}$ depends only on the current state $s_t$, not the previous state $s_{t-1}$.
+Markov chain is a process \textbf{without memories}. In other words, the next state $s_{t+1}$ depends only on the current state $s_t$, not the previous state $s_{t-1}$.
 \begin{center}
 	\begin{tikzpicture}[roundnode/.style={circle, draw=black!60, very thick, minimum size=7mm}]
 		\node[roundnode](s1){$\textbf{s}_1$};
@@ -21,7 +19,10 @@ Markov chain is a process without memories. In other words, the next state $s_{t
 	\end{tikzpicture}
 \end{center}
 
-\subsection{Markov Decision Process (MDP)}
+\section{Hidden Markov Model}
+A Markov chain becomes a \ac{HMM} when the states are not completely observable.
+
+\section{Markov Decision Process (MDP)}
 A \ac{MDP} $\mathcal{M}$ is a tuple consisting of:
 \begin{align*}
 	\mathcal{M} &= \{ \mathcal{S, A, T}, r, \gamma\} &&\\
@@ -58,7 +59,9 @@ A \ac{MDP} can also be considered as a Markov chain on the augmented state $(\te
 
 \ac{MDP} state projects an expectimax-like search tree \todo{add image}
 
-\subsection{Partially Observable Markov Decision Process (POMDP)}
+\note Solving a \ac{MDP} means to find a policy that maximize the received reward.
+
+\section{Partially Observable Markov Decision Process (POMDP)}
 A \ac{POMDP} $\mathcal{M}$ is a tuple consisting of:
 \begin{align*}
 	\mathcal{M} &= \{ \mathcal{S, A, O, T, E,} r, \gamma\} &&\\
@@ -99,6 +102,34 @@ Finite \ac{vs} infinite horizon: \todo{}
 	\item Absorbing state (like the fire hole, overheating)
 \end{itemize}
 
+\ac{POMDP} is defined with a tuple: $<S, A, O, P, R, Z, \gamma>$:
+\begin{itemize}
+	\item $S$: state
+	\item $A$: action
+	\item $O$: \hlr{observation}
+	\item $P$: transition matrix
+	\item $R$: reward
+	\item $Z$: \hlr{observation \ac{func}}
+	\item $\gamma$: discount factor (optional)
+\end{itemize}
+\begin{align}	
+	&Z_{s'o}^a = P \left[ O_{t+1} =o | S_{t+1} = s', A_t = a \right]\\
+	\Rightarrow \quad &\begin{cases}
+		\displaystyle V^*(b) \leftarrow \underset{a}{\max}\left[ R_b^a + \gamma \sum_{s'} P_{bb'}^a V(b') \right]\\
+		\displaystyle \pi^*(b) = \underset{a}{\arg\max} \left[ R_b^a + \gamma \sum_{s'} P_{bb'}^a V(b') \right]
+	\end{cases}
+\end{align}
+
+\begin{table}[hbt!]
+	\begin{tabular}{|c|c||c|c|}
+		\hline
+		\multicolumn{2}{|c||}{\multirow{2}{*}{Markov Models}} & \multicolumn{2}{c|}{Do we have control over the state transition?} \\ \cline{3-4}
+		\multicolumn{2}{|c||}{} & No & Yes \\ \hline\hline
+		\multirow{2}{*}{Are the states completely observable?} & Yes & Markov Chain & \ac{MDP} \\ \cline{2-4}
+		& No & \ac{HMM} & \ac{POMDP} \\ \hline
+	\end{tabular}
+\end{table}
+
 \section{Bellman equations}
 \begin{itemize}
 	\item $T(s, a, s') = P(s'| s, a)$ \qquad \text{the \ac{prob} of reaching state $s'$ from taking action $a$ at state $s$}
@@ -121,22 +152,3 @@ Finite \ac{vs} infinite horizon: \todo{}
 \begin{equation}
 	\hlre{V(s) = \mathbb{E}[G_t|S_t = s] = \mathbb{E}\left[ R_{t+1} + \gamma V(S_{t+1}) | S_t = s \right] = R_s + \gamma\sum_{s'} P_{ss'} V(s')}
 \end{equation}
-
-\section{Partially Observable Markov Decision Process}
-\ac{POMDP} is defined with a tuple: $<S, A, O, P, R, Z, \gamma>$:
-\begin{itemize}
-	\item $S$: state
-	\item $A$: action
-	\item $O$: \hlr{observation}
-	\item $P$: transition matrix
-	\item $R$: reward
-	\item $Z$: \hlr{observation \ac{func}}
-	\item $\gamma$: discount factor (optional)
-\end{itemize}
-\begin{align}	
-	&Z_{s'o}^a = P \left[ O_{t+1} =o | S_{t+1} = s', A_t = a \right]\\
-	\Rightarrow \quad &\begin{cases}
-		\displaystyle V^*(b) \leftarrow \underset{a}{\max}\left[ R_b^a + \gamma \sum_{s'} P_{bb'}^a V(b') \right]\\
-		\displaystyle \pi^*(b) = \underset{a}{\arg\max} \left[ R_b^a + \gamma \sum_{s'} P_{bb'}^a V(b') \right]
-	\end{cases}
-\end{align}
