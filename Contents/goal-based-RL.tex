@@ -1,0 +1,81 @@
+% !TeX spellcheck = en_US
+\chapter{Goal-based RL}
+
+\section{Introduction}
+Early work has proposed policy and value network conditioned on different goals: \cite{schaul2015universal}
+\begin{align}
+	&g \in \mathcal{G} && \text{space of possible goal}\ \mathcal{G}\\
+	&m_g: \mathcal{S} \rightarrow \mathcal{G} && \text{mapping from state space to goal space}\\
+	&u_{g}: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R} && \text{goal-conditioned reward function}\\
+	&\pi: \mathcal{S} \times \mathcal{G} \rightarrow \mathcal{A} && \text{goal-conditioned policy}\\
+	&Q_{\pi}(s_t, a_t, g) = \mathbb{E}_{\pi}[r_t | s_t, a_t, g] && \text{goal-conditioned Q function}
+\end{align}
+
+The nice things about goal-based learning is that:
+\begin{itemize}
+	\item It is also offline learning
+	\item It is multi-task learning as well, \ac{aka} multi-goal learning
+	\item It works well with sparse and binary reward.
+	\item It has implicit curriculum learning
+\end{itemize}
+
+\todo{check contextual policy}
+\begin{itemize}
+	\item M. P. Deisenroth, P. Englert, J. Peters, and D. Fox. Multi-task policy search for robotics. In International Conference on Robotics and Automation (ICRA), 2014.
+	\item A. G. Kupcsik, M. P. Deisenroth, J. Peters, G. Neumann, et al. Data-efficient generalization of robot skills with contextual policy search. In AAAI Conference on Artificial Intelligence, 2013.
+	\item T. Schaul, D. Horgan, K. Gregor, and D. Silver. Universal value function approximators. In International Conference on Machine Learning (ICML), 2015.
+	\item F. Stulp, G. Raiola, A. Hoarau, S. Ivaldi, and O. Sigaud. Learning compact parameterized skills with a single regression. In International Confernce on Humanoid Robots, 2013.
+	\item Y. Duan, M. Andrychowicz, B. Stadie, J. Ho, J. Schneider, I. Sutskever, P. Abbeel, and W. Zaremba. One-shot imitation learning. arXiv preprint arXiv:1703.07326, 2017.
+\end{itemize}
+
+\section{Hindsight Experience Replay}
+\ac{HER} is an goal-conditioned \ac{RL} framework for problems with sparse and binary reward \cite{andrychowicz2017hindsight}
+\begin{itemize}
+	\item It might suggest that multi-task learning is deep down add some exploration, even more than count-based exploration
+	\item Reward shaping may help, and it may not.
+	\item In addition, reward shaping is complicate and requires domain knowledge.
+	\item \note Successful applications of \ac{RL} to difficult manipulation tasks which does not use
+	demonstrations usually have more complicated reward functions (e.g. \cite{popov2017data}).
+	\begin{itemize}
+		\item There is a huge discrepancy between what we optimize and the success condition
+		\item Shaped rewards penalize for inappropriate behavior which may hinder exploration.
+	\end{itemize}
+\end{itemize}
+
+Curious: intrinsically motivated modular multi-goal reinforcement learning
+
+Intrinsically motivated goal exploration processes with automatic curriculum learning
+
+https://youtu.be/77xkqEAsHFIwa
+
+\section{TODO}
+\cite{pathak2018zero}
+
+\section{Learning Action Plan}
+Some complex actions are sequence of more simple actions.
+\begin{itemize}
+	\item Pouring a cup of water: grasp the bottle, move it above the cup, rotate in place, put the bottle back
+	\item Make a cup of coffee: grasp the cup, move it to the coffee machine, put it in specified position, press the machine button \cite{smith2019avid}
+\end{itemize}
+Naive approach is specifying the instruction as the task is carried out. After an instruction is completed, the next instruction is provided \cite{smith2019avid}.
+
+\todo{Read intro of \citeaustitle{smith2019avid}}
+
+\subsection{Manipulation Action Grammar}
+
+\subsection{Learning from YouTube Videos}
+
+Some proposals to model action plans using symbolic representation: $ Action(Object_1, Object_2, \dots) $
+\begin{itemize}
+	\item \citeaustitle{zhang2019robot}
+	\item \citeaustitle{yang2015robot}
+\end{itemize}
+
+Action plans as symbolic representation  with visual sentence, \eg, $Grasp\_PoS(LeftHand,\ Spatula)$, $Action\_Stir(Spatula,\ Bowl)$
+
+\section{References}
+\begin{itemize}
+	\item \citeaustitle{pathak2018zero}
+	\item \citeaustitle{andrychowicz2017hindsight}
+	\item \citeaustitle{schaul2015universal}
+\end{itemize}

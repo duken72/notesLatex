@@ -1,0 +1,85 @@
+% !TeX spellcheck = en_US
+\chapter{Natural Planning Model}
+Whenever coming across ideas or approaches in other fields, I always try to find whether they have possible connections or adaptations to robotics. I came upon this idea of the \textit{Natural Planning Model} which have various correspondences in robotics. The Natural Planning Model hypothesizes that human brain tends to follow a five-step procedure before carrying on a sequence of complex actions \cite{allen2002getting}. 
+\begin{enumerate}
+	\item Defining Purpose and Principles
+	\item Visioning Outcome 
+	\item Brain Storming
+	\item Organizing
+	\item Identifying and Taking Action
+\end{enumerate}
+
+This model also aligns well with the fact that our brain, and also animal's brain in general, is hierarchically structured. Animal brain is structured into forebrain, midbrain, hindbrain and spinal cord, in which the closer to the spinal cord, the more basic the functions that part is responsible for. Our brain is structured into cerebrum, thalamus, brainstem and cerebellum. Studies have shown that there is clear differentiation in task complexity which each part is responsible for. \Eg:
+\begin{itemize}
+	\item The cerebrum: is responsible for high-level thinking and information processing (personality, decision making, emotion, senses, language, \etc)
+	\item The cerebellum: is responsible for body control, muscle memory, \etc
+	\item The brainstem: is responsible for involuntary body functions, \eg breathing, circulation, digestion
+\end{itemize}
+
+The arm of a small child has limitation in what it can lift. But as the child grows into an adult, the arm gains more muscle and is capable of lifting heavier objects, while still having the same shape and structure as before. I wish this framework to be the skeleton for other tools and modules, like the muscle, to attach on. If there is any current limitations (reaction time, accuracy, \etc), it should be limitations that can be tackled with advancement of other modules.
+
+This chapter proposes a robotic planning framework that inspired by this natural planning model. The following sections cover describes the above steps and their corresponding existing robotic frameworks.
+
+\section{Purpose and Principles}
+Purposes are the great answers to the "WHY" questions. We eat and drink to survive. We go to college in search for knowledge and skills. We travel and go out with our friends to relax and enjoy our lives. Well, for know, the simple yet sufficient "WHY" for robots is the fact that we, humans, are lazy and want our lives to be more comfortable :)
+
+Principles are stated as the values that we hold for ourselves. These values create boundaries between the actions that are acceptable and those which are not. \Eg, those who treasure honesty would not lie to gain benefit. In similar manner, robots' principles would be the constraints that they have to operate under. If it's necessary, they will override lower-level commands. With that notion in mind, some of the basic constraints are:
+\begin{itemize}
+	\item Asimov's three law of robotics \cite{asimov2004robot}
+	\begin{itemize}
+		\item First Law: A robot may not injure a human being or, through inaction, allow a human being to come to harm.
+		\item Second Law: A robot must obey the orders given it by human beings except where such orders would conflict with the First Law.
+		\item Third Law: A robot must protect its own existence as long as such protection does not conflict with the First or Second Law.
+	\end{itemize}
+	\item Other safety and physical constraints, in terms of force, torque, velocity, acceleration
+\end{itemize}
+
+\section{Outcome Visioning}
+Knowing the answer to the "WHY" question, we start envision the desired outcomes, the answers for the "WHAT" questions. A chef imagines what food is on the final plate, how they taste, look and smell like. An architect imagines what rooms, functionalities a house has, how each room looks like, how the light, air, water travel in the house.
+
+Some robotic works have followed this line of thought:
+\begin{itemize}
+	\item Goal-conditioned learning
+	\begin{itemize}		
+		\item \todo{cite goal-proposed RL exploration mechanism}
+		\item \citeaustitle{andrychowicz2017hindsight}
+	\end{itemize}
+	\item Contextual learning \todo{}
+	\item Multi-model goal "imagination"
+	\begin{itemize}
+		\item \citeaustitle{sharma2019third} (badly written, but still)
+		\item \todo{}
+	\end{itemize}
+\end{itemize}
+
+\section{Brain Storming and Organizing}
+Brain Storming and Organizing are two separate steps. Brainstorming is the step in which we start breaking down the desired goal in an unstructured way. We list out related entities (relevant subtasks, objects, people) in an unordered manner. For example, with the goal to have a dinner with friends, following problems could arise in one's mind in unordered sequence: are our friends available, where would we eat, what time will we meet, do they have specific allergies. Then, organizing is the step when we start putting these subtasks, other entities into relations and sequence based on prioritization. For the prior example, we start with creating a group chat to discuss (check availability, date and time), then we call the restaurant (check availability, book table).
+
+Existing robotic frameworks on:
+\begin{itemize}
+	\item Interpreting relation between multiple objects and goals with \ac{GNN}
+	\begin{itemize}
+		\item \citeaustitle{lin2022efficient}
+		\item \citeaustitle{sieb2020graph}
+	\end{itemize}
+	\item Inferring action plan, breaking down into subtasks with symbolic representation and action grammar.
+	\begin{itemize}
+		\item \citeaustitle{zhang2019robot}
+		\item \citeaustitle{smith2019avid}
+		\item \citeaustitle{toussaint2018differentiable}				
+		\item \citeaustitle{yang2015robot}
+	\end{itemize}
+\end{itemize}
+
+\section{Identifying and Taking Action}
+Identifying and Taking Action
+
+\begin{itemize}
+	\item Motor primitives \todo{sth}
+	\item \todo{}
+\end{itemize}
+
+Goal-based policy learning
+\begin{itemize}
+	\item 
+\end{itemize}
