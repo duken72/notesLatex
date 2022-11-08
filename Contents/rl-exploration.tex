@@ -332,6 +332,10 @@ Few options for approximation of \ac{IG} are:
 \begin{itemize}
 	\item Prediction gain: $\log p_{\theta'}(\textbf{s}) - \log p_{\theta}(\textbf{s})$ \cite{bellemare2016unifying}\\
 	\hlb{Intuition:} if the density change a lot, the state was novel
+	\item Similar to prediction gain, but in feature space: \cite{pathak2017curiosity, burda2018large}
+	\begin{equation}
+		r^i_t = \frac{\eta}{2} \left|\left| \hat{\phi}(s_{t+1}) - \phi(s_{t+1}) \right|\right|^2_2
+	\end{equation}
 	\item Variational inference: $D_{KL} \big( p(z|y) || p(z) \big)$\\
 	Learn about \textit{transitions} $p_\theta (s_{t+1}|s_t, a_t)$, with $z=\theta$ and $y=(s_{t+1}|s_t, a_t)$
 	\begin{align}
@@ -368,7 +372,7 @@ The three above approaches are modifications to existing \ac{RL} approaches to b
 \begin{enumerate}
 	\item \tikzmark{usl1}Propose goal: $z_g \sim p(z), x_g \sim p_\theta(x_g, z_g)$
 	\item Attempt to reach goal using $\pi(a | x, x_g)$, reach $\bar{x}$
-	\item Use data o update $\pi$
+	\item Use data to update $\pi$
 	\item \tikzmark{usl4}Use data to update $p_\theta(x_g | z_g), q_\phi(z_g | x_g)$
 	\begin{tikzpicture}[overlay,remember picture]
 		\draw[very thick, -latex]

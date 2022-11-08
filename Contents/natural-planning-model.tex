@@ -1,29 +1,34 @@
 % !TeX spellcheck = en_US
 \chapter{Natural Planning Model}
-Whenever coming across ideas or approaches in other fields, I always try to find whether they have possible connections or adaptations to robotics. I came upon this idea of the \textit{Natural Planning Model} which have various correspondences in robotics. The Natural Planning Model hypothesizes that human brain tends to follow a five-step procedure before carrying on a sequence of complex actions \cite{allen2002getting}. 
+Structure is everywhere. An essay has a structure including the introduction, main body and conclusion. A house has a structure including the foundations, walls, roof. All living bodies, complex entities, organizations have structure. Within a structure, every part has its own responsibilities and connections with other parts. The clearer an entity is structured, the more functional and easier it is to improve. A body builder who wants to increase the size of his chest will go bench press, not squat. A company which wants to improve its branding will spend more investment on marketing, not logistics. As a roboticist, I asked myself: have robots follow a structured planning process (the answer is less or more). But the more challenging question is how could we bring more structure to robot planning? 
+
+As always, it is beneficial to look at the robot's closest friend, the human kind. The rephrased questions would be: (1) do we think in structure? (2) is thinking with structure better than without it? (3) could we bring more structure to our thinking? For the first two questions, the answer is rather uncertain, as we are humans, but generally it is a "YES". \Eg, a good chess player will consider various aspects in a structured manner: hanging pieces, board space, king's safety, \etc. Experienced Sudoku solver will strategically scan over each number, each line, each row, each block. This also makes sense from the point of biology, specifically neuroscience. Our brains and the animals' brains are hierarchically structured. The animal's brain is structured into the forebrain, midbrain, hindbrain and spinal cord, in which the closer to the spinal cord, the more basic the functionalities a part is responsible for. Our brain is structured into the cerebrum, thalamus, brainstem and cerebellum. Studies have shown that there is clear difference in task complexity which each part is responsible for. \Eg: the cerebrum is responsible for high-level thinking, information processing (personality, decision-making, emotion, senses, language, \etc), while the cerebellum or brainstem are responsible for more basic muscle control and involuntary body functions (muscle memory, breathing, circulation, digestion, \etc)
+
+The last and only question left is how to bring more structure into human thinking and robot planning? Whenever I come across ideas or approaches in other fields, I always try to find out whether there is possible connection or adaptation to robotics. I came upon this idea of the \textit{Natural Planning Model} which has various correspondences in robotics. The Natural Planning Model hypothesizes that the human brain tends to follow a five-step procedure before carrying on a sequence of complex actions \cite{allen2002getting}. 
 \begin{enumerate}
 	\item Defining Purpose and Principles
-	\item Visioning Outcome 
-	\item Brain Storming
+	\item Outcome Visioning
+	\item Brainstorming
 	\item Organizing
-	\item Identifying and Taking Action
+	\item Identifying Next Actions
 \end{enumerate}
 
-This model also aligns well with the fact that our brain, and also animal's brain in general, is hierarchically structured. Animal brain is structured into forebrain, midbrain, hindbrain and spinal cord, in which the closer to the spinal cord, the more basic the functions that part is responsible for. Our brain is structured into cerebrum, thalamus, brainstem and cerebellum. Studies have shown that there is clear differentiation in task complexity which each part is responsible for. \Eg:
-\begin{itemize}
-	\item The cerebrum: is responsible for high-level thinking and information processing (personality, decision making, emotion, senses, language, \etc)
-	\item The cerebellum: is responsible for body control, muscle memory, \etc
-	\item The brainstem: is responsible for involuntary body functions, \eg breathing, circulation, digestion
-\end{itemize}
-
-The arm of a small child has limitation in what it can lift. But as the child grows into an adult, the arm gains more muscle and is capable of lifting heavier objects, while still having the same shape and structure as before. I wish this framework to be the skeleton for other tools and modules, like the muscle, to attach on. If there is any current limitations (reaction time, accuracy, \etc), it should be limitations that can be tackled with advancement of other modules.
-
-This chapter proposes a robotic planning framework that inspired by this natural planning model. The following sections cover describes the above steps and their corresponding existing robotic frameworks.
+I would argue that we would manage to fit most of conducted robotic experiments in this 5-stage planning framework. That is because experiments are designed by humans, and that we unconsciously follow this natural planning model. Thus, the planning model is imprinted in their programs and the design of their experiments. The following parts cover the above steps and their corresponding robotic frameworks. I wish this framework to be the skeleton for other tools and modules, like the muscles, to attach to. If there are any current limitations (reaction time, accuracy, \etc), they should be limitations that can be tackled by improving other modules.
 
 \section{Robot Planning}
-\todo{}
-\citeaustitle{mcdermott1992robot}
-\citeaustitle{brooks1982symbolic}
+Let's first have a definition of what does robot planning even mean. \cite{mcdermott1992robot, siciliano2008springer}
+\begin{itemize}
+	\item Robot planning is the \hlb{automatic generation, debugging, or optimization} of robot plans (or robot programs), by reasoning \hlr{explicitly} about the consequences of alternative plans.
+	\item The plan needs not to be executed in its entirety. It should be the high-level plan, not low-level physical control. In addition, there can be changes that the plan needs to adapt, \eg chess.
+	\item Purposes of a plan:
+	\begin{itemize}
+		\item keeps a certain state true,
+		\item devise the most efficient plan for a certain task,
+		\item react to a type of recurring world state,
+		\item or some combination of all these things.
+	\end{itemize}
+	\item Ideally… the robot executes the plan while the planner thinks about improving it…	
+\end{itemize}
 
 \section{Purpose and Principles}
 Purposes are the great answers to the "WHY" questions. We eat and drink to survive. We go to college in search for knowledge and skills. We travel and go out with our friends to relax and enjoy our lives. Well, for know, the simple yet sufficient "WHY" for robots is the fact that we, humans, are lazy and want our lives to be more comfortable :)
@@ -37,6 +42,7 @@ Principles are stated as the values that we hold for ourselves. These values cre
 		\item Third Law: A robot must protect its own existence as long as such protection does not conflict with the First or Second Law.
 	\end{itemize}
 	\item Other safety and physical constraints, in terms of force, torque, velocity, acceleration
+	\item Task-related constraints: \eg, in chess, there are rules about how a piece moves
 \end{itemize}
 
 \section{Outcome Visioning}
@@ -60,24 +66,46 @@ Some robotic works have followed this line of thought:
 \section{Brain Storming and Organizing}
 Brain Storming and Organizing are two separate steps. Brainstorming is the step in which we start breaking down the desired goal in an unstructured way. We list out related entities (relevant subtasks, objects, people) in an unordered manner. For example, with the goal to have a dinner with friends, following problems could arise in one's mind in unordered sequence: are our friends available, where would we eat, what time will we meet, do they have specific allergies. Then, organizing is the step when we start putting these subtasks, other entities into relations and sequence based on prioritization. For the prior example, we start with creating a group chat to discuss (check availability, date and time), then we call the restaurant (check availability, book table).
 
-Existing robotic frameworks on:
+Existing robotic frameworks can be divided into two problems:
 \begin{itemize}
-	\item Interpreting relation between multiple objects and goals with \ac{GNN}
+	\item Interpreting the interaction, relation with other entities (objects, agents)
+	\item Breaking down a complex task into sequence of simple known tasks
+\end{itemize}
+
+\subsection{Interaction Planning}
+\begin{itemize}
+	\item Interaction with other objects using a graph, in which the nodes are objects and the robot itself
 	\begin{itemize}
 		\item \citeaustitle{lin2022efficient}
 		\item \citeaustitle{sieb2020graph}
 	\end{itemize}
-	\item Inferring action plan, breaking down into subtasks with symbolic representation and action grammar.
+	\item Relation with other agents / robots
 	\begin{itemize}
 		\item \citeaustitle{zhang2019robot}
+	\end{itemize}
+\end{itemize}
+
+\subsection{Breaking Down the Plan}
+\begin{itemize}
+	\item Explicit planning by human
+	\begin{itemize}
 		\item \citeaustitle{smith2019avid}
+		\item \citeaustitle{brooks1982symbolic}		
+	\end{itemize}
+	\item Learning and formalizing a plan with symbolic representation and action grammar.
+	\begin{itemize}
+		\item \citeaustitle{zhang2019robot}
 		\item \citeaustitle{toussaint2018differentiable}				
 		\item \citeaustitle{yang2015robot}
 	\end{itemize}
 \end{itemize}
 
+Sometimes, there are many possible plans to reach a goal. Then plan could be chosen based on addition constraints or rules for optimization / selection. \Eg, to cook a dish with a piece of steak, potatoes and veges, one could vary on the ingredient to start with, and switch to work on the others any time. The time duration to finish cooking, the quality of the food could be included as additional constraints to cancel out redundant plans.
+
 \section{Identifying and Taking Action}
-Identifying and Taking Action
+A library of primitive actions plays a great role. A primitive action should be meaningful, but also general enough to be efficient. Some works focus on motor control (force and torque) that leads to jiggering motion artifacts. We don't want the arm to move around like that. We want a smooth and decisive movement, but of course, can still subject to minor error and stochasticity.
+
+Generality implies that if we want to go to 1 from 0, we don't want to step by step specify it to go to 0.1, 0.2, \etc. What we want is for it to go to the neighbor of 1 in one single movement.
 
 \begin{itemize}
 	\item Motor primitives \todo{sth}
@@ -94,7 +122,7 @@ Goal-based policy learning
 \begin{itemize}
 	\item Robot planning
 	\begin{itemize}
-		\item \citeaustitle{mcdermott1992robot}
+		\item \note A great but long and complex paper: \citeaustitle{mcdermott1992robot}
 		\item \citeaustitle{brooks1982symbolic}
 	\end{itemize}
 	\item Goal imagining mechanism: wide range of works

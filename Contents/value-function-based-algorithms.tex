@@ -195,7 +195,8 @@ Improving \ac{DQN}:
 
 \section{Tips for Q-learning}
 \begin{itemize}
-	\item Large replay buffer helps improve stability (1 Million)
+	\item Large replay buffer helps improve stability (1 Million).
+	\item Apply Prioritized Experience Replay \cite{schaul2015prioritized}
 	\item It takes time, be patient - might be no better than random for a while
 	\item Start with high exploration $\Rightarrow$ gradually reduce
 	\item Bellman error gradient can be quite large $\Rightarrow$ clip gradients / use Huber loss
