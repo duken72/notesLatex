@@ -3,10 +3,44 @@
 
 \section{References}
 \begin{itemize}
-	\item Deep Reinforcement Learning Doesn't Work Yet \cite{irpan18}
+	\item Deep \ac{RL} Doesn't Work Yet \cite{irpan18}
 	\item \href{http://rail.eecs.berkeley.edu/deeprlcourse/static/slides/lec-23.pdf}{CS 285 at UC Berkeley, Deep \ac{RL}}
+	\item Reproducible, Reusable, and Robust \ac{RL} \cite{pineau2018reproducible}
 \end{itemize}
 Multi-task transfer learning: deeper explanation for gradient interference and winner-take-all problem
+
+\section{Reproducibility}
+Checklist \cite{pineau2018reproducible}:
+
+For all \textbf{algorithms} presented, check if you include:
+\begin{todolist}
+	\item A clear description of the algorithm.
+	\item An analysis of the complexity (time, space, sample size) of the algorithm.
+	\item A link to downloadable source code, including all dependencies.
+\end{todolist}
+
+For any \textbf{theoretical claim}, check if you include:
+\begin{todolist}
+	\item A statement of the result.
+	\item A clear explanation of any assumptions.
+	\item A complete proof of the claim.
+\end{todolist}
+
+For all \textbf{figures and tables} that present empirical results, check if you include:
+\begin{todolist}
+	\item A complete description of the data collection process, including sample size.
+	\item A link to downloadable version of the dataset or simulation environment.
+	\item An explanation of how sample were allocated for training / validation / testing.
+	\item An explanation of any data that was excluded.
+	\item The range of hyper-parameters considered, method to select the best hyper-parameter configuration, and specification of all hyper-parameters used to generate results.
+	\item The exact number of evaluation runs.
+	\item A description of how experiments were run.
+	\item A clear definition of the specific measure or statistics used to report results.
+	\item Clearly defined error bars.
+	\item A description of results including central tendency (e.g. mean) and variation (e.g. stddev).
+	\item The computing infrastructure used.
+\end{todolist}
+
 
 \section{Stability}
 \subsection{Problem}
