@@ -1,0 +1,57 @@
+% !TeX spellcheck = en_US
+\chapter{Introduction}
+
+This is my notes for \ac{DSA} in \ac{CS}.
+
+\section{Definitions}
+
+\begin{itemize}
+	\item A \ac{DS} is a way of organizing data so that it can be used in an efficient way.
+	\begin{itemize}
+		\item Essential for creating fast and powerful algorithms
+		\item Help to manage and organize data
+		\item Make code cleaner and easier to understand
+	\end{itemize}
+	\item An \ac{ADT} is an abstraction of a \ac{DS}, which provides only the interface. It doesn't give specific details about how it should be implemented or in what programming language. \Eg:
+	\begin{itemize}
+		\item List: Dynamic array, linked list
+		\item Queue: linked list based queue, array based queue, stack based queue
+		\item Map: tree map, hash map / hash table
+		\item Vehicle: bike, car, truck
+	\end{itemize}
+\end{itemize}
+
+\section{Computational Complexity Analysis}
+Big-O notation $\mathcal{O}$ is used to give an upper bound of the complexity in the worst case. Sorted computational complexity in increasing order:
+
+\begin{center}
+	\begin{tabular}{|r|l|}
+		\hline
+		Constant time & $\mathcal{O}(1)$ \\ \hline
+		Logarithmic time & $\mathcal{O}(\log N)$ \\ \hline
+		Linear time & $\mathcal{O}(N)$ \\ \hline
+		Linearithmic time & $\mathcal{O}(N \log N)$ \\ \hline
+		Quadric time & $\mathcal{O}(N^2)$ \\ \hline
+		Cubic time & $\mathcal{O}(N^3)$ \\ \hline
+		Exponential time & $\mathcal{O}(a^N)$, $ a>1 $ \\ \hline
+		Factorial time & $\mathcal{O}(N!)$ \\ \hline
+	\end{tabular}
+\end{center}
+
+Properties:
+\begin{itemize}
+	\item Only the most dominant term matters
+	\item $ \mathcal{O}(N + c) = \mathcal{O}(N) $
+	\item $ \mathcal{O}(cN) = \mathcal{O}(N) $, $ c > 0 $
+\end{itemize}
+
+\section{References}
+
+\begin{itemize}
+	\item \href{https://missing.csail.mit.edu/}{The Missing Semester of Your CS Education}
+	\item \href{https://refactoring.guru/design-patterns/}{Refactoring Guru}
+	\item \href{https://techdevguide.withgoogle.com/paths/data-structures-and-algorithms/}{Google | Tech Dev Guide | Data Structures \& Algorithms}
+	\item \href{https://www.geeksforgeeks.org/data-structures/}{GeeksForGeeks - Data structures}
+	\item \href{https://www.tutorialspoint.com/data_structures_algorithms/index.htm}{TutorialsPoint - Data structures and Algorithms}
+	\item \href{https://youtube.com/playlist?list=PLDV1Zeh2NRsB6SWUrDFW2RmDotAfPbeHu}{Data structures by William Fiset}
+\end{itemize}

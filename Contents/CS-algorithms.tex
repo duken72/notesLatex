@@ -1,0 +1,60 @@
+% !TeX spellcheck = en_US
+\chapter{CS Algorithms}
+
+\section{Sorting}
+
+References:
+\begin{itemize}
+	\item \href{https://youtu.be/OOBBI-kSChM}{BATTLE OF THE SORTS: which sorting algorithm is the fastest? (visualization)}
+	\item \href{https://stackoverflow.com/q/5038895/11397588}{stackoverflow}
+	\item \href{https://www.cprogramming.com/tutorial/computersciencetheory/sortcomp.html}{cprogramming.com}
+\end{itemize}
+
+Sorting algorithms:
+\begin{itemize}
+	\item Selection sort: finds the next smallest element
+	\item Bubble sort: swaps adjacent out-of-order elements
+	\item Insertion Sort: inserts next element into its place
+	\item Heap Sort: Selection sort with a heap
+	\item Merge Sort: Divide and conquer method
+\begin{lstlisting}[language=C++]
+void merge(
+int a[], const int left, const int mid, const int right);	
+
+void mergeSort(int a[], const int begin, const int end)
+{
+	if (begin >= end)
+	return;
+	
+	int mid = begin + (end - begin) / 2;
+	mergeSort(a, begin, mid);
+	mergeSort(a, mid + 1, end);
+	merge(array, begin, mid, end);
+}
+\end{lstlisting}
+	\item Timsort: A hybrid version of Insertion and Merge sort.
+	\item Quick Sort: swaps elements around a pivot
+	\item IntroSort: A hybrid version of Insertion, Quick and heap sort
+\end{itemize}
+
+\section{Backtracking}
+\begin{itemize}
+	\item Backtracking can be defined as a general algorithmic technique that considers searching every possible combination in order to solve a computational problem.
+	\item Backtracking uses recursive calling to find the solution by building a solution step by step increasing values with time.
+	\item It removes the solutions that doesn't give rise to the final solution of the problem based on the given constraints.
+\end{itemize}
+
+\section{Dynamic Programming}
+\begin{itemize}
+	\item Dynamic Programming is an optimization over plain recursion.
+	\item It is the approach of breaking down a problem into simpler and repeated sub-problems.
+	\item The solutions to each sub-problem are stored so that each of them is only solved once.
+\end{itemize}
+
+\href{https://youtu.be/aPQY__2H3tE}{Steps:}
+\begin{itemize}
+	\item Visualize examples
+	\item Find suitable sub-problem
+	\item Find relationships among sub-problems
+	\item Generalize the relationship
+\end{itemize}
