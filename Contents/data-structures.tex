@@ -442,7 +442,7 @@ void postorder(node) {
 \end{itemize}
 
 \section{Fenwick Tree}
-Fenwick Tree, \ac{aka}, Binary Indexed Tree
+Fenwick Tree, \ac{aka}, Binary Indexed Tree \cite{fenwick1994new}
 \begin{itemize}
 	\item A \ac{DS} that supports sum range queries as well as setting values in a static array
 	\item Complexity:
@@ -552,6 +552,59 @@ void rightRotate(Node* node) {
 \end{itemize}
 
 \section{Graph}
+Formally, a graph is defined as a tuples: $G = \{ V, E \}$, in which $V$ is a collection of vertices and $E$ is a collection of edges
+
+\subsection{Terminology}
+\begin{itemize}
+	\item A \textit{self-loop} edge is in the form $(u, u)$
+	\item An edge $(u, v)$ is \textit{incident} to both vertex $u$ and vertex $v$
+	\item The \textit{degree of a vertex} is the number of edges which are incident to it
+	\item Vertex $u$ is \textit{adjacent} to vertex $v$ if there is some edge to which both are incident
+	\item Directed graph \ac{vs} undirected graph
+	\item A \textit{path} from vertex $u$ to vertex $x$ is a sequence of vertices $(v_0, v_1, \dots, v_k)$ such that $v_0 = u, v_k = x$
+	\item A path is \textit{simple} if it contains no vertex more than once
+	\item A path is \textit{cycle} if it is a path from some vertex to that same vertex
+\end{itemize}
+
+\subsection{Graph Representation}
+\begin{itemize}
+	\item Edge list: $E = \{ (v_i, v_j) | v_i, v_j \in V \}$
+	\begin{itemize}
+		\item Easy to code, debug
+		\item Space efficient
+		\item Determining the edges incident to a given vertex is expensive
+		\item Adding an edge is quick, but deleting one is difficult
+	\end{itemize}
+	\item Adjacency matrix: a $N \times N$ array. The $a^{i, j}$ contains a "1" if the edge $(j, j)$ is in the graph, otherwise contains a "0"
+	\begin{itemize}
+		\item Easy to code
+		\item Costly to store large, sparse graph
+		\item Finding all the edges incident to a vertex is expensive
+		\item Checking if 2 vertices is adjacent is very quick
+		\item Adding, removing edges is cheap
+	\end{itemize}
+	\item Adjacency list: keep track of all the edges incident to a give vertex. The $i^{th}$ entry of the array is a list of the edges incident to the $i^{th}$ vertex
+	\begin{itemize}
+		\item More difficult to code
+		\item Memory efficient
+		\item Finding vertices adjacent to each node is very cheap
+		\item Adding an edge is easy, deleting one is more difficult
+	\end{itemize}
+	\item Implicit representation: there are underlying information about the edges and vertices. \Eg, in chess, assuming position of the knight as vertex, it's easy to determined the fixed position it can move to
+\end{itemize}
+
+\subsection{Connectedness}
+\begin{itemize}
+	\item An undirected graph is said to be \textit{connected} if there is a path from every vertex to every vertex
+	\item A \textit{component} of a graph is a maximal subset of the vertices that are reachable from other vertex in the component
+\end{itemize}
+
+\subsection{Special Graphs}
+\begin{itemize}
+	\item A tree is an undirected graph if it contains no cycles and is connected
+	\item An undirected graph which contains no cycles is called a \textit{forest}.
+	\item A \textit{complete} graph is a graph with edges between every pair of vertices
+\end{itemize}
 
 \section{Matrix}
 

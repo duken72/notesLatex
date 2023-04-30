@@ -37,6 +37,40 @@ void mergeSort(int a[], const int begin, const int end)
 	\item IntroSort: A hybrid version of Insertion, Quick and heap sort
 \end{itemize}
 
+\section{Complete Search}
+\begin{itemize}
+	\item Keep it simple, stupid
+	\item Brute force within the time allowed
+	\item Can search in either the input space or the output space
+\end{itemize}
+
+\section{Greedy Search}
+\begin{itemize}
+	\item Constructs a solution by always making a choice that looks the best at the moment
+	\item Is FAST, generally linear to quadratic
+	\item Requires little extra memory
+	\item Is usually not correct. But when it works, it's easy and fast to implement
+\end{itemize}
+
+\section{More Search Techniques}
+\begin{itemize}
+	\item \ac{DFS}
+	\item \ac{BFS}
+	\item Depth First with Iterative Deepening
+\end{itemize}
+
+\section{Flood Fill}
+\begin{itemize}
+	\item Given a graph, find the all connected sub-graphs / components
+	\item Can be performed via 3 basic ways: depth-first, breadth-first, breadth-first scanning
+	\begin{itemize}
+		\item Depth-first: if current node is not visited yet, visit it, assign to a new component, recurses over all of its unvisited neighbors. However, it is bad with implicit graph
+		\item Breath-first: instead of recursing on the newly assigned nodes, add them to a queue.
+		\item Both depth-first and breadth-first run in $\mathcal{O}(N + M)$
+		\item Breath-first scanning, despite being a little tricky, requires no extra space. However, it is slower, $\mathcal{O}(N * N + M)$
+	\end{itemize}
+\end{itemize}
+
 \section{Backtracking}
 \begin{itemize}
 	\item Backtracking can be defined as a general algorithmic technique that considers searching every possible combination in order to solve a computational problem.
